@@ -196,7 +196,9 @@ footer{text-align:center;color:var(--mute);font-size:12.5px;padding:28px 20px 40
 <footer>✦ Be yourself · FitMe AI</footer>
 <script>
 // Trang và API chạy chung một Worker nên dùng đường dẫn tương đối
-const WORKER_URL = "/api/chat";
+// Chạy trên workers.dev thì gọi API cùng chỗ; chạy ở nơi khác (Pages, hosting riêng) thì gọi về Worker
+const API_BASE = location.hostname.endsWith(".workers.dev") ? "" : "https://yellow-grass-933f.nguyenduyhung190108.workers.dev";
+const WORKER_URL = API_BASE + "/api/chat";
 
 const $ = s => document.querySelector(s);
 const mem = {};
@@ -438,7 +440,7 @@ $("#aiBtn").onclick = async () => {
   $("#aiBtn").disabled = true;
   $("#aiOut").innerHTML = '<div class="empty">AI đang mặc thử, khoảng 10–30 giây<span class="dots"><span>.</span><span>.</span><span>.</span></span></div>';
   try {
-    const r = await fetch("/api/tryon", {
+    const r = await fetch(API_BASE + "/api/tryon", {
       method: "POST", headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ person: body.toDataURL("image/jpeg", .9), garment: "data:image/jpeg;base64," + img })
     });
