@@ -134,17 +134,22 @@ footer{text-align:center;color:var(--mute);font-size:12.5px;padding:28px 20px 40
       <div class="card" id="s2" hidden>
         <h1 class="gt">Chọn sản phẩm</h1>
         <p class="sub">Tải ảnh sản phẩm (có thể dán Ctrl+V). AI đọc ảnh để biết loại đồ, chất liệu, form. Ảnh món đồ rõ, nền sạch sẽ cho ảnh mặc thử đẹp hơn.</p>
-        <label for="link">Link sản phẩm (tùy chọn)</label>
+        <label for="link">Link món 1 (tùy chọn)</label>
         <input id="link" type="url" placeholder="https://shopee.vn/...">
         <p class="hint">Các sàn chặn đọc link tự động, nên AI sẽ đọc từ ảnh của bạn.</p>
-        <label>Ảnh sản phẩm / bảng size</label>
+        <label>Món 1: ảnh sản phẩm / bảng size (áo, đầm...)</label>
         <input id="file" type="file" accept="image/*" hidden>
         <div class="drop" id="drop" tabindex="0">Nhấn để chọn ảnh hoặc kéo thả vào đây</div>
+        <label>Món 2: quần hoặc váy <span style="font-weight:400;color:var(--mute)">(không bắt buộc, để mặc thử cả bộ)</span></label>
+        <input id="file2" type="file" accept="image/*" hidden>
+        <div class="drop" id="drop2" tabindex="0">Thêm ảnh quần/váy nếu muốn mặc thử cả bộ</div>
         <label>Ảnh toàn thân của bạn <span style="font-weight:400;color:var(--mute)">(để xem mặc thử, không bắt buộc)</span></label>
         <input id="bfile" type="file" accept="image/*" hidden>
         <div class="drop" id="bdrop" tabindex="0">Chọn ảnh đứng thẳng, chính diện, thấy rõ toàn thân</div>
-        <label for="chart">Bảng size của shop (nếu có)</label>
+        <label for="chart">Bảng size món 1 (nếu có)</label>
         <textarea id="chart" rows="4" placeholder="VD: S: ngực 84-88, eo 66-70 | M: ngực 88-92, eo 70-74 ..."></textarea>
+        <label for="chart2">Bảng size món 2 (nếu có)</label>
+        <textarea id="chart2" rows="3" placeholder="VD: 28: eo 66-70, mông 90-94 | 29: eo 70-74, mông 94-98 ..."></textarea>
         <div class="actions">
           <button class="btn" id="go">Thử đồ ngay</button>
           <button class="btn ghost" id="back1">Quay lại</button>
@@ -160,7 +165,7 @@ footer{text-align:center;color:var(--mute);font-size:12.5px;padding:28px 20px 40
           <label>Bạn mặc món này trông thế nào?</label>
           <button class="btn" id="aiBtn" type="button">Mặc thử bằng AI (miễn phí)</button>
           <div id="aiOut" style="margin:14px 0"></div>
-          <p class="hint">Ảnh do AI tạo, chỉ để hình dung kiểu dáng và màu sắc, không cho biết có vừa size hay không. Hãy chọn size theo gợi ý ở trên. Mô hình miễn phí làm tốt nhất với áo và đầm, quần hoặc phụ kiện có thể kém chính xác.</p>
+          <p class="hint">Ảnh do AI tạo, chỉ để hình dung kiểu dáng và màu sắc, không cho biết có vừa size hay không. Hãy chọn size theo gợi ý ở trên. Mô hình miễn phí làm tốt nhất với áo và đầm. Khi ghép cả bộ, AI mặc lần lượt từng món nên lâu hơn, và quần/váy có thể kém chính xác hơn áo.</p>
         </div>
         <div class="err" id="e4"></div>
         <div class="actions"><button class="btn ghost" id="again">Thử món khác</button><button class="btn" id="save">Lưu vào tủ đồ</button></div>
@@ -212,7 +217,7 @@ const SKINS = [["Sáng","#f6d9c3"],["Trung bình","#e0b48f"],["Ngăm","#b9805a"]
 const UNDERS = ["Lạnh","Ấm","Trung tính","Chưa chắc"];
 const SEXES = ["Nữ","Nam"];
 let P = Object.assign({h:"",w:"",bust:"",waist:"",hip:"",sex:"",shape:"",skin:"",under:""}, store.get("fm_profile", {}));
-let img = null, thumb = null, body = null, busy = false, last = null, history = store.get("fm_chat", []);
+let img = null, thumb = null, img2 = null, thumb2 = null, body = null, busy = false, last = null, history = store.get("fm_chat", []);
 
 /* ---------- Tabs ---------- */
 document.querySelectorAll("nav.tabs button").forEach(b => b.onclick = () => {
@@ -310,9 +315,14 @@ $("#drop").onkeydown = e => { if (e.key === "Enter") $("#file").click(); };
 $("#file").onchange = e => { const f = e.target.files[0]; if (f) loadImg(f); e.target.value = ""; };
 $("#drop").ondragover = e => e.preventDefault();
 $("#drop").ondrop = e => { e.preventDefault(); e.dataTransfer.files[0] && loadImg(e.dataTransfer.files[0]); };
-document.addEventListener("paste", e => { if ($("#s2").hidden || !$("#tryon").classList.contains("on")) return; const f = [...(e.clipboardData?.files||[])].find(f => f.type.startsWith("image/")); if (f) loadImg(f); });
+$("#drop2").onclick = () => $("#file2").click();
+$("#drop2").onkeydown = e => { if (e.key === "Enter") $("#file2").click(); };
+$("#file2").onchange = e => { const f = e.target.files[0]; if (f) loadImg(f, 2); e.target.value = ""; };
+$("#drop2").ondragover = e => e.preventDefault();
+$("#drop2").ondrop = e => { e.preventDefault(); e.dataTransfer.files[0] && loadImg(e.dataTransfer.files[0], 2); };
+document.addEventListener("paste", e => { if ($("#s2").hidden || !$("#tryon").classList.contains("on")) return; const f = [...(e.clipboardData?.files||[])].find(f => f.type.startsWith("image/")); if (f) loadImg(f, !img ? 1 : !img2 ? 2 : 1); });
 function mkThumb(im){ const sc = Math.min(1, 360 / Math.max(im.width, im.height)), c = document.createElement("canvas"); c.width = im.width*sc; c.height = im.height*sc; c.getContext("2d").drawImage(im, 0, 0, c.width, c.height); return c.toDataURL("image/jpeg", .7); }
-function loadImg(file){
+function loadImg(file, n = 1){
   const r = new FileReader();
   r.onload = () => {
     const im = new Image();
@@ -320,8 +330,9 @@ function loadImg(file){
       const sc = Math.min(1, 1024 / Math.max(im.width, im.height)), c = document.createElement("canvas");
       c.width = im.width*sc; c.height = im.height*sc; c.getContext("2d").drawImage(im, 0, 0, c.width, c.height);
       const url = c.toDataURL("image/jpeg", .82);
-      img = url.split(",")[1]; thumb = mkThumb(im);
-      $("#drop").innerHTML = `<img src="${url}" alt="Ảnh sản phẩm">`;
+      const b64 = url.split(",")[1], th = mkThumb(im);
+      if (n === 2) { img2 = b64; thumb2 = th; } else { img = b64; thumb = th; }
+      $(n === 2 ? "#drop2" : "#drop").innerHTML = `<img src="${url}" alt="Ảnh sản phẩm ${n}">`;
     };
     im.src = r.result;
   };
@@ -371,9 +382,9 @@ function profileText(){
 }
 const SYS = () => "Bạn là FitMe AI, stylist và chuyên gia chọn size quần áo cho người Việt. Trả lời tiếng Việt, ngắn gọn, thẳng thắn, không bịa số liệu. Hồ sơ người dùng: " + profileText();
 
-function localSize(){
-  const h = +P.h, w = +P.w, b = +P.bust, order = ["XS","S","M","L","XL","XXL"];
-  let i = b ? (b<82?0:b<88?1:b<94?2:b<100?3:b<106?4:5) : (w<45?0:w<55?1:w<65?2:w<75?3:w<85?4:5);
+function localSize(bottom){
+  const h = +P.h, w = +P.w, b = bottom ? +P.hip : +P.bust, order = ["XS","S","M","L","XL","XXL"];
+  let i = b ? (bottom ? (b<86?0:b<92?1:b<98?2:b<104?3:b<110?4:5) : (b<82?0:b<88?1:b<94?2:b<100?3:b<106?4:5)) : (w<45?0:w<55?1:w<65?2:w<75?3:w<85?4:5);
   if (P.sex === "Nam") i++; if (h > 175) i++; if (h < 152) i--;
   return order[Math.max(0, Math.min(5, i))];
 }
@@ -385,37 +396,46 @@ function normalize(o){
     confidence: Math.max(0, Math.min(100, parseInt(o.confidence) || 60)), fit: ["ôm","vừa","rộng","oversize"].find(x => f.includes(x)) || "vừa",
     reasons: arr(o.reasons), alt_size: String(o.alt_size || "").trim().toUpperCase(), warnings: arr(o.warnings), styling: arr(o.styling), colors: ok ? arr(o.colors) : [] };
 }
-$("#go").onclick = async () => {
-  const text = $("#chart").value.trim(), link = $("#link").value.trim();
-  if (!img && !text && !link) { $("#e2").textContent = "Thêm ít nhất một ảnh, bảng size hoặc link sản phẩm."; return; }
-  $("#e2").textContent = ""; $("#go").disabled = true; step(3);
-  $("#result").innerHTML = ""; $("#loading").hidden = false; $("#save").hidden = true; $("#fit").hidden = true;
+async function analyze(imgData, text, link, bottom){
   const prompt = `Chọn size cho người dùng. Link: ${link||"không có"}. Bảng size shop: ${text||"không có (hãy dùng bảng size chung, nói rõ nếu ước tính)"}.
 Chỉ trả về JSON hợp lệ, không markdown:
 {"product":"tên/loại món đồ","size":"size đề xuất","confidence":0-100,"fit":"ôm|vừa|rộng|oversize","reasons":["..."],"alt_size":"size dự phòng hoặc rỗng","warnings":["..."],"styling":["gợi ý phối đồ"],"colors":["màu hợp, chỉ khi đã có tông da/undertone xác nhận, nếu không để mảng rỗng"]}`;
   const content = [];
-  if (img) content.push({type:"image", source:{type:"base64", media_type:"image/jpeg", data:img}});
+  if (imgData) content.push({type:"image", source:{type:"base64", media_type:"image/jpeg", data:imgData}});
   content.push({type:"text", text:prompt});
   try {
     const out = await callAI(SYS(), [{role:"user", content}], 1400);
     const m = out.match(/\{[\s\S]*\}/);
-    last = normalize(JSON.parse(m[0])); last.ai = true;
+    const r = normalize(JSON.parse(m[0])); r.ai = true;
+    return r;
   } catch (e) {
-    last = { product: "Sản phẩm của bạn", size: localSize(), confidence: 45, fit: "vừa", ai: false,
-      reasons: ["Ước tính offline từ chiều cao/cân nặng" + (P.bust ? " và vòng ngực" : "") + "."],
+    const k = bottom ? P.hip : P.bust;
+    return { product: bottom ? "Món 2 của bạn" : "Sản phẩm của bạn", size: localSize(bottom), confidence: 45, fit: "vừa", ai: false,
+      reasons: ["Ước tính offline từ chiều cao/cân nặng" + (k ? (bottom ? " và vòng mông" : " và vòng ngực") : "") + "."],
       warnings: [e.message, "Kết quả chỉ mang tính tham khảo, hãy đối chiếu bảng size của shop."], styling: [], colors: [], alt_size: "" };
   }
-  last.date = new Date().toLocaleDateString("vi-VN"); last.link = link; last.thumb = thumb; $("#go").disabled = false;
+}
+$("#go").onclick = async () => {
+  const text = $("#chart").value.trim(), link = $("#link").value.trim(), text2 = $("#chart2").value.trim();
+  if (!img && !text && !link) { $("#e2").textContent = "Thêm ít nhất một ảnh, bảng size hoặc link cho món 1."; return; }
+  $("#e2").textContent = ""; $("#go").disabled = true; step(3);
+  $("#result").innerHTML = ""; $("#loading").hidden = false; $("#save").hidden = true; $("#fit").hidden = true;
+  const jobs = [analyze(img, text, link, false)];
+  if (img2 || text2) jobs.push(analyze(img2, text2, "", true));
+  last = await Promise.all(jobs);
+  const date = new Date().toLocaleDateString("vi-VN");
+  last.forEach((r, i) => { r.date = date; r.link = i ? "" : link; r.thumb = i ? thumb2 : thumb; });
+  $("#go").disabled = false;
   renderResult(); initFit(); $("#loading").hidden = true; $("#save").hidden = false;
 };
 
 const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const list = a => a && a.length ? `<ul class="clean">${a.map(x => `<li>${esc(x)}</li>`).join("")}</ul>` : "";
-function renderResult(){
-  const r = last, fitCls = r.fit === "vừa" ? "ok" : "warn";
-  $("#result").innerHTML = `
+function renderOne(r, i){
+  const fitCls = r.fit === "vừa" ? "ok" : "warn";
+  return `
     ${r.thumb ? `<img class="rthumb" src="${r.thumb}" alt="Ảnh sản phẩm">` : ""}
-    <p class="sub" style="margin:0">${esc(r.product)}</p>
+    <p class="sub" style="margin:0">${last.length > 1 ? `<b>Món ${i+1}</b> · ` : ""}${esc(r.product)}</p>
     <div style="display:flex;align-items:flex-end;gap:16px;flex-wrap:wrap"><div class="size-big gt">${esc(r.size)}</div>
       <div><span class="tag ${fitCls}">Form ${esc(r.fit)}</span>${r.alt_size ? `<span class="tag">Dự phòng: ${esc(r.alt_size)}</span>` : ""}${r.ai ? "" : `<span class="tag warn">Offline</span>`}</div></div>
     <div class="meter" aria-label="Độ tin cậy"><div style="width:${+r.confidence||0}%"></div></div>
@@ -425,6 +445,9 @@ function renderResult(){
     ${r.styling?.length ? `<label>Gợi ý phối đồ</label>${list(r.styling)}` : ""}
     ${r.colors?.length ? `<label>Màu hợp với bạn</label>${r.colors.map(c => `<span class="tag">${esc(c)}</span>`).join("")}` : ""}`;
 }
+function renderResult(){
+  $("#result").innerHTML = last.map(renderOne).join('<hr style="border:0;border-top:1px solid var(--line);margin:20px 0;clear:both">');
+}
 
 /* ---------- Mặc thử bằng AI (Hugging Face Space, miễn phí) ---------- */
 function initFit(){
@@ -433,31 +456,44 @@ function initFit(){
   $("#fit").hidden = !ok;
   $("#e4").textContent = ok ? "" : "Muốn xem bạn mặc món này: quay lại bước 2, thêm cả ảnh sản phẩm và ảnh toàn thân của bạn.";
 }
+const jpegOf = src => new Promise((res, rej) => {
+  const im = new Image();
+  im.onload = () => { const c = document.createElement("canvas"); c.width = im.width; c.height = im.height; c.getContext("2d").drawImage(im, 0, 0); res(c.toDataURL("image/jpeg", .9)); };
+  im.onerror = () => rej(new Error("Không đọc được ảnh kết quả"));
+  im.src = src;
+});
 $("#aiBtn").onclick = async () => {
   const err = $("#e4"); err.textContent = "";
   if (!body || !img) { err.textContent = "Cần ảnh toàn thân và ảnh sản phẩm."; return; }
-  if (!confirm("Ảnh của bạn và ảnh sản phẩm sẽ được gửi tới Hugging Face (Space IDM-VTON) để tạo ảnh mặc thử. Tiếp tục?")) return;
+  const garments = [img, img2].filter(Boolean), n = garments.length;
+  if (!confirm("Ảnh của bạn và ảnh sản phẩm sẽ được gửi tới Hugging Face (Space IDM-VTON) để tạo ảnh mặc thử" + (n > 1 ? ", lần lượt từng món" : "") + ". Tiếp tục?")) return;
   $("#aiBtn").disabled = true;
-  $("#aiOut").innerHTML = '<div class="empty">AI đang mặc thử, có thể mất 1–3 phút<span class="dots"><span>.</span><span>.</span><span>.</span></span></div>';
+  const show = src => `<img class="tryimg" src="${src}" alt="Ảnh mặc thử do AI tạo">
+      <div class="actions"><a class="btn ghost" href="${src}" download="fitme-mac-thu.png" style="text-decoration:none">Tải ảnh về</a></div>`;
+  let person = body.toDataURL("image/jpeg", .9), out = null;
   try {
-    const r = await fetch(API_BASE + "/api/tryon", {
-      method: "POST", headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ person: body.toDataURL("image/jpeg", .9), garment: "data:image/jpeg;base64," + img })
-    });
-    const d = await r.json().catch(() => ({}));
-    if (!r.ok || !d.image) throw new Error(d.error || "Lỗi " + r.status);
-    $("#aiOut").innerHTML = `<img class="tryimg" src="${d.image}" alt="Ảnh mặc thử do AI tạo">
-      <div class="actions"><a class="btn ghost" href="${d.image}" download="fitme-mac-thu.png" style="text-decoration:none">Tải ảnh về</a></div>`;
+    for (let i = 0; i < n; i++) {
+      $("#aiOut").innerHTML = '<div class="empty">AI đang mặc thử' + (n > 1 ? " món " + (i+1) + "/" + n : "") + ', có thể mất 1–3 phút<span class="dots"><span>.</span><span>.</span><span>.</span></span></div>';
+      const r = await fetch(API_BASE + "/api/tryon", {
+        method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ person, garment: "data:image/jpeg;base64," + garments[i] })
+      });
+      const d = await r.json().catch(() => ({}));
+      if (!r.ok || !d.image) throw new Error((n > 1 ? "Món " + (i+1) + ": " : "") + (d.error || "Lỗi " + r.status));
+      out = d.image;
+      if (i < n - 1) person = await jpegOf(out);
+    }
+    $("#aiOut").innerHTML = show(out);
   } catch (e) {
-    $("#aiOut").innerHTML = "";
-    err.textContent = "Không tạo được ảnh: " + (e.message || "lỗi mạng") + ".";
+    $("#aiOut").innerHTML = out ? show(out) : "";
+    err.textContent = "Không tạo được ảnh: " + (e.message || "lỗi mạng") + "." + (out ? " Ảnh bên trên mới chỉ mặc được món trước đó." : "");
   }
   $("#aiBtn").disabled = false;
 };
 
-$("#again").onclick = () => { img = null; thumb = null; $("#file").value = ""; $("#drop").textContent = "Nhấn để chọn ảnh hoặc kéo thả vào đây"; $("#chart").value = ""; $("#link").value = ""; $("#aiOut").innerHTML = ""; step(2); };
+$("#again").onclick = () => { img = null; thumb = null; img2 = null; thumb2 = null; $("#file2").value = ""; $("#drop2").textContent = "Thêm ảnh quần/váy nếu muốn mặc thử cả bộ"; $("#chart2").value = ""; $("#file").value = ""; $("#drop").textContent = "Nhấn để chọn ảnh hoặc kéo thả vào đây"; $("#chart").value = ""; $("#link").value = ""; $("#aiOut").innerHTML = ""; step(2); };
 $("#save").onclick = () => {
-  const c = store.get("fm_closet", []); c.unshift(last); store.set("fm_closet", c.slice(0, 30));
+  const c = store.get("fm_closet", []); c.unshift(...last); store.set("fm_closet", c.slice(0, 30));
   $("#save").textContent = "Đã lưu"; setTimeout(() => $("#save").textContent = "Lưu vào tủ đồ", 1500);
 };
 
