@@ -6,204 +6,309 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>FitMe AI – Trợ lý thử đồ & chọn size</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,600;1,700&family=Cormorant+Garamond:wght@600;700&family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-:root{--ink:#eaf6ff;--mute:#8fb3cf;--line:rgba(232,196,121,.3);--card:rgba(6,28,54,.7);--gold:#e8c479;--aqua:#7fd6f5;--ok:#5fe0b5;--warn:#f0a850;--bad:#ff8a93;color-scheme:dark}
-*{box-sizing:border-box}
+:root{--ink:#eaf6ff;--mute:#8fb3cf;--line:rgba(232,196,121,.28);--line2:rgba(143,190,225,.2);--panel:rgba(4,22,42,.62);--field:rgba(3,18,36,.72);--gold:#e8c479;--aqua:#7fd6f5;--ok:#5fe0b5;--warn:#f0a850;--bad:#ff8a93;--ease:cubic-bezier(.22,.8,.24,1);color-scheme:dark}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html{scroll-padding-top:env(safe-area-inset-top,0px)}
-body{margin:0;min-height:100vh;color:var(--ink);font:15px/1.6 "Be Vietnam Pro",system-ui,sans-serif;background:linear-gradient(180deg,#0b4778 0,#06284a 38%,#031326 100%) fixed;padding:env(safe-area-inset-top,0) 0 env(safe-area-inset-bottom,0)}
+body{margin:0;min-height:100vh;color:var(--ink);font:15px/1.6 "Be Vietnam Pro",system-ui,sans-serif;background:linear-gradient(180deg,#0b4f86 0,#083c6c 20%,#062c52 48%,#031528 100%) fixed;padding:env(safe-area-inset-top,0) 0 env(safe-area-inset-bottom,0);overflow-x:hidden}
+button{font:inherit;color:inherit}
+/* ---------- Đáy biển ---------- */
 #sea{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
-#sea:before{content:"";position:absolute;inset:-10% 0 30%;background:repeating-conic-gradient(from 168deg at 50% -8%,rgba(150,215,255,.17) 0 2.2deg,transparent 2.2deg 8deg);-webkit-mask:radial-gradient(ellipse at 50% 0,#000 0,transparent 72%);mask:radial-gradient(ellipse at 50% 0,#000 0,transparent 72%)}
-#sea:after{content:"";position:absolute;inset:auto 0 0;height:34%;background:radial-gradient(ellipse 34% 90% at 0 100%,#020a14 0 60%,transparent 62%),radial-gradient(ellipse 38% 80% at 100% 100%,#020a14 0 60%,transparent 62%)}
-.bub{position:absolute;bottom:-30px;border-radius:50%;border:1px solid rgba(190,235,255,.55);background:radial-gradient(circle at 30% 30%,rgba(255,255,255,.5),rgba(255,255,255,.04) 60%);animation:rise linear infinite}
-@keyframes rise{to{transform:translateY(-115vh)}}
-header,nav.tabs,main,footer{position:relative;z-index:1}
-.gt{background:linear-gradient(180deg,#fff 0,#bfe8ff 48%,#f4deaa 100%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent;filter:drop-shadow(0 0 10px rgba(120,210,255,.45))}
-header{max-width:1040px;margin:auto;padding:18px 20px 6px;text-align:center}
-.logo{font:700 38px/1 "Cormorant Garamond",Georgia,serif;letter-spacing:1px;display:inline-block}
-.logo .st{-webkit-text-fill-color:var(--gold);margin:0 4px;font-size:.6em;vertical-align:.25em}
-.logo small{display:block;font:400 12px "Be Vietnam Pro",sans-serif;-webkit-text-fill-color:var(--mute);letter-spacing:.5px;margin-top:6px}
-nav.tabs{display:flex;justify-content:center;gap:4px;max-width:1040px;margin:6px auto 0;padding:0 20px;overflow-x:auto}
-nav.tabs button{background:none;border:0;border-bottom:2px solid transparent;padding:10px 18px;font:600 15px "Be Vietnam Pro",sans-serif;color:var(--mute);cursor:pointer}
-nav.tabs button.on{color:var(--gold);border-color:var(--gold)}
-main{max-width:1040px;margin:0 auto;padding:20px}
-.view{display:none}.view.on{display:block}
-.grid{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:24px;align-items:start}
-@media(max-width:820px){.grid{grid-template-columns:1fr}.mannequin{order:-1;position:static!important}}
-.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:22px;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);box-shadow:0 10px 40px rgba(0,10,25,.45),inset 0 1px 0 rgba(255,255,255,.06)}
-h1{font:700 clamp(32px,6vw,50px)/1.05 "Cormorant Garamond",Georgia,serif;margin:0 0 8px;display:inline-block}
-.sub{color:var(--mute);margin:0 0 18px}
-.steps{display:flex;gap:8px;margin-bottom:18px;font-size:13px;color:var(--mute);flex-wrap:wrap}
-.steps span{padding:5px 13px;border-radius:99px;border:1px solid var(--line)}
-.steps span.on{background:linear-gradient(180deg,#f3d58f,#c99a4b);border-color:transparent;color:#1b1204;font-weight:600}
-label{display:block;font-weight:600;font-size:13px;margin:15px 0 6px;color:#cfe8f8}
-.row{display:grid;grid-template-columns:1fr 1fr;gap:12px}.row3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
-input,select,textarea{width:100%;font:inherit;color:var(--ink);background:rgba(2,14,30,.6);border:1px solid rgba(143,179,207,.28);border-radius:10px;padding:10px 12px}
-input::placeholder,textarea::placeholder{color:#6e8fa9}
-input:focus,select:focus,textarea:focus,button:focus-visible{outline:2px solid var(--gold);outline-offset:1px}
-.unit{position:relative}.unit i{position:absolute;right:12px;top:11px;color:var(--mute);font-style:normal;font-size:13px}
+#sea>*{position:absolute}
+.glow{inset:0;background:radial-gradient(ellipse 75% 48% at 50% 0,rgba(120,210,250,.34),transparent 72%);animation:pulse 9s ease-in-out infinite alternate}
+@keyframes pulse{from{opacity:.65}to{opacity:1}}
+.rays{left:50%;top:-12%;width:170vw;height:125vh;margin-left:-85vw;transform-origin:50% 10%;will-change:transform;background:repeating-conic-gradient(from 171deg at 50% 10%,rgba(160,222,255,.13) 0 1.5deg,transparent 1.5deg 5.5deg);-webkit-mask:radial-gradient(ellipse 52% 78% at 50% 10%,#000 0,transparent 76%);mask:radial-gradient(ellipse 52% 78% at 50% 10%,#000 0,transparent 76%);animation:sway 17s ease-in-out infinite alternate}
+.rays.r2{background:repeating-conic-gradient(from 169deg at 50% 10%,rgba(200,238,255,.08) 0 .8deg,transparent .8deg 3.9deg);animation-duration:25s;animation-direction:alternate-reverse}
+@keyframes sway{from{transform:rotate(-2.4deg)}to{transform:rotate(2.4deg)}}
+.rw{top:0;bottom:0;width:17vw;filter:drop-shadow(0 0 10px rgba(40,120,180,.22))}
+.rw.l{left:0}.rw.r{right:0;transform:scaleX(-1)}
+.rock{width:100%;height:100%;background:linear-gradient(90deg,#010811,#071c32 80%,#0a2a47);clip-path:polygon(0 0,50% 0,44% 9%,62% 21%,38% 35%,58% 49%,32% 62%,52% 75%,28% 88%,40% 100%,0 100%)}
+.fl{bottom:0;height:30vh;width:44vw;filter:drop-shadow(0 -4px 14px rgba(50,140,200,.3))}
+.fl.l{left:0}.fl.r{right:0;transform:scaleX(-1)}
+.fl .rock{background:radial-gradient(circle at 24% 38%,rgba(255,255,255,.28) 0 1px,transparent 1.5px) 0 0/37px 29px,radial-gradient(circle at 70% 60%,rgba(255,255,255,.18) 0 1px,transparent 1.5px) 11px 7px/29px 41px,linear-gradient(180deg,#0a2540,#020a15);clip-path:polygon(0 18%,10% 8%,22% 14%,34% 4%,48% 20%,62% 30%,76% 52%,100% 100%,0 100%)}
+.fish{width:34px;height:14px;fill:#031020;opacity:.32;left:105vw;animation:swim linear infinite}
+@keyframes swim{to{transform:translateX(-135vw)}}
+.bub{bottom:-40px;animation:rise var(--d) linear infinite;will-change:transform}
+.bub i{display:block;width:var(--z);height:var(--z);border-radius:50%;border:1px solid rgba(190,235,255,.55);background:radial-gradient(circle at 30% 28%,rgba(255,255,255,.65),rgba(255,255,255,.05) 60%);animation:wob 4s ease-in-out infinite alternate}
+@keyframes rise{to{transform:translateY(-118vh)}}
+@keyframes wob{from{transform:translateX(-9px)}to{transform:translateX(9px)}}
+.dust{width:2px;height:2px;border-radius:50%;background:#bfe8ff;animation:tw 6s ease-in-out infinite alternate}
+@keyframes tw{from{opacity:.05;transform:translate(0,0)}to{opacity:.6;transform:translate(14px,-22px)}}
+/* ---------- Khung ---------- */
+.app{position:relative;z-index:1;max-width:1180px;margin:0 auto;padding:0 20px}
+header{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:18px 0 10px;flex-wrap:wrap}
+.metal{background:linear-gradient(180deg,#fff 0,#cdeeff 46%,#f3dca8 100%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent;filter:drop-shadow(0 0 10px rgba(120,210,255,.4))}
+.logo{display:flex;align-items:center;gap:6px;font:700 34px/1 "Cormorant Garamond",Georgia,serif;letter-spacing:.5px}
+.logo svg{width:24px;height:24px;fill:var(--gold);filter:drop-shadow(0 0 6px rgba(232,196,121,.6));animation:spin 28s linear infinite}
+.logo small{display:block;font:italic 400 11px "Playfair Display",serif;-webkit-text-fill-color:var(--mute);letter-spacing:.4px;margin-top:4px}
+@keyframes spin{to{transform:rotate(360deg)}}
+nav.tabs{display:flex;gap:6px}
+nav.tabs button{display:flex;align-items:center;gap:7px;background:none;border:0;border-radius:99px;padding:9px 16px;font-weight:600;font-size:14px;color:var(--mute);cursor:pointer;transition:background .3s,color .3s}
+nav.tabs button svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+nav.tabs button:hover{color:var(--ink)}
+nav.tabs button.on{background:rgba(160,205,235,.14);color:var(--ink);box-shadow:inset 0 0 0 1px rgba(160,205,235,.16)}
+main{padding:6px 0 10px}
+.view{display:none}.view.on{display:block;animation:in .5s var(--ease)}
+@keyframes in{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+.enter{animation:in .5s var(--ease)}
+[hidden]{display:none!important}
+/* ---------- Thanh bước ---------- */
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;width:min(560px,100%);margin:4px 0 22px}
+.steps div{font-size:12.5px;color:var(--mute);transition:color .4s}
+.steps div:before{content:"";display:block;height:3px;border-radius:3px;margin-bottom:8px;background:linear-gradient(90deg,var(--gold),#fff3cf) left/0 100% no-repeat,rgba(143,190,225,.22);transition:background-size .6s var(--ease)}
+.steps div.on:before{background-size:100% 100%}
+.steps div.cur{color:var(--ink);font-weight:600}
+/* ---------- Chữ ---------- */
+h1{font:700 clamp(30px,5.4vw,46px)/1.12 "Playfair Display",Georgia,serif;margin:0 0 6px;letter-spacing:-.3px}
+h1 em{font-style:italic;-webkit-text-fill-color:transparent;background:linear-gradient(180deg,#e3f6ff,#7fd6f5 60%,#f1dcaa);-webkit-background-clip:text;background-clip:text}
+h1.metal{display:inline-block}
+.sub{color:var(--mute);margin:0 0 20px;max-width:70ch}
+label,.lab{display:block;font-weight:600;font-size:13px;margin:0 0 7px;color:#cfe8f8}
+.hint{font-size:12.5px;color:var(--mute);margin:7px 0 0;line-height:1.5}
+.err{color:var(--bad);font-size:13.5px;margin-top:10px;min-height:0}
+/* ---------- Form ---------- */
+.s1grid{display:grid;grid-template-columns:minmax(300px,410px) minmax(0,1fr);gap:30px;align-items:start}
+.fields{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:18px 28px;align-content:start}
+.fields>div{min-width:0}
+.col{display:flex;flex-direction:column;gap:16px}
+@media(max-width:900px){.s1grid,.s2grid{grid-template-columns:1fr!important}.stage{position:static!important}}
+.row3{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+@media(max-width:520px){.row3{grid-template-columns:repeat(2,1fr)}}
+input,select,textarea{width:100%;font:inherit;color:var(--ink);background:var(--field);border:1px solid var(--line2);border-radius:12px;padding:11px 14px;transition:border-color .25s,box-shadow .25s,background .25s}
+input::placeholder,textarea::placeholder{color:#62849f}
+input:hover,textarea:hover{border-color:rgba(160,205,235,.35)}
+input:focus,select:focus,textarea:focus{outline:0;border-color:var(--gold);box-shadow:0 0 0 3px rgba(232,196,121,.16)}
+button:focus-visible,.drop:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+input[type=number]{-moz-appearance:textfield;appearance:textfield}
+input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}
+.unit{position:relative}.unit i{position:absolute;right:14px;top:50%;transform:translateY(-50%);color:var(--mute);font-style:normal;font-size:13px;pointer-events:none}
+.unit input{padding-right:40px}
+.seg{position:relative;display:flex;background:var(--field);border:1px solid var(--line2);border-radius:14px;padding:3px}
+.seg .ind{position:absolute;left:3px;top:3px;bottom:3px;border-radius:11px;background:linear-gradient(180deg,rgba(130,180,215,.38),rgba(80,130,170,.3));box-shadow:inset 0 1px 0 rgba(255,255,255,.14);transition:transform .38s var(--ease),opacity .25s}
+.seg button{position:relative;flex:1;background:none;border:0;padding:8px 6px;font-size:13.5px;color:var(--mute);cursor:pointer;border-radius:11px;transition:color .25s}
+.seg button.on{color:#fff;font-weight:600}
+.swatches{display:flex;gap:11px;flex-wrap:wrap}
+.swatch{width:38px;height:38px;border-radius:50%;padding:0;border:2px solid rgba(255,255,255,.22);cursor:pointer;transition:transform .3s var(--ease),box-shadow .3s,border-color .3s}
+.swatch:hover{transform:scale(1.08)}
+.swatch.on{transform:scale(1.1);border-color:#fff;box-shadow:0 0 0 3px rgba(232,196,121,.75),0 0 16px rgba(232,196,121,.35)}
 .chips{display:flex;flex-wrap:wrap;gap:8px}
-.chip{border:1px solid rgba(143,179,207,.35);background:rgba(2,14,30,.45);color:var(--ink);padding:8px 15px;border-radius:99px;cursor:pointer;font:inherit;font-size:14px}
+.chip{border:1px solid rgba(143,179,207,.32);background:rgba(2,14,30,.45);padding:8px 15px;border-radius:99px;cursor:pointer;font-size:13.5px;transition:background .3s,color .3s,border-color .3s,transform .2s}
+.chip:hover{border-color:var(--gold)}.chip:active{transform:scale(.96)}
 .chip.on{background:linear-gradient(180deg,#f3d58f,#c99a4b);border-color:transparent;color:#1b1204;font-weight:600}
-.swatch{width:28px;height:28px;border-radius:50%;padding:0;border:2px solid rgba(255,255,255,.3);cursor:pointer}.swatch.on{outline:3px solid var(--gold);outline-offset:2px}
-.hint{font-size:12.5px;color:var(--mute);margin-top:6px}
-.btn{background:linear-gradient(180deg,#f6dc9b,#c8973f);color:#1b1204;border:0;border-radius:12px;padding:12px 24px;font:700 15px "Be Vietnam Pro",sans-serif;cursor:pointer;box-shadow:0 4px 18px rgba(232,196,121,.28)}
-.btn.ghost{background:none;color:var(--ink);border:1px solid var(--line);box-shadow:none}
-.btn:disabled{opacity:.55;cursor:wait}
-.link{background:none;border:0;color:var(--bad);cursor:pointer;font:inherit;font-size:13px;text-decoration:underline;padding:8px 0}
-.actions{display:flex;gap:10px;margin-top:20px;flex-wrap:wrap;align-items:center}
-.mannequin{position:sticky;top:12px;text-align:center}
-.mannequin svg{width:100%;max-width:270px;height:auto}
-.mannequin .stat{display:flex;justify-content:space-around;font-size:12.5px;color:var(--mute);margin-top:6px}
-.mannequin .stat b{display:block;font-size:20px;color:var(--gold)}
-.drop{border:2px dashed rgba(232,196,121,.4);border-radius:14px;padding:22px;text-align:center;color:var(--mute);cursor:pointer;background:rgba(2,14,30,.35)}
-.drop img{max-width:100%;max-height:260px;border-radius:10px}
+.acc{border:1px solid var(--line2);border-radius:14px;background:var(--field);overflow:hidden}
+.acc>button{width:100%;display:flex;align-items:center;gap:10px;background:none;border:0;padding:14px 16px;font-weight:600;font-size:14px;cursor:pointer;text-align:left}
+.acc>button:before{content:"";width:7px;height:7px;border-right:2px solid var(--gold);border-bottom:2px solid var(--gold);transform:rotate(-45deg);transition:transform .35s var(--ease);margin:0 4px 0 2px}
+.acc.open>button:before{transform:rotate(45deg)}
+.acc>button span{font-weight:400;color:var(--mute)}
+.accb{display:grid;grid-template-rows:0fr;transition:grid-template-rows .45s var(--ease)}
+.acc.open .accb{grid-template-rows:1fr}
+.accb>div{min-height:0;overflow:hidden}
+.accb .in{padding:2px 16px 16px;opacity:0;transition:opacity .35s}
+.acc.open .accb .in{opacity:1;transition-delay:.12s}
+.actions{display:flex;gap:12px;margin-top:22px;flex-wrap:wrap;align-items:center}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:48px;padding:0 30px;border:0;border-radius:99px;font-weight:700;font-size:15px;color:#08233f;cursor:pointer;background:linear-gradient(100deg,#c6ebfb 0,#a9dff5 45%,#ecdba9 100%);box-shadow:0 6px 22px rgba(127,214,245,.22);transition:transform .25s var(--ease),box-shadow .3s,filter .3s;text-decoration:none}
+.btn:hover{transform:translateY(-2px);box-shadow:0 10px 28px rgba(160,225,250,.34)}
+.btn:active{transform:scale(.97)}
+.btn.ghost{background:rgba(3,18,36,.7);color:var(--ink);border:1px solid var(--line2);box-shadow:none}
+.btn.ghost:hover{border-color:var(--gold)}
+.btn:disabled{opacity:.55;cursor:wait;transform:none}
+.link{background:none;border:0;color:var(--bad);cursor:pointer;font-size:13px;text-decoration:underline;padding:8px 2px}
+/* ---------- Sân khấu mô hình / ảnh ---------- */
+.stage{position:sticky;top:12px;background:var(--panel);border:1px solid var(--line);border-radius:22px;padding:14px;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);box-shadow:0 14px 50px rgba(0,8,20,.5),inset 0 1px 0 rgba(255,255,255,.06)}
+.stbody{position:relative;margin-top:12px;aspect-ratio:300/470;border-radius:16px;overflow:hidden;background:radial-gradient(ellipse at 50% 20%,rgba(120,200,240,.14),rgba(3,18,36,.35) 70%);border:1px solid var(--line2)}
+.stbody>*{position:absolute;inset:0;width:100%;height:100%;transition:opacity .45s var(--ease),transform .45s var(--ease)}
+.stbody .off{opacity:0;transform:scale(.97);pointer-events:none}
+#man{display:block}
+.stat{display:grid;grid-template-columns:repeat(3,1fr);text-align:center;font-size:12px;color:var(--mute);margin-top:12px;gap:6px}
+.stat b{display:block;font:700 20px/1.2 "Cormorant Garamond",serif;color:var(--gold)}
+.stat b.sm{font-size:15px;padding-top:3px}
+.drop{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;border:1.5px dashed rgba(127,214,245,.45);border-radius:18px;padding:18px;text-align:center;color:var(--aqua);font-size:13.5px;cursor:pointer;background:linear-gradient(180deg,rgba(20,90,130,.38),rgba(6,36,62,.5));transition:border-color .3s,background .3s,transform .3s var(--ease)}
+.drop:hover,.drop.over{border-color:var(--gold);transform:translateY(-1px)}
+.drop svg{width:26px;height:26px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.drop.tall{aspect-ratio:3/4}.drop.short{min-height:110px;margin-top:14px}
+.drop.stbd{border:0;border-radius:0;background:rgba(6,40,66,.5)}
+.drop.has{padding:0;border-style:solid;overflow:hidden}
+.drop img{width:100%;height:100%;object-fit:cover;display:block;animation:in .45s var(--ease)}
+.drop .x{position:absolute;top:8px;right:8px;width:30px;height:30px;border-radius:50%;border:0;background:rgba(2,12,26,.78);color:#fff;cursor:pointer;font-size:16px;line-height:1;transition:background .25s}
+.drop .x:hover{background:#b3394a}
+.hist{margin-top:8px}
+/* ---------- Kết quả ---------- */
+.res{background:var(--panel);border:1px solid var(--line);border-radius:22px;padding:24px;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);box-shadow:0 14px 50px rgba(0,8,20,.45)}
 .size-big{font:700 84px/1 "Cormorant Garamond",Georgia,serif;display:inline-block}
 .rthumb{float:right;width:96px;aspect-ratio:3/4;object-fit:cover;border-radius:12px;border:1px solid var(--line);margin:0 0 8px 12px}
-.meter{display:flex;height:9px;border-radius:99px;overflow:hidden;background:rgba(255,255,255,.12);margin:10px 0;clear:both}
-.meter div{background:linear-gradient(90deg,var(--aqua),var(--ok))}
+.meter{height:9px;border-radius:99px;overflow:hidden;background:rgba(255,255,255,.12);margin:10px 0;clear:both}
+.meter div{height:100%;background:linear-gradient(90deg,var(--aqua),var(--ok));transform-origin:left;animation:grow 1s var(--ease) both .15s}
+@keyframes grow{from{transform:scaleX(0)}}
 .tag{display:inline-block;padding:3px 11px;border-radius:99px;font-size:12.5px;font-weight:600;background:rgba(127,214,245,.15);color:var(--aqua);margin:0 6px 6px 0}
 .tag.ok{background:rgba(95,224,181,.15);color:var(--ok)}.tag.warn{background:rgba(240,168,80,.17);color:var(--warn)}
 ul.clean{padding-left:18px;margin:6px 0}
-.chat{display:flex;flex-direction:column;gap:10px;min-height:260px;max-height:55vh;overflow-y:auto;padding:4px}
-.msg{max-width:85%;padding:10px 14px;border-radius:16px;white-space:pre-wrap}
+.empty{text-align:center;color:var(--mute);padding:40px 10px}
+.compass{display:block;width:44px;height:44px;margin:0 auto 12px;fill:var(--gold);animation:spin 3s linear infinite;filter:drop-shadow(0 0 8px rgba(232,196,121,.6))}
+.tryimg{width:100%;max-width:420px;border-radius:16px;border:1px solid var(--line);display:block;animation:in .6s var(--ease)}
+input[type=range]{padding:0;height:22px;accent-color:var(--gold);background:none;border:0}
+.wrap-m canvas{width:100%;max-width:220px;border-radius:12px;border:1px solid var(--line);display:block}
+/* ---------- Stylist / Tủ đồ ---------- */
+.chatbox{background:var(--panel);border:1px solid var(--line);border-radius:22px;padding:22px;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+.chat{display:flex;flex-direction:column;gap:10px;min-height:260px;max-height:55vh;overflow-y:auto;padding:4px;scroll-behavior:smooth}
+.msg{max-width:85%;padding:10px 14px;border-radius:16px;white-space:pre-wrap;animation:in .35s var(--ease)}
 .msg.u{align-self:flex-end;background:linear-gradient(180deg,#f3d58f,#c99a4b);color:#1b1204;border-bottom-right-radius:4px}
-.msg.a{align-self:flex-start;background:rgba(2,14,30,.55);border:1px solid rgba(143,179,207,.25);border-bottom-left-radius:4px}
-.send{display:flex;gap:8px;margin-top:12px}
+.msg.a{align-self:flex-start;background:rgba(2,14,30,.55);border:1px solid var(--line2);border-bottom-left-radius:4px}
+.send{display:flex;gap:10px;margin-top:12px}.send .btn{min-height:44px;padding:0 24px}
 .wardrobe{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px}
-.item{padding:12px}
-.ph{position:relative;aspect-ratio:3/4;border-radius:12px;overflow:hidden;background:rgba(2,14,30,.6);display:flex;align-items:center;justify-content:center;color:var(--gold);font-size:34px;margin-bottom:10px;border:1px solid rgba(143,179,207,.2)}
+.item{padding:12px;background:var(--panel);border:1px solid var(--line);border-radius:18px;animation:in .45s var(--ease) both}
+.ph{position:relative;aspect-ratio:3/4;border-radius:12px;overflow:hidden;background:rgba(2,14,30,.6);display:flex;align-items:center;justify-content:center;color:var(--gold);font-size:34px;margin-bottom:10px;border:1px solid var(--line2)}
 .ph img{width:100%;height:100%;object-fit:cover}
 .ph em{position:absolute;top:8px;right:8px;font:700 20px/1 "Cormorant Garamond",serif;font-style:normal;background:linear-gradient(180deg,#f6dc9b,#c8973f);color:#1b1204;border-radius:8px;padding:4px 10px}
-.empty{text-align:center;color:var(--mute);padding:40px 10px}
-.err{color:var(--bad);font-size:13.5px;margin-top:10px}
-.tryimg{width:100%;max-width:420px;border-radius:14px;border:1px solid var(--line);display:block}
-footer{text-align:center;color:var(--mute);font-size:12.5px;padding:28px 20px 40px}
+footer{position:relative;z-index:1;text-align:center;color:var(--mute);font-size:12.5px;padding:28px 20px 40px}
 .dots span{animation:b 1s infinite;display:inline-block}.dots span:nth-child(2){animation-delay:.15s}.dots span:nth-child(3){animation-delay:.3s}
 @keyframes b{50%{opacity:.2}}
-@media(prefers-reduced-motion:reduce){.dots span,.bub{animation:none}}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}.bub,.dust,.fish,.rays{display:none}}
 </style>
 </head>
 <body>
-<div id="sea" aria-hidden="true"></div>
-<header><div class="logo gt">fitme<span class="st">✦</span>AI<small>Find your fit, follow your style</small></div></header>
-<nav class="tabs" role="tablist">
-  <button class="on" data-tab="tryon">Thử đồ</button>
-  <button data-tab="stylist">Stylist</button>
-  <button data-tab="closet">Tủ đồ</button>
-</nav>
-
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><symbol id="cs" viewBox="-12 -12 24 24"><path d="M0-11 2-2 11 0 2 2 0 11-2 2-11 0-2-2Z"/><path d="M-6.5-6.5-1-1.3 0 0-1.3-1Zm13 0L1.3-1 0 0 1 1.3Zm0 13L1 1.3 0 0 1.3 1Zm-13 0L-1 1.3 0 0-1.3 1Z" opacity=".55"/></symbol></svg>
+<div id="sea" aria-hidden="true">
+  <div class="glow"></div><div class="rays"></div><div class="rays r2"></div>
+  <div class="rw l"><div class="rock"></div></div><div class="rw r"><div class="rock"></div></div>
+  <div class="fl l"><div class="rock"></div></div><div class="fl r"><div class="rock"></div></div>
+</div>
+<div class="app">
+<header>
+  <div class="logo metal"><span>fitme</span><svg><use href="#cs"/></svg><span>AI</span><small>Find your fit, follow your style</small></div>
+  <nav class="tabs" role="tablist" aria-label="Chức năng">
+    <button class="on" data-tab="tryon"><svg viewBox="0 0 24 24"><path d="M8 3 3 6l2 4 2-1v12h10V9l2 1 2-4-5-3a4 4 0 0 1-8 0Z"/></svg>Thử đồ</button>
+    <button data-tab="stylist"><svg viewBox="0 0 24 24"><path d="M4 5h16v11H9l-5 4Z"/></svg>Stylist</button>
+    <button data-tab="closet"><svg viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M12 3v18M9 11v2M15 11v2"/></svg>Tủ đồ</button>
+  </nav>
+</header>
 <main>
 <!-- ============ THỬ ĐỒ ============ -->
 <section class="view on" id="tryon">
-  <div class="steps" id="steps"><span class="on">1 · Vóc dáng</span><span>2 · Sản phẩm</span><span>3 · Kết quả</span></div>
-  <div class="grid">
-    <div>
-      <!-- Bước 1 -->
-      <div class="card" id="s1">
-        <h1 class="gt">Mặc thử trước, mua sau</h1>
-        <p class="sub">Nhập số đo một lần là xong.</p>
-        <div class="row">
-          <div><label for="h">Chiều cao</label><div class="unit"><input id="h" type="number" min="120" max="220" placeholder="165"><i>cm</i></div></div>
-          <div><label for="w">Cân nặng</label><div class="unit"><input id="w" type="number" min="30" max="200" placeholder="55"><i>kg</i></div></div>
+  <div class="steps" id="steps"><div class="on cur">1 · Vóc dáng</div><div>2 · Sản phẩm</div><div>3 · Kết quả</div></div>
+
+  <!-- Bước 1 -->
+  <div id="s1" class="enter">
+    <h1 class="metal">Mặc thử trước, <em>mua sau</em></h1>
+    <p class="sub">Nhập số đo một lần là xong. Mô hình bên trái vẽ theo tỉ lệ cơ thể chuẩn, đổi số đo là hình đổi theo.</p>
+    <div class="s1grid">
+      <aside class="stage" aria-label="Mô hình vóc dáng">
+        <div class="seg" id="viewSeg"></div>
+        <div class="stbody">
+          <svg viewBox="0 0 300 470" id="man" role="img" aria-label="Hình người minh họa theo số đo"></svg>
+          <div class="drop stbd off" id="bdrop" tabindex="0" role="button" aria-label="Tải ảnh toàn thân"></div>
         </div>
-        <label>Giới tính</label>
-        <div class="chips" id="sexChips"></div>
-        <label>Phom dáng</label>
-        <div class="chips" id="shapeChips"></div>
-        <label>Số đo 3 vòng <span style="font-weight:400;color:var(--mute)">(không bắt buộc, tư vấn chuẩn hơn)</span></label>
-        <div class="row3">
-          <div class="unit"><input id="bust" type="number" placeholder="Ngực"><i>cm</i></div>
-          <div class="unit"><input id="waist" type="number" placeholder="Eo"><i>cm</i></div>
-          <div class="unit"><input id="hip" type="number" placeholder="Mông"><i>cm</i></div>
+        <div class="stat" id="stat"><div><b id="bmi">–</b><span id="bmiCat">BMI</span></div><div><b id="whr">–</b>Eo/Mông</div><div><b class="sm" id="shapeName">–</b>Phom</div></div>
+        <p class="hint">Hình vẽ theo tỉ lệ nhân trắc chuẩn (đầu ≈ 1/7,5 chiều cao; vai, eo, mông, chi tính theo cm thật). Thước bên trái chia mỗi 10 cm. Số có dấu ~ là ước tính từ chiều cao, cân nặng.</p>
+      </aside>
+      <div>
+        <input id="bfile" type="file" accept="image/*" hidden>
+        <div class="fields">
+          <div class="col">
+            <div><label for="h">Chiều cao</label><div class="unit"><input id="h" type="number" inputmode="decimal" min="120" max="220" placeholder="165"><i>cm</i></div></div>
+            <div><label for="w">Cân nặng</label><div class="unit"><input id="w" type="number" inputmode="decimal" min="30" max="200" placeholder="55"><i>kg</i></div></div>
+            <div><span class="lab">Giới tính</span><div id="sexSeg"></div></div>
+          </div>
+          <div class="col">
+            <div><label for="note">Ghi chú thay đổi</label><input id="note" placeholder="VD: vừa tăng 2kg, đang tập gym" maxlength="60">
+              <p class="hint hist" id="hist" hidden></p><p class="hint">Hồ sơ và lịch sử lưu trên trình duyệt này.</p></div>
+            <div><span class="lab">Tông da</span><div class="swatches" id="skinChips"></div></div>
+            <div><span class="lab">Undertone</span><div id="underSeg"></div>
+              <p class="hint">Mẹo: gân cổ tay xanh dương/tím là lạnh, xanh lục là ấm, lẫn lộn là trung tính. Chỉ dùng lựa chọn bạn xác nhận; để trống thì Stylist sẽ không đoán tông da.</p></div>
+          </div>
         </div>
-        <p class="hint">Hồ sơ và lịch sử lưu trên trình duyệt này. Ảnh của bạn chỉ được gửi đi khi bạn bấm “Mặc thử bằng AI”.</p>
-        <label>Tông da</label>
-        <div class="chips" id="skinChips"></div>
-        <label>Undertone</label>
-        <div class="chips" id="underChips"></div>
-        <p class="hint">Mẹo: gân cổ tay xanh dương/tím là lạnh, xanh lục là ấm, lẫn lộn là trung tính. Chỉ dùng lựa chọn bạn xác nhận; để trống thì Stylist sẽ không đoán tông da.</p>
+        <div class="acc" id="acc" style="margin-top:20px">
+          <button type="button" id="accBtn" aria-expanded="false" aria-controls="accIn">Số đo 3 vòng <span>(không bắt buộc, tư vấn chuẩn hơn)</span></button>
+          <div class="accb" id="accIn" inert><div><div class="in">
+            <div class="row3">
+              <div class="unit"><input id="bust" type="number" inputmode="decimal" placeholder="Ngực" aria-label="Vòng ngực"><i>cm</i></div>
+              <div class="unit"><input id="waist" type="number" inputmode="decimal" placeholder="Eo" aria-label="Vòng eo"><i>cm</i></div>
+              <div class="unit"><input id="hip" type="number" inputmode="decimal" placeholder="Mông" aria-label="Vòng mông"><i>cm</i></div>
+            </div>
+            <span class="lab" style="margin-top:16px">Phom dáng</span><div class="chips" id="shapeChips"></div>
+            <p class="hint">Để trống thì hình vẽ tự ước tính. Nhập đủ 3 vòng, phom sẽ được gợi ý tự động.</p>
+          </div></div></div>
+        </div>
         <div class="actions">
           <button class="btn" id="to2">Tiếp tục</button>
           <button class="link" id="wipe">Xóa toàn bộ dữ liệu của tôi</button>
         </div>
-        <div class="err" id="e1"></div>
+        <div class="err" id="e1" role="alert"></div>
       </div>
+    </div>
+  </div>
 
-      <!-- Bước 2 -->
-      <div class="card" id="s2" hidden>
-        <h1 class="gt">Chọn sản phẩm</h1>
-        <p class="sub">Tải ảnh sản phẩm (có thể dán Ctrl+V). AI đọc ảnh để biết loại đồ, chất liệu, form. Ảnh món đồ rõ, nền sạch sẽ cho ảnh mặc thử đẹp hơn.</p>
-        <label for="link">Link món 1 (tùy chọn)</label>
-        <input id="link" type="url" placeholder="https://shopee.vn/...">
-        <p class="hint">Các sàn chặn đọc link tự động, nên AI sẽ đọc từ ảnh của bạn.</p>
-        <label>Món 1: ảnh sản phẩm / bảng size (áo, đầm...)</label>
+  <!-- Bước 2 -->
+  <div id="s2" hidden>
+    <h1 class="metal">Chọn món <em>muốn thử</em></h1>
+    <p class="sub">Tải ảnh sản phẩm trên Shopee, TikTok Shop hoặc Instagram (có thể dán Ctrl+V). Ảnh món đồ rõ, nền sạch cho ảnh mặc thử đẹp hơn.</p>
+    <div class="s1grid s2grid">
+      <div>
         <input id="file" type="file" accept="image/*" hidden>
-        <div class="drop" id="drop" tabindex="0">Nhấn để chọn ảnh hoặc kéo thả vào đây</div>
-        <label>Món 2: quần hoặc váy <span style="font-weight:400;color:var(--mute)">(không bắt buộc, để mặc thử cả bộ)</span></label>
+        <div class="drop tall" id="drop" tabindex="0" role="button" aria-label="Tải ảnh món 1"></div>
         <input id="file2" type="file" accept="image/*" hidden>
-        <div class="drop" id="drop2" tabindex="0">Thêm ảnh quần/váy nếu muốn mặc thử cả bộ</div>
-        <label>Ảnh toàn thân của bạn <span style="font-weight:400;color:var(--mute)">(để xem mặc thử, không bắt buộc)</span></label>
-        <input id="bfile" type="file" accept="image/*" hidden>
-        <div class="drop" id="bdrop" tabindex="0">Chọn ảnh đứng thẳng, chính diện, thấy rõ toàn thân</div>
-        <label for="chart">Bảng size món 1 (nếu có)</label>
-        <textarea id="chart" rows="4" placeholder="VD: S: ngực 84-88, eo 66-70 | M: ngực 88-92, eo 70-74 ..."></textarea>
-        <label for="chart2">Bảng size món 2 (nếu có)</label>
-        <textarea id="chart2" rows="3" placeholder="VD: 28: eo 66-70, mông 90-94 | 29: eo 70-74, mông 94-98 ..."></textarea>
-        <div class="actions">
+        <div class="drop short" id="drop2" tabindex="0" role="button" aria-label="Tải ảnh món 2"></div>
+      </div>
+      <div>
+        <div class="col">
+          <div><label for="link">Link sản phẩm (tùy chọn)</label><input id="link" type="url" placeholder="Dán link để ghi nhớ"><p class="hint">Các sàn chặn đọc link tự động, nên AI sẽ đọc từ ảnh của bạn.</p></div>
+          <div><label for="chart">Bảng size món 1 (nếu có)</label><textarea id="chart" rows="3" placeholder="VD: S: ngực 84-88, eo 66-70 | M: ngực 88-92, eo 70-74 ..."></textarea></div>
+          <div><label for="chart2">Bảng size món 2: quần/váy (nếu có)</label><textarea id="chart2" rows="3" placeholder="VD: 28: eo 66-70, mông 90-94 | 29: eo 70-74, mông 94-98 ..."></textarea></div>
+          <p class="hint">Món 1 là áo/đầm. Thêm món 2 (quần/váy) nếu muốn mặc thử cả bộ. Khi bấm “Thử đồ ngay”, ảnh sản phẩm và số đo được gửi tới Cloudflare Workers AI để gợi ý size; ảnh toàn thân của bạn chỉ gửi đi khi bạn bấm “Mặc thử bằng AI”.</p>
+        </div>
+        <div class="actions" style="flex-direction:column;align-items:stretch;max-width:340px">
           <button class="btn" id="go">Thử đồ ngay</button>
           <button class="btn ghost" id="back1">Quay lại</button>
         </div>
-        <div class="err" id="e2"></div>
-      </div>
-
-      <!-- Bước 3 -->
-      <div class="card" id="s3" hidden>
-        <div id="loading" class="empty" hidden>AI đang phân tích<span class="dots"><span>.</span><span>.</span><span>.</span></span></div>
-        <div id="result"></div>
-        <div id="fit" hidden>
-          <label>Bạn mặc món này trông thế nào?</label>
-          <div id="maskBox" hidden>
-            <p class="hint" style="margin:0 0 6px">Vùng tô đỏ là chỗ AI sẽ vẽ quần/váy. Kéo cho phủ từ eo tới cổ chân, chừa giày ra.</p>
-            <canvas id="mprev" style="width:100%;max-width:220px;border-radius:10px;border:1px solid var(--line);display:block"></canvas>
-            <label for="mTop">Từ eo trở xuống</label><input id="mTop" type="range" min="25" max="60" value="38">
-            <label for="mBot">Đến cổ chân</label><input id="mBot" type="range" min="70" max="99" value="90">
-          </div>
-          <button class="btn" id="aiBtn" type="button" style="margin-top:12px">Mặc thử bằng AI (miễn phí)</button>
-          <div id="aiOut" style="margin:14px 0"></div>
-          <p class="hint">Ảnh do AI tạo, chỉ để hình dung kiểu dáng và màu sắc, không cho biết có vừa size hay không. Hãy chọn size theo gợi ý ở trên. Mô hình miễn phí làm tốt nhất với áo và đầm. Khi ghép cả bộ, AI mặc lần lượt từng món nên lâu hơn, còn quần/váy được mặc vào vùng từ eo xuống chân, ước lượng theo ảnh đứng thẳng thấy đủ chân.</p>
-        </div>
-        <div class="err" id="e4"></div>
-        <div class="actions"><button class="btn ghost" id="again">Thử món khác</button><button class="btn" id="save">Lưu vào tủ đồ</button></div>
+        <div class="err" id="e2" role="alert"></div>
       </div>
     </div>
+  </div>
 
-    <aside class="card mannequin" aria-label="Hình minh họa vóc dáng">
-      <svg viewBox="0 0 270 440" id="man" role="img" aria-label="Hình người minh họa"></svg>
-      <div class="stat"><div><b id="bmi">–</b><span id="bmiCat">BMI</span></div><div><b id="shapeName">–</b>Phom</div></div>
-    </aside>
+  <!-- Bước 3 -->
+  <div id="s3" hidden>
+    <div class="res">
+      <div id="loading" class="empty" hidden><svg class="compass"><use href="#cs"/></svg>AI đang phân tích<span class="dots"><span>.</span><span>.</span><span>.</span></span></div>
+      <div id="result"></div>
+      <div id="fit" hidden>
+        <label style="margin-top:18px">Bạn mặc món này trông thế nào?</label>
+        <div id="maskBox" class="wrap-m" hidden>
+          <p class="hint" style="margin:0 0 6px">Vùng tô đỏ là chỗ AI sẽ vẽ quần/váy. Kéo cho phủ từ eo tới cổ chân, chừa giày ra.</p>
+          <canvas id="mprev"></canvas>
+          <label for="mTop" style="margin-top:10px">Từ eo trở xuống</label><input id="mTop" type="range" min="25" max="60" value="38">
+          <label for="mBot">Đến cổ chân</label><input id="mBot" type="range" min="70" max="99" value="90">
+        </div>
+        <button class="btn" id="aiBtn" type="button" style="margin-top:14px">Mặc thử bằng AI (miễn phí)</button>
+        <div id="aiOut" style="margin:14px 0"></div>
+        <p class="hint">Ảnh do AI tạo, chỉ để hình dung kiểu dáng và màu sắc, không cho biết có vừa size hay không. Hãy chọn size theo gợi ý ở trên. Mô hình miễn phí làm tốt nhất với áo và đầm. Khi ghép cả bộ, AI mặc lần lượt từng món nên lâu hơn, còn quần/váy được mặc vào vùng từ eo xuống chân, ước lượng theo ảnh đứng thẳng thấy đủ chân.</p>
+      </div>
+      <div class="err" id="e4" role="alert"></div>
+      <div class="actions"><button class="btn ghost" id="again">Thử món khác</button><button class="btn" id="save">Lưu vào tủ đồ</button></div>
+    </div>
   </div>
 </section>
 
 <!-- ============ STYLIST ============ -->
 <section class="view" id="stylist">
-  <div class="card">
-    <h1 class="gt">Stylist AI</h1>
+  <div class="chatbox">
+    <h1 class="metal">Stylist <em>AI</em></h1>
     <p class="sub">Hỏi phối đồ, màu hợp, đi tiệc/đi làm mặc gì. Stylist dựa trên hồ sơ của bạn.</p>
-    <div class="chips" id="quick" style="margin-bottom:12px"></div>
-    <div class="chat" id="chat"></div>
-    <div class="send"><input id="q" placeholder="Hỏi Stylist..." aria-label="Câu hỏi"><button class="btn" id="ask">Gửi</button></div>
+    <div class="chips" id="quick" style="margin-bottom:14px"></div>
+    <div class="chat" id="chat" aria-live="polite"></div>
+    <div class="send"><input id="q" placeholder="Hỏi Stylist..." aria-label="Câu hỏi" maxlength="500"><button class="btn" id="ask">Gửi</button></div>
     <button class="link" id="clr" style="color:var(--mute)">Xóa cuộc trò chuyện</button>
-    <div class="err" id="e3"></div>
+    <div class="err" id="e3" role="alert"></div>
   </div>
 </section>
 
 <!-- ============ TỦ ĐỒ ============ -->
 <section class="view" id="closet">
-  <h1 class="gt" style="margin-bottom:14px">Tủ đồ</h1>
+  <h1 class="metal" style="margin-bottom:16px">Tủ <em>đồ</em></h1>
   <div class="wardrobe" id="wardrobe"></div>
 </section>
 </main>
+</div>
 <footer>✦ Be yourself · FitMe AI</footer>
 <script>
 // Trang và API chạy chung một Worker nên dùng đường dẫn tương đối
@@ -212,6 +317,7 @@ const API_BASE = location.hostname.endsWith(".workers.dev") ? "" : "https://yell
 const WORKER_URL = API_BASE + "/api/chat";
 
 const $ = s => document.querySelector(s);
+const REDUCE = matchMedia("(prefers-reduced-motion: reduce)").matches;
 const mem = {};
 const store = {
   get(k, d){ if (k in mem) return mem[k]; try{ const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; }catch{ return d; } },
@@ -219,159 +325,330 @@ const store = {
   del(k){ delete mem[k]; try{ localStorage.removeItem(k); }catch{} }
 };
 const SHAPES = ["Quả lê","Đồng hồ cát","Chữ nhật","Tam giác ngược","Quả táo"];
-const SKINS = [["Sáng","#f6d9c3"],["Trung bình","#e0b48f"],["Ngăm","#b9805a"],["Nâu đậm","#7a4a32"]];
-const UNDERS = ["Lạnh","Ấm","Trung tính","Chưa chắc"];
-const SEXES = ["Nữ","Nam"];
-let P = Object.assign({h:"",w:"",bust:"",waist:"",hip:"",sex:"",shape:"",skin:"",under:""}, store.get("fm_profile", {}));
+const SKINS = [["Rất sáng","#f8e0d0"],["Sáng","#efc9ab"],["Trung bình","#deae88"],["Rám","#c68e65"],["Ngăm","#9c6a47"],["Nâu đậm","#6b4430"]];
+const UNDERS = ["Ấm","Lạnh","Trung tính"];
+const SEXES = ["Nữ","Nam","Unisex"];
+let P = Object.assign({h:"",w:"",bust:"",waist:"",hip:"",sex:"",shape:"",skin:"",under:"",note:""}, store.get("fm_profile", {}));
+let HIST = store.get("fm_hist", []);
 let img = null, thumb = null, img2 = null, thumb2 = null, body = null, busy = false, last = null, history = store.get("fm_chat", []);
 
-/* ---------- Tabs ---------- */
+/* ---------- Đáy biển: bong bóng, bụi sáng, cá ---------- */
+(function(){
+  const sea = $("#sea"), small = innerWidth < 700, rnd = (a, b) => a + Math.random()*(b-a);
+  for (let i = 0; i < (small ? 11 : 22); i++){
+    const w = document.createElement("span"), b = document.createElement("i"), z = rnd(6, 20);
+    w.className = "bub"; w.style.cssText = `left:${rnd(0,100)}%;--d:${rnd(15,32)}s;animation-delay:-${rnd(0,30)}s;opacity:${rnd(.4,.9)}`;
+    b.style.setProperty("--z", z + "px"); b.style.animationDuration = rnd(3,6) + "s"; w.appendChild(b); sea.appendChild(w);
+  }
+  for (let i = 0; i < (small ? 10 : 20); i++){
+    const e = document.createElement("i"); e.className = "dust";
+    e.style.cssText = `left:${rnd(0,100)}%;top:${rnd(5,90)}%;animation-duration:${rnd(5,10)}s;animation-delay:-${rnd(0,8)}s`; sea.appendChild(e);
+  }
+  for (let i = 0; i < (small ? 3 : 6); i++){
+    const s = document.createElementNS("http://www.w3.org/2000/svg", "svg"); s.setAttribute("viewBox", "0 0 40 16"); s.setAttribute("class", "fish");
+    s.innerHTML = '<path d="M0 8C8 0 22 0 30 8 22 16 8 16 0 8ZM30 8 40 1 38 8 40 15Z"/>';
+    s.style.cssText = `top:${rnd(30,72)}%;animation-duration:${rnd(55,95)}s;animation-delay:-${rnd(0,60)}s;transform:scale(${rnd(.7,1.3)})`; sea.appendChild(s);
+  }
+})();
+
+/* ---------- Tabs & bước ---------- */
 document.querySelectorAll("nav.tabs button").forEach(b => b.onclick = () => {
   document.querySelectorAll("nav.tabs button").forEach(x => x.classList.toggle("on", x === b));
   document.querySelectorAll(".view").forEach(v => v.classList.toggle("on", v.id === b.dataset.tab));
   if (b.dataset.tab === "closet") renderCloset();
+  if (b.dataset.tab === "stylist") drawChat();
 });
+let curStep = 1;
 function step(n){
-  ["s1","s2","s3"].forEach((id,i) => $("#"+id).hidden = i+1 !== n);
-  [...$("#steps").children].forEach((s,i) => s.classList.toggle("on", i+1 === n));
-  window.scrollTo({top:0});
+  curStep = n;
+  ["s1","s2","s3"].forEach((id, i) => { const el = $("#"+id), on = i+1 === n; el.hidden = !on; if (on){ el.classList.remove("enter"); void el.offsetWidth; el.classList.add("enter"); } });
+  [...$("#steps").children].forEach((s, i) => { s.classList.toggle("on", i < n); s.classList.toggle("cur", i+1 === n); });
+  window.scrollTo({top:0, behavior: REDUCE ? "auto" : "smooth"});
 }
 
-/* ---------- Biển ---------- */
-(function(){const sea=$("#sea");for(let i=0;i<16;i++){const e=document.createElement("i");e.className="bub";const z=6+Math.random()*16;e.style.cssText=`left:${Math.random()*100}%;width:${z}px;height:${z}px;animation-duration:${14+Math.random()*18}s;animation-delay:-${Math.random()*20}s;opacity:${.4+Math.random()*.5}`;sea.appendChild(e);}})();
-
-/* ---------- Hồ sơ ---------- */
-function chips(el, items, key, colors){
+/* ---------- Điều khiển: segmented, chips, swatches, accordion ---------- */
+function seg(el, items, key, onChange){
+  el.className = "seg";
+  el.innerHTML = '<i class="ind"></i>' + items.map(t => `<button type="button">${t}</button>`).join("");
+  const btns = [...el.querySelectorAll("button")], ind = el.querySelector(".ind");
+  const sync = () => {
+    const i = items.indexOf(P[key]);
+    btns.forEach((b, j) => { b.classList.toggle("on", j === i); b.setAttribute("aria-pressed", j === i); });
+    ind.style.opacity = i < 0 ? 0 : 1; ind.style.width = `calc((100% - 6px) / ${items.length})`; ind.style.transform = `translateX(${Math.max(i,0)*100}%)`;
+  };
+  btns.forEach((b, i) => b.onclick = () => { P[key] = P[key] === items[i] ? "" : items[i]; sync(); (onChange || persist)(); });
+  sync(); return sync;
+}
+function chips(el, items, key){
   el.innerHTML = "";
-  items.forEach(it => {
-    const name = colors ? it[0] : it;
-    const b = document.createElement("button");
-    b.type = "button";
-    if (colors){ b.className = "swatch"; b.style.background = it[1]; b.title = name; b.setAttribute("aria-label", name); }
-    else { b.className = "chip"; b.textContent = name; }
-    if (P[key] === name) b.classList.add("on");
-    b.onclick = () => { P[key] = P[key] === name ? "" : name; chips(el, items, key, colors); persist(); };
+  items.forEach(name => {
+    const b = document.createElement("button"); b.type = "button"; b.className = "chip" + (P[key] === name ? " on" : ""); b.textContent = name; b.setAttribute("aria-pressed", P[key] === name);
+    b.onclick = () => { P[key] = P[key] === name ? "" : name; el.querySelectorAll(".chip").forEach(c => { const on = c.textContent === P[key]; c.classList.toggle("on", on); c.setAttribute("aria-pressed", on); }); persist(); };
     el.appendChild(b);
   });
 }
-function readForm(){ ["h","w","bust","waist","hip"].forEach(k => P[k] = $("#"+k).value); }
-function persist(){ readForm(); store.set("fm_profile", P); drawMan(); }
-["h","w","bust","waist","hip"].forEach(k => { $("#"+k).value = P[k]; $("#"+k).addEventListener("input", persist); });
-chips($("#sexChips"), SEXES, "sex");
-chips($("#shapeChips"), SHAPES, "shape");
-chips($("#skinChips"), SKINS, "skin", true);
-chips($("#underChips"), UNDERS, "under");
-
-function drawMan(){
-  const h = +P.h || 165, w = +P.w || 55, bmi = w / ((h/100)**2), m = P.sex === "Nam", sp = P.shape;
-  const d = Math.max(-4, Math.min(10, bmi - 21)), s = 400 / h, cx = 120, cl = (v,a,b) => Math.max(a, Math.min(b, v));
-  let B = +P.bust, W = +P.waist, H = +P.hip; const gB = !B, gW = !W, gH = !H;
-  if (gB) B = (m?94:84) + d*3.2 + (sp==="Tam giác ngược"?5:sp==="Quả lê"?-3:0);
-  if (gW) W = (m?80:66) + d*3.4 + (sp==="Đồng hồ cát"?-6:sp==="Quả táo"?10:sp==="Chữ nhật"?4:0);
-  if (gH) H = (m?95:92) + d*2.8 + (sp==="Quả lê"?7:sp==="Tam giác ngược"?-4:sp==="Đồng hồ cát"?3:0);
-  const bw = cl(B*.155*s,26,58), ww = cl(W*.16*s,20,56), hw = cl(H*.17*s,28,60);
-  const sw = cl(45*(m?1.1:1)*(sp==="Tam giác ngược"?1.1:sp==="Quả lê"?.94:1),36,60);
-  const ut = cl(13+d*.8,10,20), nw = m?9:7.5, wt = 9, T = hw-2;
-  const kw = hw*.62, kt = T*.55, aw = hw*.4, at = T*.28;
-  const sk = (SKINS.find(x => x[0] === P.skin) || [,"#d9b99b"])[1];
-  const ax = cx-sw, e = ax-ut-8, ei = e+ut*.75, wo = ax-ut-20;
-  const torso = `M${cx-nw} 84 C${cx-nw} 93 ${cx-sw} 92 ${cx-sw} 102 C${cx-sw+2} 120 ${cx-bw} 126 ${cx-bw} 146 C${cx-bw} 166 ${cx-ww} 176 ${cx-ww} 192 C${cx-ww} 214 ${cx-hw} 222 ${cx-hw} 246 L${cx+hw} 246 C${cx+hw} 222 ${cx+ww} 214 ${cx+ww} 192 C${cx+ww} 176 ${cx+bw} 166 ${cx+bw} 146 C${cx+bw} 126 ${cx+sw-2} 120 ${cx+sw} 102 C${cx+sw} 92 ${cx+nw} 93 ${cx+nw} 84 Z`;
-  const leg = `M${cx-hw} 240 C${cx-hw} 290 ${cx-kw} 308 ${cx-kw} 346 C${cx-kw} 378 ${cx-aw} 396 ${cx-aw} 414 L${cx-aw+at} 414 C${cx-aw+at} 392 ${cx-kw+kt} 376 ${cx-kw+kt} 346 C${cx-kw+kt} 304 ${cx-2} 282 ${cx-2} 250 Z`;
-  const arm = `M${ax+5} 98 C${ax-3} 100 ${ax-ut+1} 114 ${ax-ut} 142 C${ax-ut-2} 166 ${e+2} 180 ${e} 197 C${e-3} 222 ${wo+2} 240 ${wo} 262 L${wo+wt} 262 C${wo+wt+2} 240 ${ei-1} 222 ${ei} 197 C${ei+2} 178 ${cx-bw-3} 168 ${cx-bw+1} 142 C${cx-bw-2} 120 ${ax+12} 104 ${ax+5} 98 Z`;
-  const mir = `transform="translate(${2*cx},0) scale(-1,1)"`, hair = m ? "#241914" : "#2a1c16";
-  const guide = (y, t, v, g) => `<line x1="${cx+sw+6}" x2="262" y1="${y}" y2="${y}" stroke="#e8c479" stroke-opacity=".55" stroke-dasharray="2 3" stroke-width=".8"/><text x="266" y="${y-3}" text-anchor="end" font-size="8.5" fill="#e8c479" font-family="sans-serif">${t} ${g?"~":""}${Math.round(v)}</text>`;
-  $("#man").innerHTML = `<defs>
-    <linearGradient id="sk" x1="0" x2="1"><stop offset="0" stop-color="${sk}"/><stop offset="1" stop-color="${sk}"/></linearGradient>
-    <linearGradient id="sh" x1="0" x2="1"><stop offset="0" stop-color="#fff" stop-opacity=".2"/><stop offset=".45" stop-color="#fff" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".3"/></linearGradient>
-    <radialGradient id="fl" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#7fd6f5" stop-opacity=".35"/><stop offset="1" stop-color="#7fd6f5" stop-opacity="0"/></radialGradient>
-    <path id="pt" d="${torso}"/><path id="pl" d="${leg}"/><path id="pa" d="${arm}"/>
-    <clipPath id="bc"><use href="#pt"/><use href="#pl"/><use href="#pl" ${mir}/></clipPath></defs>
-  <ellipse cx="${cx}" cy="420" rx="95" ry="12" fill="url(#fl)"/>
-  ${m ? "" : `<path d="M${cx-23} 40 C${cx-27} 12 ${cx+27} 12 ${cx+23} 40 C${cx+29} 80 ${cx+25} 112 ${cx+20} 126 L${cx-20} 126 C${cx-25} 112 ${cx-29} 80 ${cx-23} 40 Z" fill="${hair}"/>`}
-  <g fill="url(#sk)"><use href="#pa"/><use href="#pa" ${mir}/><use href="#pl"/><use href="#pl" ${mir}/>
-    <ellipse cx="${wo+wt/2}" cy="272" rx="6.5" ry="10"/><ellipse cx="${2*cx-wo-wt/2}" cy="272" rx="6.5" ry="10"/>
-    <ellipse cx="${cx-aw+at/2-5}" cy="416" rx="${at*.5+7}" ry="5.5"/><ellipse cx="${cx+aw-at/2+5}" cy="416" rx="${at*.5+7}" ry="5.5"/>
-    <use href="#pt"/><rect x="${cx-nw}" y="62" width="${nw*2}" height="30" rx="4"/><ellipse cx="${cx}" cy="46" rx="20" ry="25"/></g>
-  <g clip-path="url(#bc)"><rect x="0" y="0" width="270" height="440" fill="url(#sh)"/>
-    <rect x="0" y="${m?112:110}" width="270" height="${m?90:86}" fill="#0b2a4d"/><rect x="0" y="${m?112:110}" width="270" height="2" fill="#e8c479"/>
-    <rect x="0" y="${m?236:238}" width="270" height="${m?58:42}" fill="#0b2a4d"/><rect x="0" y="${m?292:278}" width="270" height="2" fill="#e8c479"/></g>
-  <path d="M${cx-21} 46 C${cx-22} 16 ${cx+22} 16 ${cx+21} 46 C${cx+14} 30 ${cx-8} 28 ${cx-21} 46 Z" fill="${hair}"/>
-  <path d="M${cx-8} 60 Q${cx} 64 ${cx+8} 60" stroke="#00000033" stroke-width="1.2" fill="none"/>
-  ${guide(146,"Ngực",B,gB)}${guide(192,"Eo",W,gW)}${guide(236,"Mông",H,gH)}`;
-  $("#bmi").textContent = P.h && P.w ? bmi.toFixed(1) : "–";
-  $("#bmiCat").textContent = P.h && P.w ? (bmi<18.5?"Nhẹ cân":bmi<23?"Cân đối":bmi<25?"Hơi đầy đặn":"Đầy đặn") : "BMI";
-  $("#shapeName").textContent = P.shape || "–";
+function swatches(el){
+  el.innerHTML = "";
+  SKINS.forEach(([name, col]) => {
+    const b = document.createElement("button"); b.type = "button"; b.className = "swatch" + (P.skin === name ? " on" : ""); b.style.background = col; b.title = name; b.setAttribute("aria-label", "Tông da " + name); b.setAttribute("aria-pressed", P.skin === name);
+    b.onclick = () => { P.skin = P.skin === name ? "" : name; [...el.children].forEach(c => { const on = c.title === P.skin; c.classList.toggle("on", on); c.setAttribute("aria-pressed", on); }); persist(); };
+    el.appendChild(b);
+  });
 }
-drawMan();
+$("#accBtn").onclick = () => { const o = $("#acc").classList.toggle("open"); $("#accBtn").setAttribute("aria-expanded", o); $("#accIn").inert = !o; };
+
+/* ---------- Hồ sơ & lịch sử cân nặng ---------- */
+const FIELDS = ["h","w","bust","waist","hip"];
+function histText(){ return HIST.slice(0, 4).map(x => `${x.d} · ${x.w}kg${x.n ? " (" + x.n + ")" : ""}`).join(" | "); }
+function showHist(){ const el = $("#hist"), t = histText(); el.hidden = !t; el.textContent = t ? "Lịch sử: " + t : ""; }
+let saveT = 0;
+function persist(){
+  FIELDS.forEach(k => P[k] = $("#"+k).value); P.note = $("#note").value;
+  clearTimeout(saveT); saveT = setTimeout(() => store.set("fm_profile", P), 200);
+  updateMan();
+}
+FIELDS.forEach(k => { $("#"+k).value = P[k]; $("#"+k).addEventListener("input", persist); });
+$("#note").value = P.note || ""; $("#note").addEventListener("input", persist);
+const syncSex = seg($("#sexSeg"), SEXES, "sex");
+seg($("#underSeg"), UNDERS, "under");
+chips($("#shapeChips"), SHAPES, "shape");
+swatches($("#skinChips"));
+showHist();
+if (P.bust || P.waist || P.hip || P.shape) $("#accBtn").click();
+
+/* ---------- Mô hình 2D: số đo → hình, chuyển động mượt ---------- */
+/*MAN-START*/
+const SC = 2, CX = 150, FLOOR = 452;   // 2 px = 1 cm; sàn y=452; thước 0–220 cm
+const f1 = n => Math.round(n * 10) / 10;
+const lerp = (a, b, t) => a + (b - a) * t, cl = (v, a, b) => Math.max(a, Math.min(b, v));
+// Catmull-Rom -> Bezier: đường cong trơn đi qua các điểm mốc
+function cr(P){ let d = ""; for (let i = 0; i < P.length - 1; i++){ const a = P[i-1] || P[i], b = P[i], c = P[i+1], e = P[i+2] || c;
+  d += `C${f1(b[0]+(c[0]-a[0])/6)} ${f1(b[1]+(c[1]-a[1])/6)} ${f1(c[0]-(e[0]-b[0])/6)} ${f1(c[1]-(e[1]-b[1])/6)} ${f1(c[0])} ${f1(c[1])}`; } return d; }
+// Dải có bề rộng thay đổi dọc theo đường tâm (dùng vẽ tay)
+function ribbon(C, W){ const L = [], R = [];
+  C.forEach((p, i) => { const a = C[Math.max(0, i-1)], b = C[Math.min(C.length-1, i+1)], dx = b[0]-a[0], dy = b[1]-a[1], n = Math.hypot(dx, dy) || 1, nx = dy/n, ny = -dx/n;
+    L.push([p[0]+nx*W[i], p[1]+ny*W[i]]); R.push([p[0]-nx*W[i], p[1]-ny*W[i]]); });
+  R.reverse();
+  return `M${f1(L[0][0])} ${f1(L[0][1])}` + cr(L) + `L${f1(R[0][0])} ${f1(R[0][1])}` + cr(R) + "Z"; }
+
+// p: h (cm), B/W/Hp (vòng ngực/eo/mông, cm), sx (0 nữ … 1 nam), d (độ đầy đặn theo BMI), shK (hệ số vai), sk [r,g,b], gB/gW/gH (ước tính?)
+function manSVG(p){
+  const h = p.h, m = p.sx, d = p.d, y = f => FLOOR - f*h*SC, hf = cm => cm*SC/2;
+  // bề ngang (nửa) tính từ vòng đo: chu vi × hệ số mặt cắt elip
+  const bw = hf(p.B*.32), ww = hf(p.W*.355), hw = hf(p.Hp*.345);
+  const sw = hf(h*lerp(.232, .255, m)*p.shK + d*.35), nw = hf(lerp(9.6, 11.4, m) + d*.25);
+  const bF = lerp(.715, .725, m), wF = lerp(.628, .618, m);
+  // mốc cơ thể theo tỉ lệ Drillis–Contini (phần trăm chiều cao): cằm .870, vai .818, ngực .72, eo .62, mông .53, đáy chậu .47, gối .285, mắt cá .039
+  const T = [[nw, y(.887)], [nw*1.02, y(.855)], [lerp(nw, sw, .5), y(.84)], [sw*.97, y(.822)], [bw*1.07, y(.775)], [bw, y(bF)],
+    [lerp(bw, ww, .55), y(.668)], [ww, y(wF)], [lerp(ww, hw, .55), y(.575)], [hw, y(.528)], [hw*.985, y(.495)]];
+  const LG = [[.47,.50,.50],[.40,.48,.45],[.33,.45,.38],[.285,.43,.335],[.20,.42,.31],[.11,.40,.22],[.042,.385,.20]]; // [độ cao, tâm, nửa rộng] theo nửa mông
+  const gap = .25*SC;
+  const out = [...T, ...LG.map(([f, c, w]) => [(c+w)*hw, y(f)])];
+  const inn = LG.map(([f, c, w]) => [Math.max(gap, (c-w)*hw), y(f)]).reverse();
+  const Ax = out[out.length-1][0], Ix = inn[0][0];
+  const body = `M0 ${f1(out[0][1])}L${f1(nw)} ${f1(out[0][1])}` + cr(out) + `L${f1(Ax)} ${f1(y(.012))}L${f1(Ix)} ${f1(y(.012))}L${f1(Ix)} ${f1(y(.042))}` + cr(inn) + `L0 ${f1(y(.47))}Z`;
+
+  // tay
+  const topD = lerp(8.6, 10.6, m) + d*.5, elbD = topD*.8, foreD = topD*.86, wrD = lerp(4.8, 5.8, m) + d*.12, handW = lerp(7, 8.4, m), R0 = topD*SC/2;
+  const th = .09 + m*.03 + Math.max(0, d)*.005, Sx = sw - R0, Sy = y(.806), Ey = y(.63), Wy = y(.485), Ty = y(.377);
+  const Ex = Sx + (Ey-Sy)*Math.tan(th), Wx = Ex + (Wy-Ey)*Math.tan(th+.03), Tx = Wx + (Ty-Wy)*Math.tan(th+.07);
+  const pt = (a, b, t) => [lerp(a[0], b[0], t), lerp(a[1], b[1], t)], S_ = [Sx, Sy], E_ = [Ex, Ey], W_ = [Wx, Wy], T_ = [Tx, Ty];
+  const AC = [[Sx - Math.tan(th)*R0*.5, Sy - R0*.5], S_, pt(S_, E_, .4), pt(S_, E_, .8), E_, pt(E_, W_, .25), pt(E_, W_, .7), W_, pt(W_, T_, .3), pt(W_, T_, .72), T_];
+  const AW = [R0*.5, R0, R0, R0*.82, elbD*SC/2, foreD*SC/2, lerp(foreD, wrD, .6)*SC/2, wrD*SC/2, handW*SC/2*.95, handW*SC/2*.85, handW*SC/2*.35];
+  const arm = ribbon(AC, AW);
+
+  const skin = `rgb(${p.sk.map(Math.round)})`, hair = "#2a1b16", navy = "#0b2a4d", gold = "#e8c479";
+  const rt = `translate(${CX} 0)`, mir = `translate(${CX} 0) scale(-1 1)`;
+  // đầu: 100 đơn vị = chiều cao đầu (.1325 H)
+  const k = .1325*h*SC/100, lh = cl(1 - m*2, 0, 1);
+  const foot = s => { const cx = CX + s*(.385*hw + .1*hw), cy = y(.012); return `<ellipse cx="${f1(cx)}" cy="${f1(cy)}" rx="${f1(hw*.3)}" ry="${f1(2.2*SC)}" transform="rotate(${s*8} ${f1(cx)} ${f1(cy)})"/>`; };
+  // thước + vạch đo
+  let ruler = `<line x1="16" x2="16" y1="${y(0)}" y2="${y(220/h)}" stroke="#8fb3cf" stroke-opacity=".5" stroke-width="1"/>`;
+  for (let c = 0; c <= 220; c += 10){ const yy = FLOOR - c*SC, big = c % 50 === 0; ruler += `<line x1="${big?9:12}" x2="16" y1="${yy}" y2="${yy}" stroke="#8fb3cf" stroke-opacity=".6" stroke-width="${big?1:.7}"/>` + (big && c ? `<text x="20" y="${yy+3}" font-size="7.5" fill="#8fb3cf" font-family="sans-serif">${c}</text>` : ""); }
+  const topY = y(1);
+  ruler += `<line x1="16" x2="${CX+34}" y1="${topY}" y2="${topY}" stroke="${gold}" stroke-opacity=".6" stroke-dasharray="3 3" stroke-width=".8"/><text x="44" y="${topY-4}" font-size="9" fill="${gold}" font-family="sans-serif">${Math.round(h)} cm</text>`;
+  const gl = (f, t, v, g, wd) => { const yy = y(f); return `<circle cx="${f1(CX+wd)}" cy="${f1(yy)}" r="2" fill="${gold}"/><line x1="${f1(CX+wd)}" x2="294" y1="${f1(yy)}" y2="${f1(yy)}" stroke="${gold}" stroke-opacity=".55" stroke-dasharray="2 3" stroke-width=".8"/><text x="294" y="${f1(yy-4)}" text-anchor="end" font-size="9" fill="${gold}" font-family="sans-serif">${t} ${g?"~":""}${Math.round(v)} cm</text>`; };
+  const hem = yy => `<rect x="0" y="${f1(yy-.8)}" width="300" height="1.6" fill="${gold}"/>`;
+  const kneeY = y(.285), hs = n => f1(n);
+  const neckCut = `M${f1(CX-nw*1.5)} ${f1(y(.806))}Q${CX} ${f1(y(.742))} ${f1(CX+nw*1.5)} ${f1(y(.806))}Z`;
+
+  return `<defs>
+<linearGradient id="sh" x1="0" x2="1"><stop offset="0" stop-color="#fff" stop-opacity=".17"/><stop offset=".42" stop-color="#fff" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".3"/></linearGradient>
+<radialGradient id="fl" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#7fd6f5" stop-opacity=".4"/><stop offset="1" stop-color="#7fd6f5" stop-opacity="0"/></radialGradient>
+<path id="half" d="${body}"/><path id="arm" d="${arm}"/>
+<clipPath id="bc"><use href="#half" transform="${rt}"/><use href="#half" transform="${mir}"/></clipPath>
+<clipPath id="ac"><use href="#arm" transform="${rt}"/><use href="#arm" transform="${mir}"/></clipPath></defs>
+<ellipse cx="${CX}" cy="${FLOOR+4}" rx="100" ry="11" fill="url(#fl)"/>
+${ruler}
+<g transform="translate(${CX} ${f1(y(1))}) scale(${k.toFixed(4)})" opacity="${lh.toFixed(2)}"><path d="M-40 36C-47-4-22-10 0-10S47-4 40 36C49 90 47 160 38 205H-38C-47 160-49 90-40 36Z" fill="${hair}"/></g>
+<g fill="${skin}" stroke="${skin}" stroke-width=".8" stroke-linejoin="round"><use href="#half" transform="${rt}"/><use href="#half" transform="${mir}"/>${foot(1)}${foot(-1)}</g>
+<g clip-path="url(#bc)">
+  <rect x="0" y="${f1(y(.805))}" width="300" height="${f1(y(.645)-y(.805))}" fill="${navy}"/>${hem(y(.645))}
+  <path d="${neckCut}" fill="${skin}"/>
+  <rect x="0" y="${f1(y(.585))}" width="300" height="${f1(y(.405)-y(.585))}" fill="${navy}"/>${hem(y(.585))}${hem(y(.405))}
+  <ellipse cx="${CX}" cy="${f1(y(.607))}" rx="1.6" ry="2.6" fill="#000" opacity=".22"/>
+  <path d="M${f1(CX-nw*.4)} ${f1(y(.842))}Q${f1(CX-sw*.45)} ${f1(y(.836))} ${f1(CX-sw*.85)} ${f1(y(.826))}M${f1(CX+nw*.4)} ${f1(y(.842))}Q${f1(CX+sw*.45)} ${f1(y(.836))} ${f1(CX+sw*.85)} ${f1(y(.826))}" stroke="#000" stroke-opacity=".12" stroke-width="1.3" fill="none" stroke-linecap="round"/>
+  <ellipse cx="${f1(CX-hw*.42)}" cy="${f1(kneeY)}" rx="${f1(hw*.17)}" ry="${f1(3.4*SC)}" fill="#000" opacity=".07"/><ellipse cx="${f1(CX+hw*.42)}" cy="${f1(kneeY)}" rx="${f1(hw*.17)}" ry="${f1(3.4*SC)}" fill="#000" opacity=".07"/>
+  <rect x="0" y="0" width="300" height="470" fill="url(#sh)"/>
+</g>
+<g clip-path="url(#ac)" fill="none"><use href="#arm" transform="${rt}" fill="${skin}"/><use href="#arm" transform="${mir}" fill="${skin}"/><rect x="0" y="0" width="300" height="470" fill="url(#sh)"/></g>
+<g fill="none" stroke="#3a1c10" stroke-opacity=".22" stroke-width=".9" stroke-linejoin="round"><use href="#arm" transform="${rt}"/><use href="#arm" transform="${mir}"/></g>
+<g transform="translate(${CX} ${f1(y(1))}) scale(${k.toFixed(4)})">
+  <ellipse cx="0" cy="104" rx="30" ry="9" fill="#000" opacity=".16"/>
+  <ellipse cx="-38" cy="50" rx="5" ry="10" fill="${skin}"/><ellipse cx="38" cy="50" rx="5" ry="10" fill="${skin}"/>
+  <path d="M0 0C22 0 38 18 38 42C38 66 26 92 0 100C-26 92-38 66-38 42C-38 18-22 0 0 0Z" fill="${skin}"/>
+  <path d="M0 0C22 0 38 18 38 42C38 66 26 92 0 100C-26 92-38 66-38 42C-38 18-22 0 0 0Z" fill="url(#sh)"/>
+  <g fill="#d9667a" opacity="${(lh*.16).toFixed(2)}"><ellipse cx="-22" cy="64" rx="9" ry="5"/><ellipse cx="22" cy="64" rx="9" ry="5"/></g>
+  <ellipse cx="-14" cy="46" rx="5.6" ry="2.4" fill="#2a1b16"/><ellipse cx="14" cy="46" rx="5.6" ry="2.4" fill="#2a1b16"/>
+  <path d="M-22 38Q-14 34 -6 37.5M22 38Q14 34 6 37.5" stroke="${hair}" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+  <path d="M0 50Q-5 62-4 66Q0 68.5 4 66Q5 62 0 50" fill="none" stroke="#000" stroke-opacity=".16" stroke-width="1.4" stroke-linecap="round"/>
+  <path d="M-9 78Q0 82 9 78" stroke="#b5544f" stroke-width="2.6" fill="none" stroke-linecap="round"/>
+  <g opacity="${lh.toFixed(2)}" fill="${hair}"><path d="M-40 46C-46 4-22-8 2-8C26-8 46 6 40 46C38 30 30 18 14 14C2 22-22 26-40 46Z"/><path d="M-40 40C-45 70-44 96-38 112C-36 90-36 66-33 44Z"/><path d="M40 40C45 70 44 96 38 112C36 90 36 66 33 44Z"/></g>
+  <g opacity="${(1-lh).toFixed(2)}" fill="${hair}"><path d="M-40 42C-45 2-22-9 0-9C24-9 45 2 40 42C38 26 28 17 12 14C-4 16-26 22-40 42Z"/></g>
+</g>
+${gl(bF, "Ngực", p.B, p.gB, bw+4)}${gl(wF, "Eo", p.W, p.gW, ww+4)}${gl(.528, "Mông", p.Hp, p.gH, hw+4)}`;
+}
+/*MAN-END*/
+
+const num = (v, a, b) => { v = parseFloat(v); return v >= a && v <= b ? v : 0; };
+function shapeFrom(B, W, H){
+  if (W / B <= .75 && W / H <= .75 && Math.abs(B - H) <= .07*H) return "Đồng hồ cát";
+  if (H > B*1.05) return "Quả lê";
+  if (B > H*1.05) return "Tam giác ngược";
+  if (W >= B*.92 && W >= H*.92) return "Quả táo";
+  return "Chữ nhật";
+}
+function targetParams(){
+  const h = cl(parseFloat(P.h) || 165, 120, 220), w = cl(parseFloat(P.w) || 55, 30, 200), bmi = w / ((h/100)**2);
+  const sx = P.sex === "Nam" ? 1 : P.sex === "Nữ" ? 0 : .5, sp = P.shape, d = cl(bmi - 21, -4, 12), dh = h - 165;
+  let B = lerp(84, 94, sx) + d*3.2 + dh*.2, W = lerp(66, 80, sx) + d*3.4 + dh*.15, Hp = lerp(92, 95, sx) + d*2.8 + dh*.2;
+  B += sp === "Tam giác ngược" ? 5 : sp === "Quả lê" ? -3 : 0;
+  W += sp === "Đồng hồ cát" ? -6 : sp === "Quả táo" ? 10 : sp === "Chữ nhật" ? 4 : 0;
+  Hp += sp === "Quả lê" ? 7 : sp === "Tam giác ngược" ? -4 : sp === "Đồng hồ cát" ? 3 : 0;
+  const bu = num(P.bust, 55, 170), wu = num(P.waist, 45, 170), hu = num(P.hip, 60, 170);
+  B = bu || B; W = wu || W; Hp = hu || Hp;
+  const hex = (SKINS.find(s => s[0] === P.skin) || [0, "#dcb899"])[1];
+  let sk = [1, 3, 5].map(i => parseInt(hex.substr(i, 2), 16));
+  const tint = P.under === "Ấm" ? [255,170,90] : P.under === "Lạnh" ? [225,150,185] : null;
+  if (tint) sk = sk.map((v, i) => lerp(v, tint[i], .07));
+  return { h, B, W, Hp, sx, d, shK: sp === "Tam giác ngược" ? 1.08 : sp === "Quả lê" ? .95 : 1, sk, gB: !bu, gW: !wu, gH: !hu, bmi, auto: shapeFrom(B, W, Hp), have: !!(parseFloat(P.h) && parseFloat(P.w)) };
+}
+const NUMK = ["h","B","W","Hp","sx","d","shK"];
+let cur = null, raf = 0;
+function updateMan(){
+  const t = targetParams();
+  statTween(t);
+  if (!cur || REDUCE){ cur = JSON.parse(JSON.stringify(t)); $("#man").innerHTML = manSVG(cur); return; }
+  cancelAnimationFrame(raf);
+  const from = JSON.parse(JSON.stringify(cur)), t0 = performance.now(), dur = 520;
+  cur.gB = t.gB; cur.gW = t.gW; cur.gH = t.gH;
+  const tick = now => {
+    const u = Math.min(1, (now - t0) / dur), e = 1 - Math.pow(1 - u, 3);
+    NUMK.forEach(k => cur[k] = lerp(from[k], t[k], e)); cur.sk = from.sk.map((v, i) => lerp(v, t.sk[i], e));
+    $("#man").innerHTML = manSVG(cur);
+    if (u < 1) raf = requestAnimationFrame(tick);
+  };
+  raf = requestAnimationFrame(tick);
+}
+// số nhảy mượt cho BMI và tỉ lệ eo/mông
+const tw = {};
+function tween(id, to, dec){
+  const el = $("#"+id); if (to == null){ el.textContent = "–"; tw[id] = null; return; }
+  const from = tw[id] == null ? to : tw[id]; tw[id] = to;
+  if (REDUCE || from === to){ el.textContent = to.toFixed(dec); return; }
+  const t0 = performance.now(), d = 450;
+  (function f(now){ const u = Math.min(1, (now - t0) / d), e = 1 - Math.pow(1 - u, 3); el.textContent = (from + (to - from)*e).toFixed(dec); if (u < 1) requestAnimationFrame(f); })(t0);
+}
+function statTween(t){
+  tween("bmi", t.have ? t.bmi : null, 1); tween("whr", t.W / t.Hp, 2);
+  $("#bmiCat").textContent = t.have ? (t.bmi < 18.5 ? "Nhẹ cân" : t.bmi < 23 ? "Cân đối" : t.bmi < 25 ? "Hơi đầy đặn" : "Đầy đặn") : "BMI";
+  $("#shapeName").textContent = P.shape || (t.gB && t.gW && t.gH ? "–" : t.auto + " (gợi ý)");
+}
+
+/* ---------- Chuyển giữa mô hình và ảnh ---------- */
+let view = "Mô hình 2D";
+const viewSync = (function(){
+  const items = ["Mô hình 2D", "Ảnh của bạn"], el = $("#viewSeg"); el.className = "seg";
+  el.innerHTML = '<i class="ind"></i>' + items.map(t => `<button type="button">${t}</button>`).join("");
+  const btns = [...el.querySelectorAll("button")], ind = el.querySelector(".ind");
+  const sync = () => {
+    const i = items.indexOf(view); btns.forEach((b, j) => { b.classList.toggle("on", j === i); b.setAttribute("aria-pressed", j === i); });
+    ind.style.width = "calc((100% - 6px) / 2)"; ind.style.transform = `translateX(${i*100}%)`;
+    $("#man").classList.toggle("off", i === 1); $("#bdrop").classList.toggle("off", i === 0); $("#stat").style.opacity = i === 0 ? 1 : .4;
+  };
+  btns.forEach((b, i) => b.onclick = () => { view = items[i]; sync(); });
+  sync(); return sync;
+})();
 
 $("#to2").onclick = () => {
-  persist();
+  persist(); store.set("fm_profile", P);
   if (!(+P.h >= 120 && +P.h <= 220 && +P.w >= 30 && +P.w <= 200)) { $("#e1").textContent = "Nhập chiều cao (120–220 cm) và cân nặng (30–200 kg) để tiếp tục."; return; }
+  const note = (P.note || "").trim();
+  if (!HIST.length || +HIST[0].w !== +P.w || note){ HIST.unshift({ d: new Date().toLocaleDateString("vi-VN"), w: +P.w, n: note }); HIST = HIST.slice(0, 10); store.set("fm_hist", HIST); P.note = ""; $("#note").value = ""; store.set("fm_profile", P); showHist(); }
   $("#e1").textContent = ""; step(2);
 };
 $("#back1").onclick = () => step(1);
 $("#wipe").onclick = () => {
-  if (!confirm("Xóa hồ sơ, tủ đồ và lịch sử chat trên trình duyệt này?")) return;
-  ["fm_profile","fm_closet","fm_chat"].forEach(store.del); location.reload();
+  if (!confirm("Xóa hồ sơ, tủ đồ, lịch sử cân nặng và lịch sử chat trên trình duyệt này?")) return;
+  ["fm_profile","fm_closet","fm_chat","fm_hist"].forEach(k => store.del(k)); location.reload();
 };
 
 /* ---------- Ảnh ---------- */
-$("#drop").onclick = () => $("#file").click();
-$("#drop").onkeydown = e => { if (e.key === "Enter") $("#file").click(); };
-$("#file").onchange = e => { const f = e.target.files[0]; if (f) loadImg(f); e.target.value = ""; };
-$("#drop").ondragover = e => e.preventDefault();
-$("#drop").ondrop = e => { e.preventDefault(); e.dataTransfer.files[0] && loadImg(e.dataTransfer.files[0]); };
-$("#drop2").onclick = () => $("#file2").click();
-$("#drop2").onkeydown = e => { if (e.key === "Enter") $("#file2").click(); };
-$("#file2").onchange = e => { const f = e.target.files[0]; if (f) loadImg(f, 2); e.target.value = ""; };
-$("#drop2").ondragover = e => e.preventDefault();
-$("#drop2").ondrop = e => { e.preventDefault(); e.dataTransfer.files[0] && loadImg(e.dataTransfer.files[0], 2); };
-document.addEventListener("paste", e => { if ($("#s2").hidden || !$("#tryon").classList.contains("on")) return; const f = [...(e.clipboardData?.files||[])].find(f => f.type.startsWith("image/")); if (f) loadImg(f, !img ? 1 : !img2 ? 2 : 1); });
-function mkThumb(im){ const sc = Math.min(1, 360 / Math.max(im.width, im.height)), c = document.createElement("canvas"); c.width = im.width*sc; c.height = im.height*sc; c.getContext("2d").drawImage(im, 0, 0, c.width, c.height); return c.toDataURL("image/jpeg", .7); }
-function loadImg(file, n = 1){
-  const r = new FileReader();
-  r.onload = () => {
-    const im = new Image();
-    im.onload = () => {
-      const sc = Math.min(1, 1024 / Math.max(im.width, im.height)), c = document.createElement("canvas");
-      c.width = im.width*sc; c.height = im.height*sc; c.getContext("2d").drawImage(im, 0, 0, c.width, c.height);
-      const url = c.toDataURL("image/jpeg", .82);
-      const b64 = url.split(",")[1], th = mkThumb(im);
-      if (n === 2) { img2 = b64; thumb2 = th; } else { img = b64; thumb = th; }
-      $(n === 2 ? "#drop2" : "#drop").innerHTML = `<img src="${url}" alt="Ảnh sản phẩm ${n}">`;
-    };
-    im.src = r.result;
-  };
+const readImg = (file, max = 1024) => new Promise((ok, no) => {
+  if (!file || !file.type.startsWith("image/")) return no(new Error("Hãy chọn một file ảnh."));
+  const r = new FileReader(); r.onerror = () => no(new Error("Không đọc được ảnh."));
+  r.onload = () => { const im = new Image(); im.onerror = () => no(new Error("Ảnh không hợp lệ."));
+    im.onload = () => { const sc = Math.min(1, max / Math.max(im.width, im.height)), c = document.createElement("canvas"); c.width = Math.round(im.width*sc); c.height = Math.round(im.height*sc);
+      const x = c.getContext("2d"); x.fillStyle = "#fff"; x.fillRect(0, 0, c.width, c.height); x.drawImage(im, 0, 0, c.width, c.height); ok(c); };
+    im.src = r.result; };
   r.readAsDataURL(file);
+});
+const mkThumb = c => { const sc = Math.min(1, 360 / Math.max(c.width, c.height)), t = document.createElement("canvas"); t.width = Math.round(c.width*sc); t.height = Math.round(c.height*sc); t.getContext("2d").drawImage(c, 0, 0, t.width, t.height); return t.toDataURL("image/jpeg", .7); };
+const UP = '<svg viewBox="0 0 24 24"><path d="M12 16V4M7 9l5-5 5 5M4 20h16"/></svg>';
+const EMPTY = { "#drop": UP + "Chạm để tải ảnh sản phẩm (món 1)", "#drop2": UP + "Thêm ảnh quần/váy nếu muốn mặc thử cả bộ", "#bdrop": UP + "Ảnh toàn thân<br><small style='opacity:.75'>Đứng thẳng, chính diện, thấy rõ toàn thân</small>" };
+function setDrop(id, url, alt){
+  const el = $(id); el.classList.toggle("has", !!url);
+  el.innerHTML = url ? `<img src="${url}" alt="${alt}"><button type="button" class="x" aria-label="Xóa ảnh">×</button>` : EMPTY[id];
+  const x = el.querySelector(".x"); if (x) x.onclick = e => { e.stopPropagation(); clearImg(id); };
 }
-
-/* ---------- Ảnh toàn thân của bạn ---------- */
-$("#bdrop").onclick = () => $("#bfile").click();
-$("#bdrop").onkeydown = e => { if (e.key === "Enter") $("#bfile").click(); };
-$("#bfile").onchange = e => {
-  const f = e.target.files[0]; e.target.value = ""; if (!f) return;
-  const r = new FileReader();
-  r.onload = () => {
-    const im = new Image();
-    im.onload = () => {
-      const sc = Math.min(1, 1024 / Math.max(im.width, im.height)), c = document.createElement("canvas");
-      c.width = im.width*sc; c.height = im.height*sc; c.getContext("2d").drawImage(im, 0, 0, c.width, c.height);
-      body = c; $("#bdrop").innerHTML = `<img src="${c.toDataURL("image/jpeg", .8)}" alt="Ảnh của bạn">`;
-    };
-    im.src = r.result;
-  };
-  r.readAsDataURL(f);
-};
+function clearImg(id){
+  if (id === "#drop"){ img = null; thumb = null; } else if (id === "#drop2"){ img2 = null; thumb2 = null; } else { body = null; }
+  setDrop(id, null);
+}
+Object.keys(EMPTY).forEach(id => setDrop(id, null));
+function wireDrop(id, input, handler){
+  const el = $(id), fi = $(input);
+  el.onclick = () => fi.click();
+  el.onkeydown = e => { if (e.key === "Enter" || e.key === " "){ e.preventDefault(); fi.click(); } };
+  fi.onchange = e => { const f = e.target.files[0]; e.target.value = ""; if (f) handler(f); };
+  el.ondragover = e => { e.preventDefault(); el.classList.add("over"); };
+  el.ondragleave = () => el.classList.remove("over");
+  el.ondrop = e => { e.preventDefault(); el.classList.remove("over"); const f = e.dataTransfer.files[0]; if (f) handler(f); };
+}
+async function loadImg(file, n = 1){
+  try{
+    const c = await readImg(file), url = c.toDataURL("image/jpeg", .85), th = mkThumb(c);
+    if (n === 2){ img2 = url.split(",")[1]; thumb2 = th; } else { img = url.split(",")[1]; thumb = th; }
+    setDrop(n === 2 ? "#drop2" : "#drop", url, "Ảnh sản phẩm " + n); $("#e2").textContent = "";
+  }catch(e){ $("#e2").textContent = e.message; }
+}
+async function loadBody(file){
+  try{ body = await readImg(file); setDrop("#bdrop", body.toDataURL("image/jpeg", .8), "Ảnh của bạn"); view = "Ảnh của bạn"; viewSync(); $("#e1").textContent = ""; }
+  catch(e){ $("#e1").textContent = e.message; }
+}
+wireDrop("#drop", "#file", f => loadImg(f, 1));
+wireDrop("#drop2", "#file2", f => loadImg(f, 2));
+wireDrop("#bdrop", "#bfile", loadBody);
+document.addEventListener("paste", e => {
+  if ($("#s2").hidden || !$("#tryon").classList.contains("on")) return;
+  const f = [...(e.clipboardData?.files || [])].find(f => f.type.startsWith("image/")); if (f) loadImg(f, !img ? 1 : !img2 ? 2 : 1);
+});
 
 /* ---------- AI ---------- */
-const workerUrl = () => WORKER_URL;
-
-async function callAI(system, messages, max = 1200){
-  const url = workerUrl();
-  if (!url) throw new Error("AI chưa sẵn sàng, vui lòng thử lại sau.");
+async function callAI(system, messages, max = 1200, temperature){
   let r;
-  try { r = await fetch(url, { method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify({ system, messages, max_tokens: max }) }); }
-  catch (e) { throw new Error("Không kết nối được tới " + location.origin + url + ". Hãy mở web bằng địa chỉ Worker (dạng https://ten.ten-ban.workers.dev), không mở file trên máy."); }
+  try { r = await fetch(WORKER_URL, { method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify({ system, messages, max_tokens: max, temperature }) }); }
+  catch (e) { throw new Error("Không kết nối được tới " + (WORKER_URL.startsWith("http") ? WORKER_URL : location.origin + WORKER_URL) + ". Hãy mở web bằng địa chỉ Worker (dạng https://ten.ten-ban.workers.dev), không mở file trên máy."); }
   const d = await r.json().catch(() => ({}));
   if (!r.ok) throw new Error(d.error || "AI lỗi (" + r.status + ")");
   return d.text || "";
@@ -379,11 +656,13 @@ async function callAI(system, messages, max = 1200){
 function profileText(){
   const l = [`Chiều cao ${P.h} cm, cân nặng ${P.w} kg`];
   if (P.sex) l.push("Giới tính: " + P.sex);
-  if (P.shape) l.push("Phom dáng: " + P.shape);
+  const t = targetParams();
+  if (P.shape) l.push("Phom dáng: " + P.shape); else if (!(t.gB && t.gW && t.gH)) l.push("Phom dáng gợi ý từ số đo: " + t.auto);
   if (P.bust || P.waist || P.hip) l.push(`Ba vòng: ngực ${P.bust||"?"}, eo ${P.waist||"?"}, mông ${P.hip||"?"} cm`);
+  if (HIST.length > 1) l.push("Lịch sử cân nặng: " + histText());
   if (P.skin) l.push("Tông da (người dùng xác nhận): " + P.skin);
-  if (P.under && P.under !== "Chưa chắc") l.push("Undertone (người dùng xác nhận): " + P.under);
-  else l.push("Chưa xác nhận tông da/undertone: KHÔNG được đoán.");
+  if (P.under) l.push("Undertone (người dùng xác nhận): " + P.under);
+  if (!P.skin && !P.under) l.push("Chưa xác nhận tông da/undertone: KHÔNG được đoán.");
   return l.join("; ");
 }
 const SYS = () => "Bạn là FitMe AI, stylist và chuyên gia chọn size quần áo cho người Việt. Trả lời tiếng Việt, ngắn gọn, thẳng thắn, không bịa số liệu. Hồ sơ người dùng: " + profileText();
@@ -391,13 +670,14 @@ const SYS = () => "Bạn là FitMe AI, stylist và chuyên gia chọn size quầ
 function localSize(bottom){
   const h = +P.h, w = +P.w, b = bottom ? +P.hip : +P.bust, order = ["XS","S","M","L","XL","XXL"];
   let i = b ? (bottom ? (b<86?0:b<92?1:b<98?2:b<104?3:b<110?4:5) : (b<82?0:b<88?1:b<94?2:b<100?3:b<106?4:5)) : (w<45?0:w<55?1:w<65?2:w<75?3:w<85?4:5);
-  if (P.sex === "Nam") i++; if (h > 175) i++; if (h < 152) i--;
+  if (P.sex === "Nam") i++;
+  if (h > 175) i++;
+  if (h < 152) i--;
   return order[Math.max(0, Math.min(5, i))];
 }
-
 const arr = v => Array.isArray(v) ? v.map(String) : (v ? [String(v)] : []);
 function normalize(o){
-  const f = String(o.fit || "vừa").toLowerCase(), ok = P.skin || (P.under && P.under !== "Chưa chắc");
+  const f = String(o.fit || "vừa").toLowerCase(), ok = P.skin || P.under;
   return { product: String(o.product || "Sản phẩm của bạn"), size: String(o.size || "?").trim().toUpperCase(),
     confidence: Math.max(0, Math.min(100, parseInt(o.confidence) || 60)), fit: ["ôm","vừa","rộng","oversize"].find(x => f.includes(x)) || "vừa",
     reasons: arr(o.reasons), alt_size: String(o.alt_size || "").trim().toUpperCase(), warnings: arr(o.warnings), styling: arr(o.styling), colors: ok ? arr(o.colors) : [] };
@@ -410,8 +690,9 @@ Chỉ trả về JSON hợp lệ, không markdown:
   if (imgData) content.push({type:"image", source:{type:"base64", media_type:"image/jpeg", data:imgData}});
   content.push({type:"text", text:prompt});
   try {
-    const out = await callAI(SYS(), [{role:"user", content}], 1400);
+    const out = await callAI(SYS(), [{role:"user", content}], 1400, .2);
     const m = out.match(/\{[\s\S]*\}/);
+    if (!m) throw new Error("AI trả về dữ liệu không đọc được.");
     const r = normalize(JSON.parse(m[0])); r.ai = true;
     return r;
   } catch (e) {
@@ -425,7 +706,7 @@ $("#go").onclick = async () => {
   const text = $("#chart").value.trim(), link = $("#link").value.trim(), text2 = $("#chart2").value.trim();
   if (!img && !text && !link) { $("#e2").textContent = "Thêm ít nhất một ảnh, bảng size hoặc link cho món 1."; return; }
   $("#e2").textContent = ""; $("#go").disabled = true; step(3);
-  $("#result").innerHTML = ""; $("#loading").hidden = false; $("#save").hidden = true; $("#fit").hidden = true;
+  $("#result").innerHTML = ""; $("#loading").hidden = false; $("#save").hidden = true; $("#fit").hidden = true; $("#e4").textContent = "";
   const jobs = [analyze(img, text, link, false)];
   if (img2 || text2) jobs.push(analyze(img2, text2, "", true));
   last = await Promise.all(jobs);
@@ -439,20 +720,20 @@ const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;
 const list = a => a && a.length ? `<ul class="clean">${a.map(x => `<li>${esc(x)}</li>`).join("")}</ul>` : "";
 function renderOne(r, i){
   const fitCls = r.fit === "vừa" ? "ok" : "warn";
-  return `
+  return `<div class="enter">
     ${r.thumb ? `<img class="rthumb" src="${r.thumb}" alt="Ảnh sản phẩm">` : ""}
     <p class="sub" style="margin:0">${last.length > 1 ? `<b>Món ${i+1}</b> · ` : ""}${esc(r.product)}</p>
-    <div style="display:flex;align-items:flex-end;gap:16px;flex-wrap:wrap"><div class="size-big gt">${esc(r.size)}</div>
+    <div style="display:flex;align-items:flex-end;gap:16px;flex-wrap:wrap"><div class="size-big metal">${esc(r.size)}</div>
       <div><span class="tag ${fitCls}">Form ${esc(r.fit)}</span>${r.alt_size ? `<span class="tag">Dự phòng: ${esc(r.alt_size)}</span>` : ""}${r.ai ? "" : `<span class="tag warn">Offline</span>`}</div></div>
-    <div class="meter" aria-label="Độ tin cậy"><div style="width:${+r.confidence||0}%"></div></div>
+    <div class="meter" role="img" aria-label="Độ tin cậy ${+r.confidence||0}%"><div style="width:${+r.confidence||0}%"></div></div>
     <div class="hint">Độ tin cậy ${+r.confidence||0}%</div>
-    <label>Vì sao chọn size này</label>${list(r.reasons)}
-    ${r.warnings?.length ? `<label>Lưu ý</label>${list(r.warnings)}` : ""}
-    ${r.styling?.length ? `<label>Gợi ý phối đồ</label>${list(r.styling)}` : ""}
-    ${r.colors?.length ? `<label>Màu hợp với bạn</label>${r.colors.map(c => `<span class="tag">${esc(c)}</span>`).join("")}` : ""}`;
+    <label style="margin-top:14px">Vì sao chọn size này</label>${list(r.reasons)}
+    ${r.warnings?.length ? `<label style="margin-top:14px">Lưu ý</label>${list(r.warnings)}` : ""}
+    ${r.styling?.length ? `<label style="margin-top:14px">Gợi ý phối đồ</label>${list(r.styling)}` : ""}
+    ${r.colors?.length ? `<label style="margin-top:14px">Màu hợp với bạn</label>${r.colors.map(c => `<span class="tag">${esc(c)}</span>`).join("")}` : ""}</div>`;
 }
 function renderResult(){
-  $("#result").innerHTML = last.map(renderOne).join('<hr style="border:0;border-top:1px solid var(--line);margin:20px 0;clear:both">');
+  $("#result").innerHTML = last.map(renderOne).join('<hr style="border:0;border-top:1px solid var(--line);margin:22px 0;clear:both">');
 }
 
 /* ---------- Mặc thử bằng AI (Hugging Face Space, miễn phí) ---------- */
@@ -461,7 +742,7 @@ function initFit(){
   const ok = !!(body && img);
   $("#fit").hidden = !ok;
   $("#maskBox").hidden = !(ok && img2); if (ok && img2) drawMask();
-  $("#e4").textContent = ok ? "" : "Muốn xem bạn mặc món này: quay lại bước 2, thêm cả ảnh sản phẩm và ảnh toàn thân của bạn.";
+  $("#e4").textContent = ok ? "" : "Muốn xem bạn mặc món này: quay lại và thêm ảnh toàn thân của bạn (bước 1) cùng ảnh sản phẩm (bước 2).";
 }
 const drawMask = () => {
   if (!body) return;
@@ -497,11 +778,11 @@ $("#aiBtn").onclick = async () => {
   if (!confirm("Ảnh của bạn và ảnh sản phẩm sẽ được gửi tới Hugging Face (Space IDM-VTON) để tạo ảnh mặc thử" + (n > 1 ? ", lần lượt từng món" : "") + ". Tiếp tục?")) return;
   $("#aiBtn").disabled = true;
   const show = src => `<img class="tryimg" src="${src}" alt="Ảnh mặc thử do AI tạo">
-      <div class="actions"><a class="btn ghost" href="${src}" download="fitme-mac-thu.png" style="text-decoration:none">Tải ảnh về</a></div>`;
+      <div class="actions"><a class="btn ghost" href="${src}" download="fitme-mac-thu.png">Tải ảnh về</a></div>`;
   let person = body.toDataURL("image/jpeg", .9), out = null;
   try {
     for (let i = 0; i < n; i++) {
-      $("#aiOut").innerHTML = '<div class="empty">AI đang mặc thử' + (n > 1 ? " " + (steps[i].low ? "quần/váy" : "áo") + " (" + (i+1) + "/" + n + ")" : "") + ', có thể mất 1–3 phút<span class="dots"><span>.</span><span>.</span><span>.</span></span></div>';
+      $("#aiOut").innerHTML = '<div class="empty"><svg class="compass"><use href="#cs"/></svg>AI đang mặc thử' + (n > 1 ? " " + (steps[i].low ? "quần/váy" : "áo") + " (" + (i+1) + "/" + n + ")" : "") + ', có thể mất 1–3 phút<span class="dots"><span>.</span><span>.</span><span>.</span></span></div>';
       const r = await fetch(API_BASE + "/api/tryon", {
         method: "POST", headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ person, garment: "data:image/jpeg;base64," + steps[i].g, mask: steps[i].low ? await lowerMask(person) : undefined })
@@ -519,8 +800,9 @@ $("#aiBtn").onclick = async () => {
   $("#aiBtn").disabled = false;
 };
 
-$("#again").onclick = () => { img = null; thumb = null; img2 = null; thumb2 = null; $("#file2").value = ""; $("#drop2").textContent = "Thêm ảnh quần/váy nếu muốn mặc thử cả bộ"; $("#chart2").value = ""; $("#file").value = ""; $("#drop").textContent = "Nhấn để chọn ảnh hoặc kéo thả vào đây"; $("#chart").value = ""; $("#link").value = ""; $("#aiOut").innerHTML = ""; step(2); };
+$("#again").onclick = () => { clearImg("#drop"); clearImg("#drop2"); $("#chart").value = ""; $("#chart2").value = ""; $("#link").value = ""; $("#aiOut").innerHTML = ""; $("#e2").textContent = ""; step(2); };
 $("#save").onclick = () => {
+  if (!last) return;
   const c = store.get("fm_closet", []); c.unshift(...last); store.set("fm_closet", c.slice(0, 30));
   $("#save").textContent = "Đã lưu"; setTimeout(() => $("#save").textContent = "Lưu vào tủ đồ", 1500);
 };
@@ -528,7 +810,7 @@ $("#save").onclick = () => {
 /* ---------- Tủ đồ ---------- */
 function renderCloset(){
   const c = store.get("fm_closet", []);
-  $("#wardrobe").innerHTML = c.length ? c.map((x,i) => `<div class="card item"><div class="ph">${x.thumb ? `<img src="${x.thumb}" alt="${esc(x.product)}">` : "✦"}<em>${esc(x.size)}</em></div><b>${esc(x.product)}</b>
+  $("#wardrobe").innerHTML = c.length ? c.map((x, i) => `<div class="item" style="animation-delay:${Math.min(i, 8)*40}ms"><div class="ph">${x.thumb ? `<img src="${x.thumb}" alt="${esc(x.product)}">` : "✦"}<em>${esc(x.size)}</em></div><b>${esc(x.product)}</b>
     <div class="hint">${esc(x.date)} · Form ${esc(x.fit)} · ${+x.confidence||0}%</div>
     ${x.reasons && x.reasons[0] ? `<div class="hint">${esc(x.reasons[0])}</div>` : ""}
     ${x.link ? `<div class="hint" style="word-break:break-all">${esc(x.link)}</div>` : ""}
@@ -539,31 +821,39 @@ function renderCloset(){
 
 /* ---------- Stylist ---------- */
 const QUICK = ["Đi làm nên mặc gì?","Phối đồ đi hẹn hò","Màu nào hợp với tôi?","Áo che bụng cho phom của tôi"];
-$("#quick").innerHTML = QUICK.map(q => `<button class="chip">${q}</button>`).join("");
+$("#quick").innerHTML = QUICK.map(q => `<button class="chip" type="button">${q}</button>`).join("");
 $("#quick").querySelectorAll("button").forEach(b => b.onclick = () => { $("#q").value = b.textContent; sendQ(); });
+let drawn = -1;
 function drawChat(){
-  $("#chat").innerHTML = history.length ? history.map(m => `<div class="msg ${m.role==="user"?"u":"a"}">${esc(m.content)}</div>`).join("")
-    : `<div class="empty">Chọn một câu hỏi nhanh hoặc tự hỏi bên dưới.</div>`;
-  if (busy) $("#chat").insertAdjacentHTML("beforeend", '<div class="msg a dots"><span>.</span><span>.</span><span>.</span></div>');
-  $("#chat").scrollTop = 1e9;
+  const box = $("#chat");
+  if (!history.length && !busy){ box.innerHTML = `<div class="empty">Chọn một câu hỏi nhanh hoặc tự hỏi bên dưới.</div>`; drawn = 0; return; }
+  if (drawn < 1 || drawn > history.length) { box.innerHTML = ""; drawn = 0; }
+  box.querySelectorAll(".typing").forEach(e => e.remove());
+  history.slice(drawn).forEach(m => { const d = document.createElement("div"); d.className = "msg " + (m.role === "user" ? "u" : "a"); d.textContent = m.content; box.appendChild(d); });
+  drawn = history.length;
+  if (busy) box.insertAdjacentHTML("beforeend", '<div class="msg a typing dots"><span>.</span><span>.</span><span>.</span></div>');
+  box.scrollTop = box.scrollHeight;
 }
 async function sendQ(){
+  if (busy) return;
   const q = $("#q").value.trim(); if (!q) return;
   if (!(+P.h && +P.w)) { $("#e3").textContent = "Hãy nhập chiều cao và cân nặng ở tab Thử đồ trước."; return; }
   $("#e3").textContent = ""; $("#q").value = "";
   history.push({role:"user", content:q}); busy = true; drawChat(); $("#ask").disabled = true;
   try {
     const hh = history.slice(-12); while (hh.length && hh[0].role !== "user") hh.shift();
-    const a = await callAI(SYS(), hh, 900);
+    const a = await callAI(SYS(), hh, 900, .6);
     if (!a.trim()) throw new Error("AI chưa trả lời, hãy thử lại.");
     history.push({role:"assistant", content:a});
-  } catch (e) { $("#e3").textContent = e.message; history.pop(); $("#q").value = q; }
+  } catch (e) { $("#e3").textContent = e.message; history.pop(); drawn = -1; $("#q").value = q; }
   busy = false; store.set("fm_chat", history.slice(-30)); drawChat(); $("#ask").disabled = false;
 }
 $("#ask").onclick = sendQ;
-$("#clr").onclick = () => { history = []; store.set("fm_chat", []); drawChat(); };
+$("#clr").onclick = () => { history = []; drawn = -1; store.set("fm_chat", []); drawChat(); };
 $("#q").onkeydown = e => { if (e.key === "Enter") sendQ(); };
 drawChat();
+updateMan();
+
 </script>
 </body>
 </html>
