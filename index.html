@@ -77,6 +77,7 @@ ul.clean{padding-left:18px;margin:6px 0}
 .ph em{position:absolute;top:8px;right:8px;font:700 20px/1 "Cormorant Garamond",serif;font-style:normal;background:linear-gradient(180deg,#f6dc9b,#c8973f);color:#1b1204;border-radius:8px;padding:4px 10px}
 .empty{text-align:center;color:var(--mute);padding:40px 10px}
 .err{color:var(--bad);font-size:13.5px;margin-top:10px}
+.tryimg{width:100%;max-width:420px;border-radius:14px;border:1px solid var(--line);display:block}
 footer{text-align:center;color:var(--mute);font-size:12.5px;padding:28px 20px 40px}
 .dots span{animation:b 1s infinite;display:inline-block}.dots span:nth-child(2){animation-delay:.15s}.dots span:nth-child(3){animation-delay:.3s}
 @keyframes b{50%{opacity:.2}}
@@ -116,7 +117,7 @@ footer{text-align:center;color:var(--mute);font-size:12.5px;padding:28px 20px 40
           <div class="unit"><input id="waist" type="number" placeholder="Eo"><i>cm</i></div>
           <div class="unit"><input id="hip" type="number" placeholder="Mông"><i>cm</i></div>
         </div>
-        <p class="hint">Hồ sơ và lịch sử chỉ lưu trên trình duyệt này.</p>
+        <p class="hint">Hồ sơ và lịch sử lưu trên trình duyệt này. Ảnh của bạn chỉ được gửi đi khi bạn bấm “Mặc thử bằng AI”.</p>
         <label>Tông da</label>
         <div class="chips" id="skinChips"></div>
         <label>Undertone</label>
@@ -132,16 +133,16 @@ footer{text-align:center;color:var(--mute);font-size:12.5px;padding:28px 20px 40
       <!-- Bước 2 -->
       <div class="card" id="s2" hidden>
         <h1 class="gt">Chọn sản phẩm</h1>
-        <p class="sub">Tải ảnh chụp màn hình sản phẩm (có thể dán Ctrl+V). AI đọc ảnh để biết loại đồ, chất liệu, form.</p>
+        <p class="sub">Tải ảnh sản phẩm (có thể dán Ctrl+V). AI đọc ảnh để biết loại đồ, chất liệu, form. Ảnh món đồ rõ, nền sạch sẽ cho ảnh mặc thử đẹp hơn.</p>
         <label for="link">Link sản phẩm (tùy chọn)</label>
         <input id="link" type="url" placeholder="https://shopee.vn/...">
-        <p class="hint">Các sàn chặn đọc link tự động, nên AI sẽ đọc từ ảnh chụp màn hình của bạn.</p>
+        <p class="hint">Các sàn chặn đọc link tự động, nên AI sẽ đọc từ ảnh của bạn.</p>
         <label>Ảnh sản phẩm / bảng size</label>
         <input id="file" type="file" accept="image/*" hidden>
         <div class="drop" id="drop" tabindex="0">Nhấn để chọn ảnh hoặc kéo thả vào đây</div>
-        <label>Ảnh toàn thân của bạn (để mặc thử)</label>
-<input id="bfile" type="file" accept="image/*" hidden>
-<div class="drop" id="bdrop" tabindex="0">Chọn ảnh đứng thẳng, thấy rõ toàn thân</div>
+        <label>Ảnh toàn thân của bạn <span style="font-weight:400;color:var(--mute)">(để xem mặc thử, không bắt buộc)</span></label>
+        <input id="bfile" type="file" accept="image/*" hidden>
+        <div class="drop" id="bdrop" tabindex="0">Chọn ảnh đứng thẳng, chính diện, thấy rõ toàn thân</div>
         <label for="chart">Bảng size của shop (nếu có)</label>
         <textarea id="chart" rows="4" placeholder="VD: S: ngực 84-88, eo 66-70 | M: ngực 88-92, eo 70-74 ..."></textarea>
         <div class="actions">
@@ -156,22 +157,12 @@ footer{text-align:center;color:var(--mute);font-size:12.5px;padding:28px 20px 40
         <div id="loading" class="empty" hidden>AI đang phân tích<span class="dots"><span>.</span><span>.</span><span>.</span></span></div>
         <div id="result"></div>
         <div id="fit" hidden>
-  <label>Mặc mà thử trên ảnh của bạn</label>
-  <button class="btn" id="aiBtn" type="button">Mặc thử bằng AI (miễn phí)</button>
-  <div id="aiOut" style="margin:14px 0"></div>
-  <label>Hoặc ghép 2D (nhanh, không cần mạng)</label>
-  <canvas id="cv" style="width:100%;max-width:420px;border-radius:14px;border:1px solid var(--line);touch-action:none;cursor:grab"></canvas>
-  <div class="row">
-    <div><label for="sc">Kích cỡ</label><input id="sc" type="range" min="10" max="150" value="60"></div>
-    <div><label for="rt">Xoay</label><input id="rt" type="range" min="-30" max="30" value="0"></div>
-  </div>
-  <div class="row">
-    <div><label for="tol">Độ cắt nền</label><input id="tol" type="range" min="0" max="80" value="30"></div>
-    <div style="align-self:end"><button class="btn ghost" id="dl" type="button">Tải ảnh</button></div>
-  </div>
-  <p class="hint">Ảnh chỉ để hình dung kiểu dáng và màu sắc, không cho biết có vừa size hay không. Hãy chọn size theo gợi ý ở trên.</p>
-</div>
-<div class="err" id="e4"></div>
+          <label>Bạn mặc món này trông thế nào?</label>
+          <button class="btn" id="aiBtn" type="button">Mặc thử bằng AI (miễn phí)</button>
+          <div id="aiOut" style="margin:14px 0"></div>
+          <p class="hint">Ảnh do AI tạo, chỉ để hình dung kiểu dáng và màu sắc, không cho biết có vừa size hay không. Hãy chọn size theo gợi ý ở trên.</p>
+        </div>
+        <div class="err" id="e4"></div>
         <div class="actions"><button class="btn ghost" id="again">Thử món khác</button><button class="btn" id="save">Lưu vào tủ đồ</button></div>
       </div>
     </div>
@@ -204,8 +195,12 @@ footer{text-align:center;color:var(--mute);font-size:12.5px;padding:28px 20px 40
 </main>
 <footer>✦ Be yourself · FitMe AI</footer>
 <script>
-// ====== CẤU HÌNH: dán link Cloudflare Worker vào đây ======
+// ====== CẤU HÌNH ======
 const WORKER_URL = "https://yellow-grass-933f.nguyenduyhung190108.workers.dev/api/chat";
+// Danh sách Space Hugging Face dùng để mặc thử (thử lần lượt, cái đầu hỏng thì sang cái sau).
+// Thêm Space khác vào đây nếu cần; Space phải có endpoint /tryon giống IDM-VTON.
+const TRYON_SPACES = ["yisol/IDM-VTON"];
+const GRADIO_CLIENT = "https://cdn.jsdelivr.net/npm/@gradio/client@1.8.0/dist/index.min.js";
 
 const $ = s => document.querySelector(s);
 const mem = {};
@@ -219,7 +214,7 @@ const SKINS = [["Sáng","#f6d9c3"],["Trung bình","#e0b48f"],["Ngăm","#b9805a"]
 const UNDERS = ["Lạnh","Ấm","Trung tính","Chưa chắc"];
 const SEXES = ["Nữ","Nam"];
 let P = Object.assign({h:"",w:"",bust:"",waist:"",hip:"",sex:"",shape:"",skin:"",under:""}, store.get("fm_profile", {}));
-let img = null, thumb = null, busy = false, last = null, history = store.get("fm_chat", []);
+let img = null, thumb = null, body = null, busy = false, last = null, history = store.get("fm_chat", []);
 
 /* ---------- Tabs ---------- */
 document.querySelectorAll("nav.tabs button").forEach(b => b.onclick = () => {
@@ -335,9 +330,26 @@ function loadImg(file){
   r.readAsDataURL(file);
 }
 
+/* ---------- Ảnh toàn thân của bạn ---------- */
+$("#bdrop").onclick = () => $("#bfile").click();
+$("#bdrop").onkeydown = e => { if (e.key === "Enter") $("#bfile").click(); };
+$("#bfile").onchange = e => {
+  const f = e.target.files[0]; e.target.value = ""; if (!f) return;
+  const r = new FileReader();
+  r.onload = () => {
+    const im = new Image();
+    im.onload = () => {
+      const sc = Math.min(1, 1024 / Math.max(im.width, im.height)), c = document.createElement("canvas");
+      c.width = im.width*sc; c.height = im.height*sc; c.getContext("2d").drawImage(im, 0, 0, c.width, c.height);
+      body = c; $("#bdrop").innerHTML = `<img src="${c.toDataURL("image/jpeg", .8)}" alt="Ảnh của bạn">`;
+    };
+    im.src = r.result;
+  };
+  r.readAsDataURL(f);
+};
+
 /* ---------- AI ---------- */
 const workerUrl = () => WORKER_URL;
-
 
 async function callAI(system, messages, max = 1200){
   const url = workerUrl();
@@ -379,7 +391,7 @@ $("#go").onclick = async () => {
   const text = $("#chart").value.trim(), link = $("#link").value.trim();
   if (!img && !text && !link) { $("#e2").textContent = "Thêm ít nhất một ảnh, bảng size hoặc link sản phẩm."; return; }
   $("#e2").textContent = ""; $("#go").disabled = true; step(3);
-  $("#result").innerHTML = ""; $("#loading").hidden = false; $("#save").hidden = true;
+  $("#result").innerHTML = ""; $("#loading").hidden = false; $("#save").hidden = true; $("#fit").hidden = true;
   const prompt = `Chọn size cho người dùng. Link: ${link||"không có"}. Bảng size shop: ${text||"không có (hãy dùng bảng size chung, nói rõ nếu ước tính)"}.
 Chỉ trả về JSON hợp lệ, không markdown:
 {"product":"tên/loại món đồ","size":"size đề xuất","confidence":0-100,"fit":"ôm|vừa|rộng|oversize","reasons":["..."],"alt_size":"size dự phòng hoặc rỗng","warnings":["..."],"styling":["gợi ý phối đồ"],"colors":["màu hợp, chỉ khi đã có tông da/undertone xác nhận, nếu không để mảng rỗng"]}`;
@@ -415,90 +427,60 @@ function renderResult(){
     ${r.styling?.length ? `<label>Gợi ý phối đồ</label>${list(r.styling)}` : ""}
     ${r.colors?.length ? `<label>Màu hợp với bạn</label>${r.colors.map(c => `<span class="tag">${esc(c)}</span>`).join("")}` : ""}`;
 }
-$("#again").onclick = () => { img = null; thumb = null; $("#file").value = ""; $("#drop").textContent = "Nhấn để chọn ảnh hoặc kéo thả vào đây"; $("#chart").value = ""; $("#link").value = ""; step(2); };
-$("#save").onclick = () => {
-  const c = store.get("fm_closet", []); c.unshift(last); store.set("fm_closet", c.slice(0, 30));
-  $("#save").textContent = "Đã lưu"; setTimeout(() => $("#save").textContent = "Lưu vào tủ đồ", 1500);
-};
 
-/* ---------- Mặc thử ---------- */
-let body = null, garSrc = null, gar = null, gx = .5, gy = .42, drag = 0;
-const cv = $("#cv"), g2 = cv.getContext("2d");
-$("#bdrop").onclick = () => $("#bfile").click();
-$("#bfile").onchange = e => {
-  const f = e.target.files[0]; if (!f) return;
-  const r = new FileReader();
-  r.onload = () => { const im = new Image(); im.onload = () => {
-    const sc = Math.min(1, 900 / Math.max(im.width, im.height)), c = document.createElement("canvas");
-    c.width = im.width*sc; c.height = im.height*sc; c.getContext("2d").drawImage(im, 0, 0, c.width, c.height);
-    body = c; $("#bdrop").innerHTML = `<img src="${c.toDataURL("image/jpeg", .8)}" alt="Ảnh của bạn">`;
-  }; im.src = r.result; };
-  r.readAsDataURL(f); e.target.value = "";
-};
-function cutBg(im, tol){
-  const W = im.width, H = im.height, c = document.createElement("canvas"); c.width = W; c.height = H;
-  const x = c.getContext("2d", {willReadFrequently:true}); x.drawImage(im, 0, 0);
-  const d = x.getImageData(0, 0, W, H), p = d.data, seen = new Uint8Array(W*H), st = [0, W-1, (H-1)*W, H*W-1];
-  const R = p[0], G = p[1], B = p[2]; let x0 = W, y0 = H, x1 = 0, y1 = 0;
-  while (st.length){
-    const i = st.pop(); if (seen[i]) continue; seen[i] = 1; const o = i*4;
-    if (Math.abs(p[o]-R) + Math.abs(p[o+1]-G) + Math.abs(p[o+2]-B) > tol*3) continue;
-    p[o+3] = 0; const a = i % W, b = (i / W) | 0;
-    if (a > 0) st.push(i-1); if (a < W-1) st.push(i+1); if (b > 0) st.push(i-W); if (b < H-1) st.push(i+W);
-  }
-  for (let i = 0; i < W*H; i++) if (p[i*4+3]){ const a = i % W, b = (i / W) | 0; if (a<x0) x0=a; if (a>x1) x1=a; if (b<y0) y0=b; if (b>y1) y1=b; }
-  x.putImageData(d, 0, 0);
-  if (x1 < x0) return c;
-  const o = document.createElement("canvas"); o.width = x1-x0+1; o.height = y1-y0+1;
-  o.getContext("2d").drawImage(c, x0, y0, o.width, o.height, 0, 0, o.width, o.height); return o;
-}
-function drawFit(){
-  if (!body) return;
-  const W = cv.width = body.width, H = cv.height = body.height; g2.drawImage(body, 0, 0);
-  if (!gar) return;
-  const s = $("#sc").value/100 * W / gar.width;
-  g2.save(); g2.translate(gx*W, gy*H); g2.rotate($("#rt").value*Math.PI/180);
-  g2.drawImage(gar, -gar.width*s/2, -gar.height*s/2, gar.width*s, gar.height*s); g2.restore();
-}
-function regar(){ if (garSrc){ gar = cutBg(garSrc, +$("#tol").value); drawFit(); } }
+/* ---------- Mặc thử bằng AI (Hugging Face Space, miễn phí) ---------- */
 function initFit(){
-  const ok = !!(body && img); $("#fit").hidden = !ok; gx = .5; gy = .42; $("#aiOut").innerHTML = "";
-  $("#e4").textContent = ok ? "" : "Muốn mặc thử trên ảnh của bạn: quay lại bước 2, thêm ảnh toàn thân và ảnh sản phẩm.";
-  if (!ok) return;
-  const im = new Image(); im.onload = () => { garSrc = im; regar(); }; im.src = "data:image/jpeg;base64," + img;
+  $("#aiOut").innerHTML = "";
+  const ok = !!(body && img);
+  $("#fit").hidden = !ok;
+  $("#e4").textContent = ok ? "" : "Muốn xem bạn mặc món này: quay lại bước 2, thêm cả ảnh sản phẩm và ảnh toàn thân của bạn.";
 }
-const mv = e => { const r = cv.getBoundingClientRect(); gx = (e.clientX-r.left)/r.width; gy = (e.clientY-r.top)/r.height; drawFit(); };
-cv.onpointerdown = e => { drag = 1; cv.setPointerCapture(e.pointerId); mv(e); };
-cv.onpointermove = e => drag && mv(e);
-cv.onpointerup = cv.onpointercancel = () => drag = 0;
-$("#sc").oninput = $("#rt").oninput = drawFit; $("#tol").oninput = regar;
-$("#dl").onclick = () => { const a = document.createElement("a"); a.href = cv.toDataURL("image/png"); a.download = "fitme-thu-do.png"; a.click(); };
-
+const b64ToBlob = (b64, type) => { const bin = atob(b64), u = new Uint8Array(bin.length); for (let i = 0; i < bin.length; i++) u[i] = bin.charCodeAt(i); return new Blob([u], {type}); };
 $("#aiBtn").onclick = async () => {
   const err = $("#e4"); err.textContent = "";
   if (!body || !img) { err.textContent = "Cần ảnh toàn thân và ảnh sản phẩm."; return; }
   if (!confirm("Ảnh của bạn và ảnh sản phẩm sẽ được gửi tới một Space công cộng trên Hugging Face để AI xử lý. Tiếp tục?")) return;
   $("#aiBtn").disabled = true;
-  $("#aiOut").innerHTML = '<div class="empty">AI đang mặc thử, có thể phải xếp hàng 1–3 phút…</div>';
+  $("#aiOut").innerHTML = '<div class="empty">AI đang mặc thử, có thể phải xếp hàng 1–3 phút<span class="dots"><span>.</span><span>.</span><span>.</span></span></div>';
+  let stage = "tải thư viện", url = null, lastErr = null;
   try {
-    const { Client, handle_file } = await import("https://cdn.jsdelivr.net/npm/@gradio/client@1.8.0/dist/index.min.js");
+    const { Client, handle_file } = await import(GRADIO_CLIENT);
+    stage = "chuẩn bị ảnh";
     const person = await new Promise(r => body.toBlob(r, "image/jpeg", .9));
-    const garment = await (await fetch("data:image/jpeg;base64," + img)).blob();
-    const app = await Client.connect("yisol/IDM-VTON");
-    const res = await app.predict("/tryon", {
-      dict: { background: handle_file(person), layers: [], composite: null },
-      garm_img: handle_file(garment), garment_des: (last && last.product) || "clothing",
-      is_checked: true, is_checked_crop: false, denoise_steps: 30, seed: 42
-    });
-    const url = res.data && res.data[0] && res.data[0].url;
-    if (!url) throw new Error("AI không trả về ảnh");
-    $("#aiOut").innerHTML = `<img src="${url}" alt="Ảnh mặc thử do AI tạo" style="width:100%;max-width:420px;border-radius:14px;border:1px solid var(--line)">`;
+    const garment = b64ToBlob(img, "image/jpeg");
+    for (const space of TRYON_SPACES) {
+      try {
+        stage = "kết nối " + space;
+        const app = await Client.connect(space);
+        stage = "chạy AI (" + space + ")";
+        const res = await app.predict("/tryon", {
+          dict: { background: handle_file(person), layers: [], composite: null },
+          garm_img: handle_file(garment), garment_des: (last && last.product) || "clothing",
+          is_checked: true, is_checked_crop: false, denoise_steps: 30, seed: 42
+        });
+        url = res.data && res.data[0] && (res.data[0].url || res.data[0].path);
+        if (url) break;
+        lastErr = new Error("AI không trả về ảnh");
+      } catch (e) { lastErr = e; console.error(stage, e); }
+    }
+    if (!url) throw lastErr || new Error("Không có Space nào trả kết quả");
+    $("#aiOut").innerHTML = `<img class="tryimg" src="${url}" alt="Ảnh mặc thử do AI tạo">
+      <div class="actions"><a class="btn ghost" href="${url}" target="_blank" rel="noopener" style="text-decoration:none">Mở ảnh để lưu</a></div>`;
   } catch (e) {
+    console.error(stage, e);
     $("#aiOut").innerHTML = "";
-    err.textContent = "Không dùng được AI lúc này (" + (e && e.message ? e.message : "Space đang bận") + "). Bạn có thể dùng bản ghép 2D bên dưới.";
+    const msg = e && (e.message || e.detail || e.status);
+    err.textContent = "Lỗi ở bước «" + stage + "»: " + (msg || "không rõ") + ". Space miễn phí có thể đang ngủ hoặc quá tải, hãy thử lại sau ít phút.";
   }
   $("#aiBtn").disabled = false;
-};  
+};
+
+$("#again").onclick = () => { img = null; thumb = null; $("#file").value = ""; $("#drop").textContent = "Nhấn để chọn ảnh hoặc kéo thả vào đây"; $("#chart").value = ""; $("#link").value = ""; $("#aiOut").innerHTML = ""; step(2); };
+$("#save").onclick = () => {
+  const c = store.get("fm_closet", []); c.unshift(last); store.set("fm_closet", c.slice(0, 30));
+  $("#save").textContent = "Đã lưu"; setTimeout(() => $("#save").textContent = "Lưu vào tủ đồ", 1500);
+};
+
 /* ---------- Tủ đồ ---------- */
 function renderCloset(){
   const c = store.get("fm_closet", []);
