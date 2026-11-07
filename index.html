@@ -396,7 +396,7 @@ Chỉ trả về JSON hợp lệ, không markdown:
       warnings: [e.message, "Kết quả chỉ mang tính tham khảo, hãy đối chiếu bảng size của shop."], styling: [], colors: [], alt_size: "" };
   }
   last.date = new Date().toLocaleDateString("vi-VN"); last.link = link; last.thumb = thumb; $("#go").disabled = false;
-  renderResult(); $("#loading").hidden = true; $("#save").hidden = false;
+  renderResult(); initFit(); $("#loading").hidden = true; $("#save").hidden = false;
 };
 
 const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
@@ -421,6 +421,84 @@ $("#save").onclick = () => {
   $("#save").textContent = "Đã lưu"; setTimeout(() => $("#save").textContent = "Lưu vào tủ đồ", 1500);
 };
 
+/* ---------- Mặc thử ---------- */
+let body = null, garSrc = null, gar = null, gx = .5, gy = .42, drag = 0;
+const cv = $("#cv"), g2 = cv.getContext("2d");
+$("#bdrop").onclick = () => $("#bfile").click();
+$("#bfile").onchange = e => {
+  const f = e.target.files[0]; if (!f) return;
+  const r = new FileReader();
+  r.onload = () => { const im = new Image(); im.onload = () => {
+    const sc = Math.min(1, 900 / Math.max(im.width, im.height)), c = document.createElement("canvas");
+    c.width = im.width*sc; c.height = im.height*sc; c.getContext("2d").drawImage(im, 0, 0, c.width, c.height);
+    body = c; $("#bdrop").innerHTML = `<img src="${c.toDataURL("image/jpeg", .8)}" alt="Ảnh của bạn">`;
+  }; im.src = r.result; };
+  r.readAsDataURL(f); e.target.value = "";
+};
+function cutBg(im, tol){
+  const W = im.width, H = im.height, c = document.createElement("canvas"); c.width = W; c.height = H;
+  const x = c.getContext("2d", {willReadFrequently:true}); x.drawImage(im, 0, 0);
+  const d = x.getImageData(0, 0, W, H), p = d.data, seen = new Uint8Array(W*H), st = [0, W-1, (H-1)*W, H*W-1];
+  const R = p[0], G = p[1], B = p[2]; let x0 = W, y0 = H, x1 = 0, y1 = 0;
+  while (st.length){
+    const i = st.pop(); if (seen[i]) continue; seen[i] = 1; const o = i*4;
+    if (Math.abs(p[o]-R) + Math.abs(p[o+1]-G) + Math.abs(p[o+2]-B) > tol*3) continue;
+    p[o+3] = 0; const a = i % W, b = (i / W) | 0;
+    if (a > 0) st.push(i-1); if (a < W-1) st.push(i+1); if (b > 0) st.push(i-W); if (b < H-1) st.push(i+W);
+  }
+  for (let i = 0; i < W*H; i++) if (p[i*4+3]){ const a = i % W, b = (i / W) | 0; if (a<x0) x0=a; if (a>x1) x1=a; if (b<y0) y0=b; if (b>y1) y1=b; }
+  x.putImageData(d, 0, 0);
+  if (x1 < x0) return c;
+  const o = document.createElement("canvas"); o.width = x1-x0+1; o.height = y1-y0+1;
+  o.getContext("2d").drawImage(c, x0, y0, o.width, o.height, 0, 0, o.width, o.height); return o;
+}
+function drawFit(){
+  if (!body) return;
+  const W = cv.width = body.width, H = cv.height = body.height; g2.drawImage(body, 0, 0);
+  if (!gar) return;
+  const s = $("#sc").value/100 * W / gar.width;
+  g2.save(); g2.translate(gx*W, gy*H); g2.rotate($("#rt").value*Math.PI/180);
+  g2.drawImage(gar, -gar.width*s/2, -gar.height*s/2, gar.width*s, gar.height*s); g2.restore();
+}
+function regar(){ if (garSrc){ gar = cutBg(garSrc, +$("#tol").value); drawFit(); } }
+function initFit(){
+  const ok = !!(body && img); $("#fit").hidden = !ok; gx = .5; gy = .42; $("#aiOut").innerHTML = "";
+  $("#e4").textContent = ok ? "" : "Muốn mặc thử trên ảnh của bạn: quay lại bước 2, thêm ảnh toàn thân và ảnh sản phẩm.";
+  if (!ok) return;
+  const im = new Image(); im.onload = () => { garSrc = im; regar(); }; im.src = "data:image/jpeg;base64," + img;
+}
+const mv = e => { const r = cv.getBoundingClientRect(); gx = (e.clientX-r.left)/r.width; gy = (e.clientY-r.top)/r.height; drawFit(); };
+cv.onpointerdown = e => { drag = 1; cv.setPointerCapture(e.pointerId); mv(e); };
+cv.onpointermove = e => drag && mv(e);
+cv.onpointerup = cv.onpointercancel = () => drag = 0;
+$("#sc").oninput = $("#rt").oninput = drawFit; $("#tol").oninput = regar;
+$("#dl").onclick = () => { const a = document.createElement("a"); a.href = cv.toDataURL("image/png"); a.download = "fitme-thu-do.png"; a.click(); };
+
+$("#aiBtn").onclick = async () => {
+  const err = $("#e4"); err.textContent = "";
+  if (!body || !img) { err.textContent = "Cần ảnh toàn thân và ảnh sản phẩm."; return; }
+  if (!confirm("Ảnh của bạn và ảnh sản phẩm sẽ được gửi tới một Space công cộng trên Hugging Face để AI xử lý. Tiếp tục?")) return;
+  $("#aiBtn").disabled = true;
+  $("#aiOut").innerHTML = '<div class="empty">AI đang mặc thử, có thể phải xếp hàng 1–3 phút…</div>';
+  try {
+    const { Client, handle_file } = await import("https://cdn.jsdelivr.net/npm/@gradio/client@1.8.0/dist/index.min.js");
+    const person = await new Promise(r => body.toBlob(r, "image/jpeg", .9));
+    const garment = await (await fetch("data:image/jpeg;base64," + img)).blob();
+    const app = await Client.connect("yisol/IDM-VTON");
+    const res = await app.predict("/tryon", {
+      dict: { background: handle_file(person), layers: [], composite: null },
+      garm_img: handle_file(garment), garment_des: (last && last.product) || "clothing",
+      is_checked: true, is_checked_crop: false, denoise_steps: 30, seed: 42
+    });
+    const url = res.data && res.data[0] && res.data[0].url;
+    if (!url) throw new Error("AI không trả về ảnh");
+    $("#aiOut").innerHTML = `<img src="${url}" alt="Ảnh mặc thử do AI tạo" style="width:100%;max-width:420px;border-radius:14px;border:1px solid var(--line)">`;
+  } catch (e) {
+    $("#aiOut").innerHTML = "";
+    err.textContent = "Không dùng được AI lúc này (" + (e && e.message ? e.message : "Space đang bận") + "). Bạn có thể dùng bản ghép 2D bên dưới.";
+  }
+  $("#aiBtn").disabled = false;
+};  
 /* ---------- Tủ đồ ---------- */
 function renderCloset(){
   const c = store.get("fm_closet", []);
