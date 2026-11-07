@@ -195,12 +195,8 @@ footer{text-align:center;color:var(--mute);font-size:12.5px;padding:28px 20px 40
 </main>
 <footer>✦ Be yourself · FitMe AI</footer>
 <script>
-// ====== CẤU HÌNH ======
-const WORKER_URL = "https://yellow-grass-933f.nguyenduyhung190108.workers.dev/api/chat";
-// Danh sách Space Hugging Face dùng để mặc thử (thử lần lượt, cái đầu hỏng thì sang cái sau).
-// Thêm Space khác vào đây nếu cần; Space phải có endpoint /tryon giống IDM-VTON.
-const TRYON_SPACES = ["yisol/IDM-VTON"];
-const GRADIO_CLIENT = "https://cdn.jsdelivr.net/npm/@gradio/client@1.8.0/dist/index.min.js";
+// Trang và API chạy chung một Worker nên dùng đường dẫn tương đối
+const WORKER_URL = "/api/chat";
 
 const $ = s => document.querySelector(s);
 const mem = {};
@@ -435,42 +431,24 @@ function initFit(){
   $("#fit").hidden = !ok;
   $("#e4").textContent = ok ? "" : "Muốn xem bạn mặc món này: quay lại bước 2, thêm cả ảnh sản phẩm và ảnh toàn thân của bạn.";
 }
-const b64ToBlob = (b64, type) => { const bin = atob(b64), u = new Uint8Array(bin.length); for (let i = 0; i < bin.length; i++) u[i] = bin.charCodeAt(i); return new Blob([u], {type}); };
 $("#aiBtn").onclick = async () => {
   const err = $("#e4"); err.textContent = "";
   if (!body || !img) { err.textContent = "Cần ảnh toàn thân và ảnh sản phẩm."; return; }
-  if (!confirm("Ảnh của bạn và ảnh sản phẩm sẽ được gửi tới một Space công cộng trên Hugging Face để AI xử lý. Tiếp tục?")) return;
+  if (!confirm("Ảnh của bạn và ảnh sản phẩm sẽ được gửi tới Google Gemini để tạo ảnh mặc thử. Tiếp tục?")) return;
   $("#aiBtn").disabled = true;
-  $("#aiOut").innerHTML = '<div class="empty">AI đang mặc thử, có thể phải xếp hàng 1–3 phút<span class="dots"><span>.</span><span>.</span><span>.</span></span></div>';
-  let stage = "tải thư viện", url = null, lastErr = null;
+  $("#aiOut").innerHTML = '<div class="empty">AI đang mặc thử, khoảng 10–30 giây<span class="dots"><span>.</span><span>.</span><span>.</span></span></div>';
   try {
-    const { Client, handle_file } = await import(GRADIO_CLIENT);
-    stage = "chuẩn bị ảnh";
-    const person = await new Promise(r => body.toBlob(r, "image/jpeg", .9));
-    const garment = b64ToBlob(img, "image/jpeg");
-    for (const space of TRYON_SPACES) {
-      try {
-        stage = "kết nối " + space;
-        const app = await Client.connect(space);
-        stage = "chạy AI (" + space + ")";
-        const res = await app.predict("/tryon", {
-          dict: { background: handle_file(person), layers: [], composite: null },
-          garm_img: handle_file(garment), garment_des: (last && last.product) || "clothing",
-          is_checked: true, is_checked_crop: false, denoise_steps: 30, seed: 42
-        });
-        url = res.data && res.data[0] && (res.data[0].url || res.data[0].path);
-        if (url) break;
-        lastErr = new Error("AI không trả về ảnh");
-      } catch (e) { lastErr = e; console.error(stage, e); }
-    }
-    if (!url) throw lastErr || new Error("Không có Space nào trả kết quả");
-    $("#aiOut").innerHTML = `<img class="tryimg" src="${url}" alt="Ảnh mặc thử do AI tạo">
-      <div class="actions"><a class="btn ghost" href="${url}" target="_blank" rel="noopener" style="text-decoration:none">Mở ảnh để lưu</a></div>`;
+    const r = await fetch("/api/tryon", {
+      method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ person: body.toDataURL("image/jpeg", .9), garment: "data:image/jpeg;base64," + img })
+    });
+    const d = await r.json().catch(() => ({}));
+    if (!r.ok || !d.image) throw new Error(d.error || "Lỗi " + r.status);
+    $("#aiOut").innerHTML = `<img class="tryimg" src="${d.image}" alt="Ảnh mặc thử do AI tạo">
+      <div class="actions"><a class="btn ghost" href="${d.image}" download="fitme-mac-thu.png" style="text-decoration:none">Tải ảnh về</a></div>`;
   } catch (e) {
-    console.error(stage, e);
     $("#aiOut").innerHTML = "";
-    const msg = e && (e.message || e.detail || e.status);
-    err.textContent = "Lỗi ở bước «" + stage + "»: " + (msg || "không rõ") + ". Space miễn phí có thể đang ngủ hoặc quá tải, hãy thử lại sau ít phút.";
+    err.textContent = "Không tạo được ảnh: " + (e.message || "lỗi mạng") + ".";
   }
   $("#aiBtn").disabled = false;
 };
