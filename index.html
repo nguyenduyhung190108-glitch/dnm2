@@ -163,7 +163,13 @@ footer{text-align:center;color:var(--mute);font-size:12.5px;padding:28px 20px 40
         <div id="result"></div>
         <div id="fit" hidden>
           <label>Bạn mặc món này trông thế nào?</label>
-          <button class="btn" id="aiBtn" type="button">Mặc thử bằng AI (miễn phí)</button>
+          <div id="maskBox" hidden>
+            <p class="hint" style="margin:0 0 6px">Vùng tô đỏ là chỗ AI sẽ vẽ quần/váy. Kéo cho phủ từ eo tới cổ chân, chừa giày ra.</p>
+            <canvas id="mprev" style="width:100%;max-width:220px;border-radius:10px;border:1px solid var(--line);display:block"></canvas>
+            <label for="mTop">Từ eo trở xuống</label><input id="mTop" type="range" min="25" max="60" value="38">
+            <label for="mBot">Đến cổ chân</label><input id="mBot" type="range" min="70" max="99" value="90">
+          </div>
+          <button class="btn" id="aiBtn" type="button" style="margin-top:12px">Mặc thử bằng AI (miễn phí)</button>
           <div id="aiOut" style="margin:14px 0"></div>
           <p class="hint">Ảnh do AI tạo, chỉ để hình dung kiểu dáng và màu sắc, không cho biết có vừa size hay không. Hãy chọn size theo gợi ý ở trên. Mô hình miễn phí làm tốt nhất với áo và đầm. Khi ghép cả bộ, AI mặc lần lượt từng món nên lâu hơn, còn quần/váy được mặc vào vùng từ eo xuống chân, ước lượng theo ảnh đứng thẳng thấy đủ chân.</p>
         </div>
@@ -454,15 +460,25 @@ function initFit(){
   $("#aiOut").innerHTML = "";
   const ok = !!(body && img);
   $("#fit").hidden = !ok;
+  $("#maskBox").hidden = !(ok && img2); if (ok && img2) drawMask();
   $("#e4").textContent = ok ? "" : "Muốn xem bạn mặc món này: quay lại bước 2, thêm cả ảnh sản phẩm và ảnh toàn thân của bạn.";
 }
+const drawMask = () => {
+  if (!body) return;
+  const c = $("#mprev"), w = 240, h = Math.round(w * body.height / body.width), x = c.getContext("2d");
+  c.width = w; c.height = h; x.drawImage(body, 0, 0, w, h);
+  const t = $("#mTop").value / 100, b = $("#mBot").value / 100;
+  x.fillStyle = "rgba(255,40,40,.4)"; x.fillRect(w * .2, h * t, w * .6, h * Math.max(.05, b - t));
+};
+["#mTop", "#mBot"].forEach(k => $(k).addEventListener("input", drawMask));
 const lowerMask = src => new Promise((res, rej) => {
   const im = new Image();
   im.onload = () => {
     const w = 384, h = Math.round(w * im.height / im.width), c = document.createElement("canvas");
     c.width = w; c.height = h;
     const x = c.getContext("2d"); x.fillStyle = "#000"; x.fillRect(0, 0, w, h);
-    x.fillStyle = "#fff"; x.fillRect(w * .2, h * .44, w * .6, h * .53);
+    const t = $("#mTop").value / 100, b = $("#mBot").value / 100;
+    x.fillStyle = "#fff"; x.fillRect(w * .2, h * t, w * .6, h * Math.max(.05, b - t));
     res(c.toDataURL("image/png"));
   };
   im.onerror = () => rej(new Error("Không tạo được vùng mặc quần/váy"));
@@ -477,7 +493,7 @@ const jpegOf = src => new Promise((res, rej) => {
 $("#aiBtn").onclick = async () => {
   const err = $("#e4"); err.textContent = "";
   if (!body || !img) { err.textContent = "Cần ảnh toàn thân và ảnh sản phẩm."; return; }
-  const garments = [img, img2].filter(Boolean), n = garments.length;
+  const steps = img2 ? [{ g: img2, low: true }, { g: img }] : [{ g: img }], n = steps.length;
   if (!confirm("Ảnh của bạn và ảnh sản phẩm sẽ được gửi tới Hugging Face (Space IDM-VTON) để tạo ảnh mặc thử" + (n > 1 ? ", lần lượt từng món" : "") + ". Tiếp tục?")) return;
   $("#aiBtn").disabled = true;
   const show = src => `<img class="tryimg" src="${src}" alt="Ảnh mặc thử do AI tạo">
@@ -485,13 +501,13 @@ $("#aiBtn").onclick = async () => {
   let person = body.toDataURL("image/jpeg", .9), out = null;
   try {
     for (let i = 0; i < n; i++) {
-      $("#aiOut").innerHTML = '<div class="empty">AI đang mặc thử' + (n > 1 ? " món " + (i+1) + "/" + n : "") + ', có thể mất 1–3 phút<span class="dots"><span>.</span><span>.</span><span>.</span></span></div>';
+      $("#aiOut").innerHTML = '<div class="empty">AI đang mặc thử' + (n > 1 ? " " + (steps[i].low ? "quần/váy" : "áo") + " (" + (i+1) + "/" + n + ")" : "") + ', có thể mất 1–3 phút<span class="dots"><span>.</span><span>.</span><span>.</span></span></div>';
       const r = await fetch(API_BASE + "/api/tryon", {
         method: "POST", headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ person, garment: "data:image/jpeg;base64," + garments[i], mask: i > 0 ? await lowerMask(person) : undefined })
+        body: JSON.stringify({ person, garment: "data:image/jpeg;base64," + steps[i].g, mask: steps[i].low ? await lowerMask(person) : undefined })
       });
       const d = await r.json().catch(() => ({}));
-      if (!r.ok || !d.image) throw new Error((n > 1 ? "Món " + (i+1) + ": " : "") + (d.error || "Lỗi " + r.status));
+      if (!r.ok || !d.image) throw new Error((n > 1 ? (steps[i].low ? "Quần/váy" : "Áo") + ": " : "") + (d.error || "Lỗi " + r.status));
       out = d.image;
       if (i < n - 1) person = await jpegOf(out);
     }
