@@ -1,4 +1,174 @@
-<!DOCTYPE html>
+// =====================================================================
+// FitMe AI - 1 FILE DUY NHẤT cho Cloudflare Worker
+// Gồm: giao diện web + /api/chat (Workers AI) + /api/tryon (Hugging Face mặc thử).
+// Cài đặt: dán toàn bộ file này vào "Edit code" > Deploy, rồi:
+//   Settings > Bindings > Workers AI > tên biến: AI
+//   Settings > Variables and Secrets > thêm secret: HF_TOKEN (token Read của Hugging Face, nên có)
+//   (khuyên dùng) Bindings > Rate limiter > tên biến: LIMITER
+//   (tùy chọn) biến HF_SPACE = owner/ten-space nếu muốn dùng Space khác (mặc định yisol/IDM-VTON)
+// =====================================================================
+
+const MODEL = "@cf/meta/llama-4-scout-17b-16e-instruct"; // model đọc được ảnh
+const DEFAULT_SPACE = "yisol/IDM-VTON";
+const spaceHost = s => "https://" + s.toLowerCase().replace(/[\/._]/g, "-") + ".hf.space";
+
+function toAI(system, messages) {
+  const out = [];
+  if (system) out.push({ role: "system", content: system });
+  for (const m of messages) {
+    const role = m.role === "assistant" ? "assistant" : "user";
+    if (typeof m.content === "string") { out.push({ role, content: m.content }); continue; }
+    const parts = [];
+    for (const b of m.content || []) {
+      if (b.type === "text") parts.push({ type: "text", text: String(b.text || "") });
+      else if (b.type === "image" && b.source && b.source.data)
+        parts.push({ type: "image_url", image_url: { url: "data:" + (b.source.media_type || "image/jpeg") + ";base64," + b.source.data } });
+    }
+    out.push({ role, content: parts });
+  }
+  return out;
+}
+
+const toBlob = (b64, mime) => {
+  const bin = atob(b64), u = new Uint8Array(bin.length);
+  for (let i = 0; i < bin.length; i++) u[i] = bin.charCodeAt(i);
+  return new Blob([u], { type: mime });
+};
+const toB64 = buf => {
+  const u = new Uint8Array(buf); let s = "";
+  for (let i = 0; i < u.length; i += 0x8000) s += String.fromCharCode.apply(null, u.subarray(i, i + 0x8000));
+  return btoa(s);
+};
+
+// Gọi Space qua Gradio API: upload 2 ảnh -> gọi /tryon -> đọc kết quả (SSE) -> trả data URL
+async function hfTryon(env, p, g) {
+  const base = spaceHost(env.HF_SPACE || DEFAULT_SPACE);
+  const auth = env.HF_TOKEN ? { Authorization: "Bearer " + env.HF_TOKEN } : {};
+  const signal = AbortSignal.timeout(170000);
+
+  // Gradio 5 dùng tiền tố /gradio_api, Gradio 4 thì không có
+  const upload = async (img, name) => {
+    for (const pre of ["/gradio_api", ""]) {
+      const fd = new FormData();
+      fd.append("files", toBlob(img.data, img.mime_type), name);
+      const r = await fetch(base + pre + "/upload", { method: "POST", headers: auth, body: fd, signal });
+      if (r.status === 404) continue;
+      if (!r.ok) throw new Error("Upload ảnh lên Space lỗi (HTTP " + r.status + "). Space có thể đang ngủ hoặc bị lỗi.");
+      const a = await r.json();
+      return { pre, path: a[0] };
+    }
+    throw new Error("Không tìm thấy Space " + base + " (kiểm tra biến HF_SPACE)");
+  };
+
+  const up1 = await upload(p, "person.jpg");
+  const up2 = await upload(g, "garment.jpg");
+  const pre = up1.pre;
+  const file = path => ({ path, meta: { _type: "gradio.FileData" } });
+
+  // Tham số của IDM-VTON /tryon: ảnh người (ImageEditor), ảnh đồ, mô tả đồ,
+  // tự tạo mask, crop, số bước denoise, seed
+  const data = [
+    { background: file(up1.path), layers: [], composite: null },
+    file(up2.path),
+    env.HF_GARMENT_DESC || "garment",
+    true, false, 30, 42,
+  ];
+
+  const r = await fetch(base + pre + "/call/tryon", {
+    method: "POST", signal,
+    headers: { "Content-Type": "application/json", ...auth },
+    body: JSON.stringify({ data }),
+  });
+  if (!r.ok) {
+    const t = (await r.text().catch(() => "")).slice(0, 200);
+    throw new Error("Space từ chối yêu cầu (HTTP " + r.status + ")" + (t ? ": " + t : ""));
+  }
+  const { event_id } = await r.json();
+
+  const s = await fetch(base + pre + "/call/tryon/" + event_id, { headers: auth, signal });
+  const txt = await s.text();
+  let ev = "", out = null;
+  for (const line of txt.split("\n")) {
+    if (line.startsWith("event:")) ev = line.slice(6).trim();
+    else if (line.startsWith("data:")) {
+      const raw = line.slice(5).trim();
+      if (ev === "complete") out = JSON.parse(raw);
+      else if (ev === "error") throw new Error("Space báo lỗi" + (raw && raw !== "null" ? ": " + raw : " (có thể hết quota GPU miễn phí hoặc hàng đợi đầy, thử lại sau)"));
+    }
+  }
+  const f = out && out[0];
+  if (!f) throw new Error("Space không trả ảnh, thử lại sau");
+
+  const imgRes = await fetch(f.url || (base + pre + "/file=" + f.path), { headers: auth, signal });
+  if (!imgRes.ok) throw new Error("Không tải được ảnh kết quả (HTTP " + imgRes.status + ")");
+  const mime = (imgRes.headers.get("Content-Type") || "image/png").split(";")[0];
+  return "data:" + mime + ";base64," + toB64(await imgRes.arrayBuffer());
+}
+
+export default {
+  async fetch(request, env) {
+    const url = new URL(request.url);
+
+    const cors = {
+      "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Methods": "POST, OPTIONS",
+      "Access-Control-Allow-Headers": "Content-Type",
+    };
+    if (request.method === "OPTIONS") return new Response(null, { status: 204, headers: cors });
+
+    // ---------- Trang web ----------
+    if (request.method !== "POST") {
+      return new Response(PAGE, { headers: { "Content-Type": "text/html; charset=utf-8" } });
+    }
+
+    const json = (obj, status = 200) =>
+      new Response(JSON.stringify(obj), { status, headers: { "Content-Type": "application/json", ...cors } });
+
+    // Giới hạn số lần gọi mỗi người (chạy khi bạn gắn binding "Rate limiter" tên LIMITER)
+    if (env.LIMITER) {
+      const ip = request.headers.get("CF-Connecting-IP") || "anon";
+      const { success } = await env.LIMITER.limit({ key: ip });
+      if (!success) return json({ error: "Bạn thao tác quá nhanh, vui lòng thử lại sau ít phút." }, 429);
+    }
+
+    let body;
+    try { body = await request.json(); } catch (e) { return json({ error: "JSON không hợp lệ" }, 400); }
+
+    // ---------- Mặc thử bằng Hugging Face Space ----------
+    if (url.pathname === "/api/tryon") {
+      const parse = s => { const m = typeof s === "string" && s.length < 4e6 && s.match(/^data:(image\/[\w+.-]+);base64,(.+)$/); return m ? { mime_type: m[1], data: m[2] } : null; };
+      const p = parse(body.person), g = parse(body.garment);
+      if (!p || !g) return json({ error: "Ảnh không hợp lệ hoặc quá lớn" }, 400);
+      try {
+        return json({ image: await hfTryon(env, p, g) });
+      } catch (e) {
+        return json({ error: (e && e.message) || "Không gọi được Hugging Face" }, 502);
+      }
+    }
+
+    // ---------- Chat / phân tích size (Workers AI) ----------
+    if (!env.AI) return json({ error: "Chưa gắn Workers AI: vào Settings > Bindings > Add > Workers AI, đặt tên biến là AI" }, 500);
+    const messages = Array.isArray(body.messages) ? body.messages.slice(-12) : [];
+    if (!messages.length) return json({ error: "Thiếu messages" }, 400);
+
+    try {
+      const res = await env.AI.run(env.MODEL || MODEL, {
+        messages: toAI(String(body.system || "").slice(0, 6000), messages),
+        max_tokens: Math.min(Number(body.max_tokens) || 1200, 2000),
+        temperature: 0.5,
+      });
+      let text = (res && res.response) || (res && res.choices && res.choices[0] && res.choices[0].message && res.choices[0].message.content) || "";
+      if (typeof text !== "string") text = JSON.stringify(text);
+      if (!text.trim()) return json({ error: "AI không trả lời, thử lại" }, 502);
+      return json({ text });
+    } catch (e) {
+      return json({ error: "Lỗi Workers AI: " + (e && e.message ? e.message : e) }, 500);
+    }
+  },
+};
+
+// ---------- Giao diện web (HTML) ----------
+const PAGE = `<!DOCTYPE html>
 <html lang="vi">
 <head>
 <meta charset="utf-8">
@@ -232,7 +402,7 @@ function step(n){
 }
 
 /* ---------- Biển ---------- */
-(function(){const sea=$("#sea");for(let i=0;i<16;i++){const e=document.createElement("i");e.className="bub";const z=6+Math.random()*16;e.style.cssText=`left:${Math.random()*100}%;width:${z}px;height:${z}px;animation-duration:${14+Math.random()*18}s;animation-delay:-${Math.random()*20}s;opacity:${.4+Math.random()*.5}`;sea.appendChild(e);}})();
+(function(){const sea=$("#sea");for(let i=0;i<16;i++){const e=document.createElement("i");e.className="bub";const z=6+Math.random()*16;e.style.cssText=\`left:\${Math.random()*100}%;width:\${z}px;height:\${z}px;animation-duration:\${14+Math.random()*18}s;animation-delay:-\${Math.random()*20}s;opacity:\${.4+Math.random()*.5}\`;sea.appendChild(e);}})();
 
 /* ---------- Hồ sơ ---------- */
 function chips(el, items, key, colors){
@@ -269,29 +439,29 @@ function drawMan(){
   const kw = hw*.62, kt = T*.55, aw = hw*.4, at = T*.28;
   const sk = (SKINS.find(x => x[0] === P.skin) || [,"#d9b99b"])[1];
   const ax = cx-sw, e = ax-ut-8, ei = e+ut*.75, wo = ax-ut-20;
-  const torso = `M${cx-nw} 84 C${cx-nw} 93 ${cx-sw} 92 ${cx-sw} 102 C${cx-sw+2} 120 ${cx-bw} 126 ${cx-bw} 146 C${cx-bw} 166 ${cx-ww} 176 ${cx-ww} 192 C${cx-ww} 214 ${cx-hw} 222 ${cx-hw} 246 L${cx+hw} 246 C${cx+hw} 222 ${cx+ww} 214 ${cx+ww} 192 C${cx+ww} 176 ${cx+bw} 166 ${cx+bw} 146 C${cx+bw} 126 ${cx+sw-2} 120 ${cx+sw} 102 C${cx+sw} 92 ${cx+nw} 93 ${cx+nw} 84 Z`;
-  const leg = `M${cx-hw} 240 C${cx-hw} 290 ${cx-kw} 308 ${cx-kw} 346 C${cx-kw} 378 ${cx-aw} 396 ${cx-aw} 414 L${cx-aw+at} 414 C${cx-aw+at} 392 ${cx-kw+kt} 376 ${cx-kw+kt} 346 C${cx-kw+kt} 304 ${cx-2} 282 ${cx-2} 250 Z`;
-  const arm = `M${ax+5} 98 C${ax-3} 100 ${ax-ut+1} 114 ${ax-ut} 142 C${ax-ut-2} 166 ${e+2} 180 ${e} 197 C${e-3} 222 ${wo+2} 240 ${wo} 262 L${wo+wt} 262 C${wo+wt+2} 240 ${ei-1} 222 ${ei} 197 C${ei+2} 178 ${cx-bw-3} 168 ${cx-bw+1} 142 C${cx-bw-2} 120 ${ax+12} 104 ${ax+5} 98 Z`;
-  const mir = `transform="translate(${2*cx},0) scale(-1,1)"`, hair = m ? "#241914" : "#2a1c16";
-  const guide = (y, t, v, g) => `<line x1="${cx+sw+6}" x2="262" y1="${y}" y2="${y}" stroke="#e8c479" stroke-opacity=".55" stroke-dasharray="2 3" stroke-width=".8"/><text x="266" y="${y-3}" text-anchor="end" font-size="8.5" fill="#e8c479" font-family="sans-serif">${t} ${g?"~":""}${Math.round(v)}</text>`;
-  $("#man").innerHTML = `<defs>
-    <linearGradient id="sk" x1="0" x2="1"><stop offset="0" stop-color="${sk}"/><stop offset="1" stop-color="${sk}"/></linearGradient>
+  const torso = \`M\${cx-nw} 84 C\${cx-nw} 93 \${cx-sw} 92 \${cx-sw} 102 C\${cx-sw+2} 120 \${cx-bw} 126 \${cx-bw} 146 C\${cx-bw} 166 \${cx-ww} 176 \${cx-ww} 192 C\${cx-ww} 214 \${cx-hw} 222 \${cx-hw} 246 L\${cx+hw} 246 C\${cx+hw} 222 \${cx+ww} 214 \${cx+ww} 192 C\${cx+ww} 176 \${cx+bw} 166 \${cx+bw} 146 C\${cx+bw} 126 \${cx+sw-2} 120 \${cx+sw} 102 C\${cx+sw} 92 \${cx+nw} 93 \${cx+nw} 84 Z\`;
+  const leg = \`M\${cx-hw} 240 C\${cx-hw} 290 \${cx-kw} 308 \${cx-kw} 346 C\${cx-kw} 378 \${cx-aw} 396 \${cx-aw} 414 L\${cx-aw+at} 414 C\${cx-aw+at} 392 \${cx-kw+kt} 376 \${cx-kw+kt} 346 C\${cx-kw+kt} 304 \${cx-2} 282 \${cx-2} 250 Z\`;
+  const arm = \`M\${ax+5} 98 C\${ax-3} 100 \${ax-ut+1} 114 \${ax-ut} 142 C\${ax-ut-2} 166 \${e+2} 180 \${e} 197 C\${e-3} 222 \${wo+2} 240 \${wo} 262 L\${wo+wt} 262 C\${wo+wt+2} 240 \${ei-1} 222 \${ei} 197 C\${ei+2} 178 \${cx-bw-3} 168 \${cx-bw+1} 142 C\${cx-bw-2} 120 \${ax+12} 104 \${ax+5} 98 Z\`;
+  const mir = \`transform="translate(\${2*cx},0) scale(-1,1)"\`, hair = m ? "#241914" : "#2a1c16";
+  const guide = (y, t, v, g) => \`<line x1="\${cx+sw+6}" x2="262" y1="\${y}" y2="\${y}" stroke="#e8c479" stroke-opacity=".55" stroke-dasharray="2 3" stroke-width=".8"/><text x="266" y="\${y-3}" text-anchor="end" font-size="8.5" fill="#e8c479" font-family="sans-serif">\${t} \${g?"~":""}\${Math.round(v)}</text>\`;
+  $("#man").innerHTML = \`<defs>
+    <linearGradient id="sk" x1="0" x2="1"><stop offset="0" stop-color="\${sk}"/><stop offset="1" stop-color="\${sk}"/></linearGradient>
     <linearGradient id="sh" x1="0" x2="1"><stop offset="0" stop-color="#fff" stop-opacity=".2"/><stop offset=".45" stop-color="#fff" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".3"/></linearGradient>
     <radialGradient id="fl" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#7fd6f5" stop-opacity=".35"/><stop offset="1" stop-color="#7fd6f5" stop-opacity="0"/></radialGradient>
-    <path id="pt" d="${torso}"/><path id="pl" d="${leg}"/><path id="pa" d="${arm}"/>
-    <clipPath id="bc"><use href="#pt"/><use href="#pl"/><use href="#pl" ${mir}/></clipPath></defs>
-  <ellipse cx="${cx}" cy="420" rx="95" ry="12" fill="url(#fl)"/>
-  ${m ? "" : `<path d="M${cx-23} 40 C${cx-27} 12 ${cx+27} 12 ${cx+23} 40 C${cx+29} 80 ${cx+25} 112 ${cx+20} 126 L${cx-20} 126 C${cx-25} 112 ${cx-29} 80 ${cx-23} 40 Z" fill="${hair}"/>`}
-  <g fill="url(#sk)"><use href="#pa"/><use href="#pa" ${mir}/><use href="#pl"/><use href="#pl" ${mir}/>
-    <ellipse cx="${wo+wt/2}" cy="272" rx="6.5" ry="10"/><ellipse cx="${2*cx-wo-wt/2}" cy="272" rx="6.5" ry="10"/>
-    <ellipse cx="${cx-aw+at/2-5}" cy="416" rx="${at*.5+7}" ry="5.5"/><ellipse cx="${cx+aw-at/2+5}" cy="416" rx="${at*.5+7}" ry="5.5"/>
-    <use href="#pt"/><rect x="${cx-nw}" y="62" width="${nw*2}" height="30" rx="4"/><ellipse cx="${cx}" cy="46" rx="20" ry="25"/></g>
+    <path id="pt" d="\${torso}"/><path id="pl" d="\${leg}"/><path id="pa" d="\${arm}"/>
+    <clipPath id="bc"><use href="#pt"/><use href="#pl"/><use href="#pl" \${mir}/></clipPath></defs>
+  <ellipse cx="\${cx}" cy="420" rx="95" ry="12" fill="url(#fl)"/>
+  \${m ? "" : \`<path d="M\${cx-23} 40 C\${cx-27} 12 \${cx+27} 12 \${cx+23} 40 C\${cx+29} 80 \${cx+25} 112 \${cx+20} 126 L\${cx-20} 126 C\${cx-25} 112 \${cx-29} 80 \${cx-23} 40 Z" fill="\${hair}"/>\`}
+  <g fill="url(#sk)"><use href="#pa"/><use href="#pa" \${mir}/><use href="#pl"/><use href="#pl" \${mir}/>
+    <ellipse cx="\${wo+wt/2}" cy="272" rx="6.5" ry="10"/><ellipse cx="\${2*cx-wo-wt/2}" cy="272" rx="6.5" ry="10"/>
+    <ellipse cx="\${cx-aw+at/2-5}" cy="416" rx="\${at*.5+7}" ry="5.5"/><ellipse cx="\${cx+aw-at/2+5}" cy="416" rx="\${at*.5+7}" ry="5.5"/>
+    <use href="#pt"/><rect x="\${cx-nw}" y="62" width="\${nw*2}" height="30" rx="4"/><ellipse cx="\${cx}" cy="46" rx="20" ry="25"/></g>
   <g clip-path="url(#bc)"><rect x="0" y="0" width="270" height="440" fill="url(#sh)"/>
-    <rect x="0" y="${m?112:110}" width="270" height="${m?90:86}" fill="#0b2a4d"/><rect x="0" y="${m?112:110}" width="270" height="2" fill="#e8c479"/>
-    <rect x="0" y="${m?236:238}" width="270" height="${m?58:42}" fill="#0b2a4d"/><rect x="0" y="${m?292:278}" width="270" height="2" fill="#e8c479"/></g>
-  <path d="M${cx-21} 46 C${cx-22} 16 ${cx+22} 16 ${cx+21} 46 C${cx+14} 30 ${cx-8} 28 ${cx-21} 46 Z" fill="${hair}"/>
-  <path d="M${cx-8} 60 Q${cx} 64 ${cx+8} 60" stroke="#00000033" stroke-width="1.2" fill="none"/>
-  ${guide(146,"Ngực",B,gB)}${guide(192,"Eo",W,gW)}${guide(236,"Mông",H,gH)}`;
+    <rect x="0" y="\${m?112:110}" width="270" height="\${m?90:86}" fill="#0b2a4d"/><rect x="0" y="\${m?112:110}" width="270" height="2" fill="#e8c479"/>
+    <rect x="0" y="\${m?236:238}" width="270" height="\${m?58:42}" fill="#0b2a4d"/><rect x="0" y="\${m?292:278}" width="270" height="2" fill="#e8c479"/></g>
+  <path d="M\${cx-21} 46 C\${cx-22} 16 \${cx+22} 16 \${cx+21} 46 C\${cx+14} 30 \${cx-8} 28 \${cx-21} 46 Z" fill="\${hair}"/>
+  <path d="M\${cx-8} 60 Q\${cx} 64 \${cx+8} 60" stroke="#00000033" stroke-width="1.2" fill="none"/>
+  \${guide(146,"Ngực",B,gB)}\${guide(192,"Eo",W,gW)}\${guide(236,"Mông",H,gH)}\`;
   $("#bmi").textContent = P.h && P.w ? bmi.toFixed(1) : "–";
   $("#bmiCat").textContent = P.h && P.w ? (bmi<18.5?"Nhẹ cân":bmi<23?"Cân đối":bmi<25?"Hơi đầy đặn":"Đầy đặn") : "BMI";
   $("#shapeName").textContent = P.shape || "–";
@@ -332,7 +502,7 @@ function loadImg(file, n = 1){
       const url = c.toDataURL("image/jpeg", .82);
       const b64 = url.split(",")[1], th = mkThumb(im);
       if (n === 2) { img2 = b64; thumb2 = th; } else { img = b64; thumb = th; }
-      $(n === 2 ? "#drop2" : "#drop").innerHTML = `<img src="${url}" alt="Ảnh sản phẩm ${n}">`;
+      $(n === 2 ? "#drop2" : "#drop").innerHTML = \`<img src="\${url}" alt="Ảnh sản phẩm \${n}">\`;
     };
     im.src = r.result;
   };
@@ -350,7 +520,7 @@ $("#bfile").onchange = e => {
     im.onload = () => {
       const sc = Math.min(1, 1024 / Math.max(im.width, im.height)), c = document.createElement("canvas");
       c.width = im.width*sc; c.height = im.height*sc; c.getContext("2d").drawImage(im, 0, 0, c.width, c.height);
-      body = c; $("#bdrop").innerHTML = `<img src="${c.toDataURL("image/jpeg", .8)}" alt="Ảnh của bạn">`;
+      body = c; $("#bdrop").innerHTML = \`<img src="\${c.toDataURL("image/jpeg", .8)}" alt="Ảnh của bạn">\`;
     };
     im.src = r.result;
   };
@@ -371,10 +541,10 @@ async function callAI(system, messages, max = 1200){
   return d.text || "";
 }
 function profileText(){
-  const l = [`Chiều cao ${P.h} cm, cân nặng ${P.w} kg`];
+  const l = [\`Chiều cao \${P.h} cm, cân nặng \${P.w} kg\`];
   if (P.sex) l.push("Giới tính: " + P.sex);
   if (P.shape) l.push("Phom dáng: " + P.shape);
-  if (P.bust || P.waist || P.hip) l.push(`Ba vòng: ngực ${P.bust||"?"}, eo ${P.waist||"?"}, mông ${P.hip||"?"} cm`);
+  if (P.bust || P.waist || P.hip) l.push(\`Ba vòng: ngực \${P.bust||"?"}, eo \${P.waist||"?"}, mông \${P.hip||"?"} cm\`);
   if (P.skin) l.push("Tông da (người dùng xác nhận): " + P.skin);
   if (P.under && P.under !== "Chưa chắc") l.push("Undertone (người dùng xác nhận): " + P.under);
   else l.push("Chưa xác nhận tông da/undertone: KHÔNG được đoán.");
@@ -397,15 +567,15 @@ function normalize(o){
     reasons: arr(o.reasons), alt_size: String(o.alt_size || "").trim().toUpperCase(), warnings: arr(o.warnings), styling: arr(o.styling), colors: ok ? arr(o.colors) : [] };
 }
 async function analyze(imgData, text, link, bottom){
-  const prompt = `Chọn size cho người dùng. Link: ${link||"không có"}. Bảng size shop: ${text||"không có (hãy dùng bảng size chung, nói rõ nếu ước tính)"}.
+  const prompt = \`Chọn size cho người dùng. Link: \${link||"không có"}. Bảng size shop: \${text||"không có (hãy dùng bảng size chung, nói rõ nếu ước tính)"}.
 Chỉ trả về JSON hợp lệ, không markdown:
-{"product":"tên/loại món đồ","size":"size đề xuất","confidence":0-100,"fit":"ôm|vừa|rộng|oversize","reasons":["..."],"alt_size":"size dự phòng hoặc rỗng","warnings":["..."],"styling":["gợi ý phối đồ"],"colors":["màu hợp, chỉ khi đã có tông da/undertone xác nhận, nếu không để mảng rỗng"]}`;
+{"product":"tên/loại món đồ","size":"size đề xuất","confidence":0-100,"fit":"ôm|vừa|rộng|oversize","reasons":["..."],"alt_size":"size dự phòng hoặc rỗng","warnings":["..."],"styling":["gợi ý phối đồ"],"colors":["màu hợp, chỉ khi đã có tông da/undertone xác nhận, nếu không để mảng rỗng"]}\`;
   const content = [];
   if (imgData) content.push({type:"image", source:{type:"base64", media_type:"image/jpeg", data:imgData}});
   content.push({type:"text", text:prompt});
   try {
     const out = await callAI(SYS(), [{role:"user", content}], 1400);
-    const m = out.match(/\{[\s\S]*\}/);
+    const m = out.match(/\\{[\\s\\S]*\\}/);
     const r = normalize(JSON.parse(m[0])); r.ai = true;
     return r;
   } catch (e) {
@@ -430,20 +600,20 @@ $("#go").onclick = async () => {
 };
 
 const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
-const list = a => a && a.length ? `<ul class="clean">${a.map(x => `<li>${esc(x)}</li>`).join("")}</ul>` : "";
+const list = a => a && a.length ? \`<ul class="clean">\${a.map(x => \`<li>\${esc(x)}</li>\`).join("")}</ul>\` : "";
 function renderOne(r, i){
   const fitCls = r.fit === "vừa" ? "ok" : "warn";
-  return `
-    ${r.thumb ? `<img class="rthumb" src="${r.thumb}" alt="Ảnh sản phẩm">` : ""}
-    <p class="sub" style="margin:0">${last.length > 1 ? `<b>Món ${i+1}</b> · ` : ""}${esc(r.product)}</p>
-    <div style="display:flex;align-items:flex-end;gap:16px;flex-wrap:wrap"><div class="size-big gt">${esc(r.size)}</div>
-      <div><span class="tag ${fitCls}">Form ${esc(r.fit)}</span>${r.alt_size ? `<span class="tag">Dự phòng: ${esc(r.alt_size)}</span>` : ""}${r.ai ? "" : `<span class="tag warn">Offline</span>`}</div></div>
-    <div class="meter" aria-label="Độ tin cậy"><div style="width:${+r.confidence||0}%"></div></div>
-    <div class="hint">Độ tin cậy ${+r.confidence||0}%</div>
-    <label>Vì sao chọn size này</label>${list(r.reasons)}
-    ${r.warnings?.length ? `<label>Lưu ý</label>${list(r.warnings)}` : ""}
-    ${r.styling?.length ? `<label>Gợi ý phối đồ</label>${list(r.styling)}` : ""}
-    ${r.colors?.length ? `<label>Màu hợp với bạn</label>${r.colors.map(c => `<span class="tag">${esc(c)}</span>`).join("")}` : ""}`;
+  return \`
+    \${r.thumb ? \`<img class="rthumb" src="\${r.thumb}" alt="Ảnh sản phẩm">\` : ""}
+    <p class="sub" style="margin:0">\${last.length > 1 ? \`<b>Món \${i+1}</b> · \` : ""}\${esc(r.product)}</p>
+    <div style="display:flex;align-items:flex-end;gap:16px;flex-wrap:wrap"><div class="size-big gt">\${esc(r.size)}</div>
+      <div><span class="tag \${fitCls}">Form \${esc(r.fit)}</span>\${r.alt_size ? \`<span class="tag">Dự phòng: \${esc(r.alt_size)}</span>\` : ""}\${r.ai ? "" : \`<span class="tag warn">Offline</span>\`}</div></div>
+    <div class="meter" aria-label="Độ tin cậy"><div style="width:\${+r.confidence||0}%"></div></div>
+    <div class="hint">Độ tin cậy \${+r.confidence||0}%</div>
+    <label>Vì sao chọn size này</label>\${list(r.reasons)}
+    \${r.warnings?.length ? \`<label>Lưu ý</label>\${list(r.warnings)}\` : ""}
+    \${r.styling?.length ? \`<label>Gợi ý phối đồ</label>\${list(r.styling)}\` : ""}
+    \${r.colors?.length ? \`<label>Màu hợp với bạn</label>\${r.colors.map(c => \`<span class="tag">\${esc(c)}</span>\`).join("")}\` : ""}\`;
 }
 function renderResult(){
   $("#result").innerHTML = last.map(renderOne).join('<hr style="border:0;border-top:1px solid var(--line);margin:20px 0;clear:both">');
@@ -468,8 +638,8 @@ $("#aiBtn").onclick = async () => {
   const garments = [img, img2].filter(Boolean), n = garments.length;
   if (!confirm("Ảnh của bạn và ảnh sản phẩm sẽ được gửi tới Hugging Face (Space IDM-VTON) để tạo ảnh mặc thử" + (n > 1 ? ", lần lượt từng món" : "") + ". Tiếp tục?")) return;
   $("#aiBtn").disabled = true;
-  const show = src => `<img class="tryimg" src="${src}" alt="Ảnh mặc thử do AI tạo">
-      <div class="actions"><a class="btn ghost" href="${src}" download="fitme-mac-thu.png" style="text-decoration:none">Tải ảnh về</a></div>`;
+  const show = src => \`<img class="tryimg" src="\${src}" alt="Ảnh mặc thử do AI tạo">
+      <div class="actions"><a class="btn ghost" href="\${src}" download="fitme-mac-thu.png" style="text-decoration:none">Tải ảnh về</a></div>\`;
   let person = body.toDataURL("image/jpeg", .9), out = null;
   try {
     for (let i = 0; i < n; i++) {
@@ -500,22 +670,22 @@ $("#save").onclick = () => {
 /* ---------- Tủ đồ ---------- */
 function renderCloset(){
   const c = store.get("fm_closet", []);
-  $("#wardrobe").innerHTML = c.length ? c.map((x,i) => `<div class="card item"><div class="ph">${x.thumb ? `<img src="${x.thumb}" alt="${esc(x.product)}">` : "✦"}<em>${esc(x.size)}</em></div><b>${esc(x.product)}</b>
-    <div class="hint">${esc(x.date)} · Form ${esc(x.fit)} · ${+x.confidence||0}%</div>
-    ${x.reasons && x.reasons[0] ? `<div class="hint">${esc(x.reasons[0])}</div>` : ""}
-    ${x.link ? `<div class="hint" style="word-break:break-all">${esc(x.link)}</div>` : ""}
-    <button class="link" data-i="${i}">Xóa</button></div>`).join("")
-    : `<div class="empty" style="grid-column:1/-1">Tủ đồ còn trống. Thử một món rồi nhấn “Lưu vào tủ đồ”.</div>`;
+  $("#wardrobe").innerHTML = c.length ? c.map((x,i) => \`<div class="card item"><div class="ph">\${x.thumb ? \`<img src="\${x.thumb}" alt="\${esc(x.product)}">\` : "✦"}<em>\${esc(x.size)}</em></div><b>\${esc(x.product)}</b>
+    <div class="hint">\${esc(x.date)} · Form \${esc(x.fit)} · \${+x.confidence||0}%</div>
+    \${x.reasons && x.reasons[0] ? \`<div class="hint">\${esc(x.reasons[0])}</div>\` : ""}
+    \${x.link ? \`<div class="hint" style="word-break:break-all">\${esc(x.link)}</div>\` : ""}
+    <button class="link" data-i="\${i}">Xóa</button></div>\`).join("")
+    : \`<div class="empty" style="grid-column:1/-1">Tủ đồ còn trống. Thử một món rồi nhấn “Lưu vào tủ đồ”.</div>\`;
   $("#wardrobe").querySelectorAll("button").forEach(b => b.onclick = () => { c.splice(+b.dataset.i, 1); store.set("fm_closet", c); renderCloset(); });
 }
 
 /* ---------- Stylist ---------- */
 const QUICK = ["Đi làm nên mặc gì?","Phối đồ đi hẹn hò","Màu nào hợp với tôi?","Áo che bụng cho phom của tôi"];
-$("#quick").innerHTML = QUICK.map(q => `<button class="chip">${q}</button>`).join("");
+$("#quick").innerHTML = QUICK.map(q => \`<button class="chip">\${q}</button>\`).join("");
 $("#quick").querySelectorAll("button").forEach(b => b.onclick = () => { $("#q").value = b.textContent; sendQ(); });
 function drawChat(){
-  $("#chat").innerHTML = history.length ? history.map(m => `<div class="msg ${m.role==="user"?"u":"a"}">${esc(m.content)}</div>`).join("")
-    : `<div class="empty">Chọn một câu hỏi nhanh hoặc tự hỏi bên dưới.</div>`;
+  $("#chat").innerHTML = history.length ? history.map(m => \`<div class="msg \${m.role==="user"?"u":"a"}">\${esc(m.content)}</div>\`).join("")
+    : \`<div class="empty">Chọn một câu hỏi nhanh hoặc tự hỏi bên dưới.</div>\`;
   if (busy) $("#chat").insertAdjacentHTML("beforeend", '<div class="msg a dots"><span>.</span><span>.</span><span>.</span></div>');
   $("#chat").scrollTop = 1e9;
 }
@@ -539,3 +709,4 @@ drawChat();
 </script>
 </body>
 </html>
+`;
