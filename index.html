@@ -7,47 +7,50 @@
 <title>FitMe AI – Trợ lý thử đồ & chọn size</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,700&family=Cormorant+Garamond:wght@700&family=Be+Vietnam+Pro:wght@400;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,700&family=Cormorant+Garamond:wght@700&family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
-:root{--ink:#eaf6ff;--mute:#8fb3cf;--line:rgba(232,196,121,.28);--line2:rgba(143,190,225,.2);--panel:rgba(4,22,42,.62);--field:rgba(3,18,36,.72);--gold:#e8c479;--aqua:#7fd6f5;--ok:#5fe0b5;--warn:#f0a850;--bad:#ff8a93;--ease:cubic-bezier(.22,.8,.24,1);color-scheme:dark}
+:root{--ink:#eaf6ff;--mute:#a9cde6;--line:rgba(232,196,121,.34);--line2:rgba(143,190,225,.26);--panel:rgba(3,17,33,.88);--field:rgba(2,13,28,.9);--gold:#e8c479;--aqua:#7fd6f5;--ok:#5fe0b5;--warn:#f0a850;--bad:#ff8a93;--ease:cubic-bezier(.22,.8,.24,1);color-scheme:dark}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html{scroll-padding-top:env(safe-area-inset-top,0px)}
-body{margin:0;min-height:100vh;color:var(--ink);font:15px/1.6 "Be Vietnam Pro",system-ui,sans-serif;background:#031528;padding:env(safe-area-inset-top,0) 0 env(safe-area-inset-bottom,0);overflow-x:hidden}
+body{margin:0;min-height:100vh;color:var(--ink);font:17px/1.65 "Be Vietnam Pro",system-ui,sans-serif;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;letter-spacing:.01em;background:#020e1d;padding:env(safe-area-inset-top,0) 0 env(safe-area-inset-bottom,0);overflow-x:hidden}
 button{font:inherit;color:inherit}
-body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;background:radial-gradient(ellipse at 20% 0,rgba(60,150,210,.35),transparent 55%),radial-gradient(ellipse at 90% 100%,rgba(232,196,121,.12),transparent 50%),linear-gradient(180deg,#063257,#031528)}
-.app{position:relative;z-index:1;max-width:1180px;margin:0 auto;padding:0 20px}
+body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;background:radial-gradient(ellipse 70% 42% at 50% -6%,rgba(140,205,250,.18),transparent 62%),radial-gradient(ellipse 46% 30% at 50% 0%,rgba(232,196,121,.05),transparent 60%),radial-gradient(ellipse 55% 40% at 88% 108%,rgba(232,196,121,.04),transparent 55%),linear-gradient(180deg,#072847 0,#051d38 26%,#031426 52%,#020e1d 78%,#010812 100%)}
+body::after{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.18;background-image:radial-gradient(rgba(190,225,250,.16) 1.2px,transparent 1.8px),radial-gradient(rgba(190,225,250,.09) 1px,transparent 1.5px);background-size:110px 130px,64px 84px;background-position:12px 30px,40px 8px;-webkit-mask-image:linear-gradient(180deg,#000,#000 78%,transparent);mask-image:linear-gradient(180deg,#000,#000 78%,transparent)}
+.deepbg{position:fixed;inset:-6px;z-index:0;pointer-events:none;overflow:hidden;opacity:.34;filter:blur(3px) saturate(.55) brightness(.68)}
+.deepbg svg{width:100%;height:100%;display:block}
+.app{position:relative;z-index:1;max-width:1200px;margin:0 auto;padding:0 22px}
 header{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:18px 0 10px;flex-wrap:wrap}
 .metal{background:linear-gradient(180deg,#fff 0,#cdeeff 46%,#f3dca8 100%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent;filter:drop-shadow(0 0 10px rgba(120,210,255,.4))}
-.logo{display:flex;align-items:center;gap:6px;font:700 34px/1 "Cormorant Garamond",Georgia,serif;letter-spacing:.5px}
+.logo{display:flex;align-items:center;gap:6px;font:700 42px/1 "Cormorant Garamond",Georgia,serif;letter-spacing:.4px}
 .logo svg{width:24px;height:24px;fill:var(--gold);filter:drop-shadow(0 0 6px rgba(232,196,121,.6));animation:spin 28s linear infinite}
 .brand{display:flex;align-items:center;gap:14px}
 .brandimg{display:grid;place-items:center;height:64px;width:64px;border-radius:14px;background:linear-gradient(160deg,#0b3a63,#06284a);box-shadow:0 0 0 2px rgba(232,196,121,.6),0 0 22px rgba(127,214,245,.35)}
 .brandimg svg{width:36px;height:36px;fill:var(--gold)}
-.team{display:block;margin-top:6px;font:600 12px/1.2 "Be Vietnam Pro",sans-serif;letter-spacing:.9px;text-transform:uppercase;color:var(--gold)}
+.team{display:block;margin-top:6px;font:700 13px/1.3 "Be Vietnam Pro",sans-serif;letter-spacing:1px;text-transform:uppercase;color:var(--gold)}
 @keyframes spin{to{transform:rotate(360deg)}}
 nav.tabs{display:flex;gap:6px}
-nav.tabs button{display:flex;align-items:center;gap:7px;background:none;border:0;border-radius:99px;padding:9px 16px;font-weight:600;font-size:14px;color:var(--mute);cursor:pointer;transition:background .3s,color .3s}
-nav.tabs button svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+nav.tabs button{display:flex;align-items:center;gap:8px;background:none;border:0;border-radius:99px;padding:11px 20px;font-weight:600;font-size:16px;color:var(--mute);cursor:pointer;transition:background .3s,color .3s}
+nav.tabs button svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
 nav.tabs button:hover{color:var(--ink)}
-nav.tabs button.on{background:rgba(160,205,235,.14);color:var(--ink);box-shadow:inset 0 0 0 1px rgba(160,205,235,.16)}
+nav.tabs button.on{background:rgba(10,38,66,.82);color:var(--ink);box-shadow:inset 0 0 0 1px rgba(160,205,235,.28),0 6px 18px rgba(0,4,12,.35)}
 main{padding:6px 0 10px}
 .view{display:none}.view.on{display:block;animation:in .5s var(--ease)}
 @keyframes in{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
 .enter{animation:in .5s var(--ease)}
 [hidden]{display:none!important}
 .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;width:min(560px,100%);margin:4px 0 22px}
-.steps button{display:block;background:none;border:0;padding:0;text-align:left;cursor:pointer;font-size:12.5px;color:var(--mute);transition:color .4s}
+.steps button{display:block;background:none;border:0;padding:0;text-align:left;cursor:pointer;font-size:15px;line-height:1.4;color:var(--mute);transition:color .4s}
 .steps button:hover{color:var(--ink)}
 .steps button:before{content:"";display:block;height:3px;border-radius:3px;margin-bottom:8px;background:linear-gradient(90deg,var(--gold),#fff3cf) left/0 100% no-repeat,rgba(143,190,225,.22);transition:background-size .6s var(--ease)}
 .steps button.on:before{background-size:100% 100%}
 .steps button.cur{color:var(--ink);font-weight:600}
-h1{font:700 clamp(30px,5.4vw,46px)/1.12 "Playfair Display",Georgia,serif;margin:0 0 6px;letter-spacing:-.3px}
+h1{font:700 clamp(38px,6vw,58px)/1.15 "Playfair Display",Georgia,serif;margin:0 0 10px;letter-spacing:-.2px}
 h1 em{font-style:italic;-webkit-text-fill-color:transparent;background:linear-gradient(180deg,#e3f6ff,#7fd6f5 60%,#f1dcaa);-webkit-background-clip:text;background-clip:text}
 h1.metal{display:inline-block}
-.sub{color:var(--mute);margin:0 0 20px;max-width:70ch}
-label,.lab{display:block;font-weight:600;font-size:13px;margin:0 0 7px;color:#cfe8f8}
-.hint{font-size:12.5px;color:var(--mute);margin:7px 0 0;line-height:1.5}
-.err{color:var(--bad);font-size:13.5px;margin-top:10px;min-height:0}
+.sub{color:var(--mute);margin:0 0 22px;max-width:68ch;font-size:17px;line-height:1.7}
+label,.lab{display:block;font-weight:600;font-size:15.5px;margin:0 0 8px;color:#e6f3ff;letter-spacing:.01em}
+.hint{font-size:14.5px;color:var(--mute);margin:8px 0 0;line-height:1.65}
+.err{color:var(--bad);font-size:15px;margin-top:10px;min-height:0;line-height:1.55}
 .s1grid{display:grid;grid-template-columns:minmax(300px,410px) minmax(0,1fr);gap:30px;align-items:start}
 .fields{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:18px 28px;align-content:start}
 .fields>div{min-width:0}
@@ -55,29 +58,29 @@ label,.lab{display:block;font-weight:600;font-size:13px;margin:0 0 7px;color:#cf
 @media(max-width:900px){.s1grid,.s2grid{grid-template-columns:1fr!important}.stage{position:static!important}}
 .row3{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
 @media(max-width:520px){.row3{grid-template-columns:repeat(2,1fr)}}
-input,select,textarea{width:100%;font:inherit;color:var(--ink);background:var(--field);border:1px solid var(--line2);border-radius:12px;padding:11px 14px;transition:border-color .25s,box-shadow .25s,background .25s}
+input,select,textarea{width:100%;font-size:17px;line-height:1.5;color:var(--ink);background:var(--field);border:1px solid var(--line2);border-radius:12px;padding:13px 16px;transition:border-color .25s,box-shadow .25s,background .25s}
 input::placeholder,textarea::placeholder{color:#62849f}
 input:hover,textarea:hover{border-color:rgba(160,205,235,.35)}
 input:focus,select:focus,textarea:focus{outline:0;border-color:var(--gold);box-shadow:0 0 0 3px rgba(232,196,121,.16)}
 button:focus-visible,.drop:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
 input[type=number]{-moz-appearance:textfield;appearance:textfield}
 input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}
-.unit{position:relative}.unit i{position:absolute;right:14px;top:50%;transform:translateY(-50%);color:var(--mute);font-style:normal;font-size:13px;pointer-events:none}
+.unit{position:relative}.unit i{position:absolute;right:16px;top:50%;transform:translateY(-50%);color:var(--mute);font-style:normal;font-size:15px;font-weight:500;pointer-events:none}
 .unit input{padding-right:40px}
 .seg{position:relative;display:flex;background:var(--field);border:1px solid var(--line2);border-radius:14px;padding:3px}
 .seg .ind{position:absolute;left:3px;top:3px;bottom:3px;border-radius:11px;background:linear-gradient(180deg,rgba(130,180,215,.38),rgba(80,130,170,.3));box-shadow:inset 0 1px 0 rgba(255,255,255,.14);transition:transform .38s var(--ease),opacity .25s}
-.seg button{position:relative;flex:1;background:none;border:0;padding:8px 6px;font-size:13.5px;color:var(--mute);cursor:pointer;border-radius:11px;transition:color .25s}
+.seg button{position:relative;flex:1;background:none;border:0;padding:11px 8px;font-size:15.5px;font-weight:500;color:var(--mute);cursor:pointer;border-radius:11px;transition:color .25s}
 .seg button.on{color:#fff;font-weight:600}
 .swatches{display:flex;gap:11px;flex-wrap:wrap}
 .swatch{width:38px;height:38px;border-radius:50%;padding:0;border:2px solid rgba(255,255,255,.22);cursor:pointer;transition:transform .3s var(--ease),box-shadow .3s,border-color .3s}
 .swatch:hover{transform:scale(1.08)}
 .swatch.on{transform:scale(1.1);border-color:#fff;box-shadow:0 0 0 3px rgba(232,196,121,.75),0 0 16px rgba(232,196,121,.35)}
 .chips{display:flex;flex-wrap:wrap;gap:8px}
-.chip{border:1px solid rgba(143,179,207,.32);background:rgba(2,14,30,.45);padding:8px 15px;border-radius:99px;cursor:pointer;font-size:13.5px;transition:background .3s,color .3s,border-color .3s,transform .2s}
+.chip{border:1px solid rgba(143,179,207,.38);background:rgba(2,13,27,.72);padding:10px 18px;border-radius:99px;cursor:pointer;font-size:15px;font-weight:500;line-height:1.35;transition:background .3s,color .3s,border-color .3s,transform .2s}
 .chip:hover{border-color:var(--gold)}.chip:active{transform:scale(.96)}
 .chip.on{background:linear-gradient(180deg,#f3d58f,#c99a4b);border-color:transparent;color:#1b1204;font-weight:600}
 .acc{border:1px solid var(--line2);border-radius:14px;background:var(--field);overflow:hidden}
-.acc>button{width:100%;display:flex;align-items:center;gap:10px;background:none;border:0;padding:14px 16px;font-weight:600;font-size:14px;cursor:pointer;text-align:left}
+.acc>button{width:100%;display:flex;align-items:center;gap:10px;background:none;border:0;padding:16px 18px;font-weight:600;font-size:16.5px;cursor:pointer;text-align:left}
 .acc>button:before{content:"";width:7px;height:7px;border-right:2px solid var(--gold);border-bottom:2px solid var(--gold);transform:rotate(-45deg);transition:transform .35s var(--ease);margin:0 4px 0 2px}
 .acc.open>button:before{transform:rotate(45deg)}
 .acc>button span{font-weight:400;color:var(--mute)}
@@ -87,22 +90,26 @@ input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-
 .accb .in{padding:2px 16px 16px;opacity:0;transition:opacity .35s}
 .acc.open .accb .in{opacity:1;transition-delay:.12s}
 .actions{display:flex;gap:12px;margin-top:22px;flex-wrap:wrap;align-items:center}
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:48px;padding:0 30px;border:0;border-radius:99px;font-weight:700;font-size:15px;color:#08233f;cursor:pointer;background:linear-gradient(100deg,#c6ebfb 0,#a9dff5 45%,#ecdba9 100%);box-shadow:0 6px 22px rgba(127,214,245,.22);transition:transform .25s var(--ease),box-shadow .3s,filter .3s;text-decoration:none}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:56px;padding:0 34px;border:0;border-radius:99px;font-weight:700;font-size:17px;letter-spacing:.01em;color:#08233f;cursor:pointer;background:linear-gradient(100deg,#c6ebfb 0,#a9dff5 45%,#ecdba9 100%);box-shadow:0 6px 22px rgba(127,214,245,.22);transition:transform .25s var(--ease),box-shadow .3s,filter .3s;text-decoration:none}
 .btn:hover{transform:translateY(-2px);box-shadow:0 10px 28px rgba(160,225,250,.34)}
 .btn:active{transform:scale(.97)}
 .btn.ghost{background:rgba(3,18,36,.7);color:var(--ink);border:1px solid var(--line2);box-shadow:none}
 .btn.ghost:hover{border-color:var(--gold)}
 .btn:disabled{opacity:.55;cursor:wait;transform:none}
-.link{background:none;border:0;color:var(--bad);cursor:pointer;font-size:13px;text-decoration:underline;padding:8px 2px}
-.stage{position:sticky;top:12px;background:var(--panel);border:1px solid var(--line);border-radius:22px;padding:14px;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);box-shadow:0 14px 50px rgba(0,8,20,.5),inset 0 1px 0 rgba(255,255,255,.06)}
-.stbody{position:relative;margin-top:12px;aspect-ratio:300/470;border-radius:16px;overflow:hidden;background:radial-gradient(ellipse at 50% 20%,rgba(120,200,240,.14),rgba(3,18,36,.35) 70%);border:1px solid var(--line2)}
+.link{background:none;border:0;color:var(--bad);cursor:pointer;font-size:15px;text-decoration:underline;padding:8px 2px}
+.stage{position:sticky;top:12px;background:var(--panel);border:1px solid var(--line);border-radius:22px;padding:14px;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);box-shadow:0 18px 54px rgba(0,4,12,.68),inset 0 1px 0 rgba(255,255,255,.08)}
+.stbody{position:relative;margin-top:12px;aspect-ratio:300/470;border-radius:16px;overflow:hidden;border:1px solid var(--line2);background:radial-gradient(ellipse 78% 46% at 50% 26%,rgba(190,228,255,.20),transparent 62%),linear-gradient(180deg,#123f68 0,#0d3157 58%,#0a2748 58.2%,#123a5f 78%,#081f3a 100%);box-shadow:inset 0 0 0 1px rgba(255,255,255,.04),inset 0 -34px 44px rgba(0,6,16,.45),inset 0 22px 34px rgba(160,215,255,.07)}
+.stbody::after{content:"";position:absolute;left:8%;right:8%;bottom:5.5%;height:14px;border-radius:50%;background:radial-gradient(ellipse at center,rgba(0,4,12,.5),transparent 68%);pointer-events:none}
+.stage .stcap{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:10px}
+.stage .stcap span{font-size:13px;letter-spacing:.7px;text-transform:uppercase;color:var(--mute);font-weight:600}
+.stage .stcap b{font-size:13px;color:var(--gold);font-weight:600}
 .stbody>*{position:absolute;inset:0;width:100%;height:100%;transition:opacity .45s var(--ease),transform .45s var(--ease)}
-.stbody .off{opacity:0;transform:scale(.97);pointer-events:none}
+.stbody .off{display:none!important}
 #man{display:block}
-.stat{display:grid;grid-template-columns:repeat(3,1fr);text-align:center;font-size:12px;color:var(--mute);margin-top:12px;gap:6px}
-.stat b{display:block;font:700 20px/1.2 "Cormorant Garamond",serif;color:var(--gold)}
-.stat b.sm{font-size:15px;padding-top:3px}
-.drop{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;border:1.5px dashed rgba(127,214,245,.45);border-radius:18px;padding:18px;text-align:center;color:var(--aqua);font-size:13.5px;cursor:pointer;background:linear-gradient(180deg,rgba(20,90,130,.38),rgba(6,36,62,.5));transition:border-color .3s,background .3s,transform .3s var(--ease)}
+.stat{display:grid;grid-template-columns:repeat(3,1fr);text-align:center;font-size:14px;color:var(--mute);margin-top:14px;gap:6px;line-height:1.4}
+.stat b{display:block;font:700 26px/1.2 "Cormorant Garamond",serif;color:var(--gold)}
+.stat b.sm{font-size:18px;padding-top:4px}
+.drop{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;border:1.5px dashed rgba(127,214,245,.45);border-radius:18px;padding:20px;text-align:center;color:var(--aqua);font-size:16px;line-height:1.55;font-weight:500;cursor:pointer;background:linear-gradient(180deg,rgba(8,42,68,.88),rgba(3,20,38,.92));transition:border-color .3s,background .3s,transform .3s var(--ease)}
 .drop:hover,.drop.over{border-color:var(--gold);transform:translateY(-1px)}
 .drop svg{width:26px;height:26px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 .drop.tall{aspect-ratio:3/4}.drop.short{min-height:110px;margin-top:14px}
@@ -112,43 +119,87 @@ input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-
 .drop .x{position:absolute;top:8px;right:8px;width:30px;height:30px;border-radius:50%;border:0;background:rgba(2,12,26,.78);color:#fff;cursor:pointer;font-size:16px;line-height:1;transition:background .25s}
 .drop .x:hover{background:#b3394a}
 .hist{margin-top:8px}
-.res{background:var(--panel);border:1px solid var(--line);border-radius:22px;padding:24px;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);box-shadow:0 14px 50px rgba(0,8,20,.45)}
-.size-big{font:700 84px/1 "Cormorant Garamond",Georgia,serif;display:inline-block}
+.res{background:var(--panel);border:1px solid var(--line);border-radius:22px;padding:24px;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);box-shadow:0 18px 54px rgba(0,4,12,.62)}
+.size-big{font:700 96px/1 "Cormorant Garamond",Georgia,serif;display:inline-block}
 .rthumb{float:right;width:96px;aspect-ratio:3/4;object-fit:cover;border-radius:12px;border:1px solid var(--line);margin:0 0 8px 12px}
 .meter{height:9px;border-radius:99px;overflow:hidden;background:rgba(255,255,255,.12);margin:10px 0;clear:both}
 .meter div{height:100%;background:linear-gradient(90deg,var(--aqua),var(--ok));transform-origin:left;animation:grow 1s var(--ease) both .15s}
 @keyframes grow{from{transform:scaleX(0)}}
-.tag{display:inline-block;padding:3px 11px;border-radius:99px;font-size:12.5px;font-weight:600;background:rgba(127,214,245,.15);color:var(--aqua);margin:0 6px 6px 0}
+.tag{display:inline-block;padding:5px 13px;border-radius:99px;font-size:14px;font-weight:600;line-height:1.4;background:rgba(127,214,245,.15);color:var(--aqua);margin:0 6px 6px 0}
 .tag.ok{background:rgba(95,224,181,.15);color:var(--ok)}.tag.warn{background:rgba(240,168,80,.17);color:var(--warn)}
-ul.clean{padding-left:18px;margin:6px 0}
-.empty{text-align:center;color:var(--mute);padding:40px 10px}
+ul.clean{padding-left:20px;margin:8px 0;font-size:16.5px;line-height:1.7}
+.empty{text-align:center;color:var(--mute);padding:40px 10px;font-size:16px;line-height:1.65}
 .compass{display:block;width:44px;height:44px;margin:0 auto 12px;fill:var(--gold);animation:spin 3s linear infinite;filter:drop-shadow(0 0 8px rgba(232,196,121,.6))}
 .tryimg{width:100%;max-width:420px;border-radius:16px;border:1px solid var(--line);display:block;animation:in .6s var(--ease)}
+.styprofile{display:flex;flex-wrap:wrap;align-items:center;gap:8px 14px;border:1px solid var(--line2);border-radius:14px;padding:12px 16px;background:rgba(2,13,27,.72);margin-bottom:16px}
+.styprofile .sp-lab{font-weight:700;color:var(--gold);font-size:14.5px}
+.styprofile .sp-vals{font-size:15px;color:#d6ecfa}
+.qgroup{margin-bottom:12px}
+.qglab{display:block;font-size:13px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:var(--mute);margin-bottom:7px}
+#followChips{margin-top:12px}
+.msgsec{font-weight:700}
+.msgsec.pro{color:var(--ok)}.msgsec.con{color:var(--warn)}.msgsec.fix{color:var(--aqua)}
+.cstats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px}
+@media(max-width:560px){.cstats{grid-template-columns:1fr 1fr}}
+.cstat{border:1px solid var(--line2);border-radius:16px;padding:13px 16px;background:var(--panel)}
+.cstat b{display:block;font:700 30px/1.15 "Cormorant Garamond",serif;color:var(--gold)}
+.cstat span{font-size:13.5px;color:var(--mute)}
+.closetbar{display:flex;flex-direction:column;gap:12px;margin-bottom:18px}
+.closetbar input{max-width:460px}
+.iacts{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px;align-items:center}
+.iacts .iact{padding:7px 12px;font-size:13.5px}
+.iacts .idel{color:var(--bad);font-size:13.5px;padding:7px 4px}
+.iacts .idel.arm{color:#fff;background:#b3394a;border-radius:99px;padding:7px 12px;text-decoration:none}
+.tryprog{max-width:460px;margin:0 auto;text-align:left;border:1px solid var(--line2);border-radius:16px;padding:16px 18px;background:rgba(3,17,33,.72)}
+.tryprog .tp-head{display:flex;align-items:center;gap:12px;margin-bottom:10px}
+.tryprog .tp-head b{font-size:16px}
+.tryprog .tp-time{margin-left:auto;font-size:13.5px;color:var(--gold);font-variant-numeric:tabular-nums;white-space:nowrap}
+.tstep{display:flex;gap:10px;align-items:flex-start;padding:5px 0;font-size:14.5px;color:var(--mute);line-height:1.5}
+.tstep i{flex:0 0 auto;width:20px;height:20px;border-radius:50%;border:1.5px solid rgba(143,190,225,.4);display:grid;place-items:center;font-style:normal;font-size:11px;margin-top:1px}
+.tstep.done{color:#cfe8f8}.tstep.done i{border-color:var(--ok);background:rgba(95,224,181,.18);color:var(--ok)}
+.tstep.act{color:#fff}.tstep.act i{border-color:var(--gold);color:var(--gold);animation:b 1s infinite}
+.cmpwrap{max-width:440px;margin:0 auto}
+.cmp{position:relative;border-radius:16px;overflow:hidden;border:1px solid var(--line);touch-action:none;cursor:ew-resize;background:#0a2748;line-height:0}
+.cmp img{display:block;width:100%;height:auto;user-select:none;-webkit-user-drag:none}
+.cmp .cmp-before{position:absolute;inset:0}
+.cmp .cmp-before img{width:100%;height:100%;object-fit:cover}
+.cmp .cmp-handle{position:absolute;top:0;bottom:0;width:2px;background:var(--gold);box-shadow:0 0 10px rgba(232,196,121,.8);transform:translateX(-1px)}
+.cmp .cmp-handle::after{content:"◂ ▸";position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(2,12,26,.85);color:var(--gold);border:1px solid rgba(232,196,121,.6);border-radius:99px;padding:5px 9px;font-size:12px;line-height:1;white-space:nowrap}
+.cmp .cmp-tag{position:absolute;top:10px;font-size:12px;font-weight:700;letter-spacing:.5px;padding:4px 10px;border-radius:99px;background:rgba(2,12,26,.78);color:#fff;line-height:1.3}
+.cmp .cmp-tag.l{left:10px}.cmp .cmp-tag.r{right:10px;color:var(--gold)}
+.cmpslider{width:100%;margin-top:8px}
+.trybar{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:12px}
+.trymeta{text-align:center;font-size:13.5px;color:var(--mute);margin-top:9px;line-height:1.55}
+.trysteps-thumbs{display:flex;gap:10px;justify-content:center;margin-top:12px;flex-wrap:wrap}
+.trysteps-thumbs figure{margin:0;text-align:center}
+.trysteps-thumbs img{width:74px;aspect-ratio:3/4;object-fit:cover;border-radius:10px;border:2px solid var(--line2);cursor:pointer;display:block}
+.trysteps-thumbs img.on{border-color:var(--gold)}
+.trysteps-thumbs figcaption{font-size:12px;color:var(--mute);margin-top:4px;line-height:1.4}
 input[type=range]{padding:0;height:22px;accent-color:var(--gold);background:none;border:0}
 .wrap-m canvas{width:100%;max-width:220px;border-radius:12px;border:1px solid var(--line);display:block}
-.chatbox{background:var(--panel);border:1px solid var(--line);border-radius:22px;padding:22px;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+.chatbox{background:var(--panel);border:1px solid var(--line);border-radius:22px;padding:22px;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);box-shadow:0 18px 54px rgba(0,4,12,.62)}
 .chat{display:flex;flex-direction:column;gap:10px;min-height:260px;max-height:55vh;overflow-y:auto;padding:4px;scroll-behavior:smooth}
-.msg{max-width:85%;padding:10px 14px;border-radius:16px;white-space:pre-wrap;animation:in .35s var(--ease)}
+.msg{max-width:88%;padding:13px 17px;border-radius:16px;white-space:pre-wrap;font-size:16.5px;line-height:1.7;animation:in .35s var(--ease)}
 .msg.u{align-self:flex-end;background:linear-gradient(180deg,#f3d58f,#c99a4b);color:#1b1204;border-bottom-right-radius:4px}
-.msg.a{align-self:flex-start;background:rgba(2,14,30,.55);border:1px solid var(--line2);border-bottom-left-radius:4px}
-.send{display:flex;gap:10px;margin-top:12px}.send .btn{min-height:44px;padding:0 24px}
+.msg.a{align-self:flex-start;background:rgba(2,13,27,.82);border:1px solid var(--line2);border-bottom-left-radius:4px}
+.send{display:flex;gap:10px;margin-top:12px}.send .btn{min-height:52px;padding:0 26px}
 .wardrobe{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px}
 .item{padding:12px;background:var(--panel);border:1px solid var(--line);border-radius:18px;animation:in .45s var(--ease) both}
 .ph{position:relative;aspect-ratio:3/4;border-radius:12px;overflow:hidden;background:rgba(2,14,30,.6);display:flex;align-items:center;justify-content:center;color:var(--gold);font-size:34px;margin-bottom:10px;border:1px solid var(--line2)}
 .ph img{width:100%;height:100%;object-fit:cover}
-.ph em{position:absolute;top:8px;right:8px;font:700 20px/1 "Cormorant Garamond",serif;font-style:normal;background:linear-gradient(180deg,#f6dc9b,#c8973f);color:#1b1204;border-radius:8px;padding:4px 10px}
-footer{position:relative;z-index:1;text-align:center;color:var(--mute);font-size:12.5px;padding:28px 20px 40px}
+.ph em{position:absolute;top:8px;right:8px;font:700 24px/1 "Cormorant Garamond",serif;font-style:normal;background:linear-gradient(180deg,#f6dc9b,#c8973f);color:#1b1204;border-radius:8px;padding:4px 10px}
+footer{position:relative;z-index:1;text-align:center;color:var(--mute);font-size:14.5px;padding:28px 20px 40px}
 .dots span{animation:b 1s infinite;display:inline-block}.dots span:nth-child(2){animation-delay:.15s}.dots span:nth-child(3){animation-delay:.3s}
 @keyframes b{50%{opacity:.2}}
 .mtools{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
-.mtools .chip{padding:6px 12px;font-size:12.5px}
+.mtools .chip{padding:8px 14px;font-size:14px}
 .chip:disabled{opacity:.4;cursor:not-allowed}.chip:disabled:hover{border-color:rgba(143,179,207,.32)}
 .stbody #man.flip{transform:scaleX(.02);transition-duration:.18s}
 #delta{color:var(--aqua)}
-@media(min-width:901px){.stage{max-height:calc(100vh - 24px);overflow-y:auto;scrollbar-width:thin}}
+@media(max-height:860px){.stage{position:static}}
 .sz{overflow-x:auto}
 .sz table{width:100%;min-width:440px;border-collapse:separate;border-spacing:0 6px}
-.sz th{font-size:12px;font-weight:600;color:var(--mute);text-align:left;padding:0 4px}
+.sz th{font-size:14px;font-weight:600;color:var(--mute);text-align:left;padding:0 4px}
 .sz td{padding:0 3px}
 .sz td:first-child{width:22%}
 .sz .rg{display:flex;align-items:center;gap:4px}
@@ -157,13 +208,178 @@ footer{position:relative;z-index:1;text-align:center;color:var(--mute);font-size
 .sz td.dl{width:36px;text-align:center}
 .sz .rm{width:30px;height:30px;border-radius:50%;border:1px solid var(--line2);background:rgba(2,12,26,.78);color:var(--mute);cursor:pointer;font-size:16px;line-height:1;padding:0;transition:background .25s,color .25s}
 .sz .rm:hover{background:#b3394a;color:#fff}
-.sz input{padding:8px;font-size:13.5px;border-radius:10px;text-align:center}
+.sz input{padding:10px 8px;font-size:15.5px;border-radius:10px;text-align:center}
 .sz td:first-child input{font-weight:600;color:var(--gold)}
+p{line-height:1.7}
+.pcgrid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:6px}
+@media(max-width:560px){.pcgrid{grid-template-columns:1fr}}
+.pcard{border-radius:14px;padding:13px 15px;border:1px solid var(--line2);background:rgba(2,13,27,.68)}
+.pcard h4{margin:0 0 8px;font-size:16px;display:flex;align-items:center;gap:7px}
+.pcard.pro h4{color:var(--ok)}.pcard.con h4{color:var(--warn)}
+.pcard ul{padding-left:19px;margin:0}.pcard li{margin:4px 0;font-size:15.5px;line-height:1.65}
+.comboitems{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:12px}
+@media(max-width:640px){.comboitems{grid-template-columns:1fr}}
+.comboitem{border:1px solid var(--line2);border-radius:16px;padding:14px 16px;background:rgba(2,13,27,.55)}
+.comboitem .cthumb{float:right;width:72px;aspect-ratio:3/4;object-fit:cover;border-radius:10px;border:1px solid var(--line);margin:0 0 8px 10px}
+.comboitem .size-mid{font:700 54px/1 "Cormorant Garamond",Georgia,serif;display:inline-block}
+.comboitem .meter{clear:both}
+.morewrap{margin-top:16px}
+.moretoggle{font-size:14px;padding:8px 16px}
+.morebody{animation:in .35s var(--ease)}
+.verdict{border:1px solid rgba(232,196,121,.45);border-radius:14px;padding:12px 15px;background:rgba(232,196,121,.09);font-size:16px;line-height:1.6;margin-top:14px}
+.verdict b{color:var(--gold)}
+.ph.duo{display:flex;gap:5px;background:none;border:0;overflow:visible}
+.ph.duo .half{position:relative;flex:1 1 0;min-width:0;border-radius:12px;overflow:hidden;border:1px solid var(--line2);background:rgba(2,14,30,.6);display:flex;align-items:center;justify-content:center;color:var(--gold);font-size:26px}
+.ph.duo .half img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.ph.duo .half em{font-size:19px;padding:3px 8px}
+.ph.duo{align-items:stretch}
+.ph.duo .half{display:block;min-height:100%}
+.ph.duo .half .phx{position:absolute;inset:0;display:grid;place-items:center;color:var(--gold);font-size:30px}
+.ph.duo .half img{z-index:1}
+.ph.duo .half em{z-index:2}
+.ogrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(215px,1fr));gap:12px;margin-top:8px}
+.ocard{border:1px solid var(--line2);border-radius:16px;padding:15px;background:linear-gradient(180deg,rgba(10,42,70,.88),rgba(2,13,27,.88))}
+.ocard h4{margin:0 0 3px;font-size:17.5px;color:#fff;line-height:1.35}
+.ocard .occ{font-size:13.5px;color:var(--gold);font-weight:700;letter-spacing:.4px}
+.ocard p{margin:8px 0 0;font-size:15px;line-height:1.65;color:#e2effc}
+.ocard .pal{display:flex;gap:6px;margin-top:10px}
+.ocard .pal i{width:20px;height:20px;border-radius:50%;border:2px solid rgba(255,255,255,.35);display:block}
+.sechead{display:flex;align-items:baseline;gap:10px;margin:26px 0 4px}
+.sechead h3{margin:0;font:700 27px/1.25 "Cormorant Garamond",Georgia,serif;color:#fff}
+.sechead span{font-size:14.5px;color:var(--mute)}
+/*MOBILE-TYPO*/
+@media(max-width:560px){
+body{font-size:16.5px}
+h1{font-size:clamp(34px,9vw,44px)!important}
+.logo{font-size:36px!important}
+.brandimg{height:56px!important;width:56px!important}
+nav.tabs{flex-wrap:wrap}
+nav.tabs button{font-size:15px!important;padding:10px 16px!important}
+.steps button{font-size:13.5px!important}
+.size-big{font-size:80px!important}
+.res,.chatbox{padding:18px!important}
+.send{flex-wrap:wrap}.send input{flex:1 1 200px}.send .btn{flex:0 0 auto}
+.msg{max-width:94%!important}
+}
+/*SCROLLFIX + POLISH — bỏ thanh cuộn riêng của khung mô hình, thanh cuộn toàn trang mảnh theo tông navy–vàng, giao diện cao cấp hơn*/
+html{scrollbar-gutter:stable;scroll-behavior:smooth;scroll-padding-top:118px}
+*{scrollbar-width:thin;scrollbar-color:rgba(232,196,121,.42) transparent}
+::-webkit-scrollbar{width:9px;height:9px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:linear-gradient(180deg,rgba(127,214,245,.42),rgba(232,196,121,.5));border-radius:99px;border:2px solid rgba(2,14,29,.92)}
+::-webkit-scrollbar-thumb:hover{background:linear-gradient(180deg,rgba(127,214,245,.68),rgba(232,196,121,.78))}
+::-webkit-scrollbar-corner{background:transparent}
+::selection{background:rgba(232,196,121,.88);color:#1b1204}
+.stage{max-height:none;overflow:visible;scrollbar-width:none;background:linear-gradient(180deg,rgba(10,36,63,.95),rgba(3,16,31,.96));border-color:rgba(232,196,121,.42);box-shadow:0 26px 64px rgba(0,3,10,.72),inset 0 1px 0 rgba(255,255,255,.1),inset 0 0 0 1px rgba(127,214,245,.05)}
+.stage::-webkit-scrollbar{display:none;width:0;height:0}
+.chat{scrollbar-width:thin}
+.sz{padding-bottom:4px}
+header{position:sticky;top:0;z-index:30;margin:0 -22px;padding:14px 22px 12px;background:linear-gradient(180deg,rgba(2,13,27,.94),rgba(2,13,27,.84));backdrop-filter:blur(18px) saturate(1.25);-webkit-backdrop-filter:blur(18px) saturate(1.25);border-bottom:1px solid rgba(232,196,121,.18);box-shadow:0 14px 34px rgba(0,4,12,.38)}
+.brandimg{background:linear-gradient(160deg,#12507f,#06284a);box-shadow:0 0 0 1px rgba(232,196,121,.65),0 10px 26px rgba(0,4,12,.55),0 0 26px rgba(127,214,245,.32)}
+nav.tabs{background:rgba(2,13,27,.62);border:1px solid rgba(143,190,225,.24);border-radius:99px;padding:4px;box-shadow:inset 0 1px 0 rgba(255,255,255,.05),0 10px 26px rgba(0,4,12,.35)}
+nav.tabs button{padding:9px 18px}
+nav.tabs button.on{background:linear-gradient(180deg,rgba(50,102,148,.9),rgba(24,60,96,.9));box-shadow:inset 0 0 0 1px rgba(160,205,235,.32),inset 0 1px 0 rgba(255,255,255,.14),0 4px 14px rgba(0,4,12,.42)}
+.res,.chatbox{background:linear-gradient(180deg,rgba(9,34,60,.95),rgba(3,16,31,.96));border-color:rgba(232,196,121,.4);box-shadow:0 26px 64px rgba(0,3,10,.68),inset 0 1px 0 rgba(255,255,255,.09)}
+input,select,textarea{background:linear-gradient(180deg,rgba(3,16,32,.97),rgba(2,12,25,.93));box-shadow:inset 0 2px 7px rgba(0,3,10,.55),inset 0 1px 0 rgba(255,255,255,.03)}
+input:focus,select:focus,textarea:focus{border-color:rgba(232,196,121,.9);box-shadow:0 0 0 4px rgba(232,196,121,.16),inset 0 2px 6px rgba(0,3,10,.4);background:rgba(4,21,40,.98)}
+.seg{box-shadow:inset 0 2px 9px rgba(0,3,10,.5)}
+.seg .ind{background:linear-gradient(180deg,rgba(92,156,204,.6),rgba(52,102,148,.55));box-shadow:inset 0 1px 0 rgba(255,255,255,.24),0 4px 14px rgba(0,4,12,.38)}
+.btn{position:relative;overflow:hidden;background:linear-gradient(100deg,#dcf3fe 0,#a9dff5 42%,#f0deb0 78%,#e4c584 100%);box-shadow:0 12px 32px rgba(127,214,245,.3),inset 0 1px 0 rgba(255,255,255,.65)}
+.btn::after{content:"";position:absolute;inset:0;background:linear-gradient(115deg,transparent 32%,rgba(255,255,255,.55) 50%,transparent 64%);transform:translateX(-130%);transition:transform .7s var(--ease);pointer-events:none}
+.btn:hover::after{transform:translateX(130%)}
+.btn.ghost{background:rgba(4,22,42,.88);box-shadow:inset 0 1px 0 rgba(255,255,255,.06)}
+.btn.ghost::after{display:none}
+.chip:hover{transform:translateY(-1px);background:rgba(10,38,66,.88)}
+.chip.on{box-shadow:0 8px 20px rgba(232,196,121,.35),inset 0 1px 0 rgba(255,255,255,.5)}
+.steps button.on:before{box-shadow:0 0 12px rgba(232,196,121,.5)}
+.steps button{padding-bottom:2px}
+.stat{border-top:1px solid rgba(143,190,225,.17);padding-top:13px}
+.stat>div+div{border-left:1px solid rgba(143,190,225,.13)}
+.drop{box-shadow:inset 0 1px 0 rgba(255,255,255,.05),inset 0 -18px 30px rgba(0,4,12,.25)}
+.acc{box-shadow:inset 0 1px 0 rgba(255,255,255,.04)}
+.item{transition:transform .3s var(--ease),border-color .3s,box-shadow .3s}
+.item:hover{transform:translateY(-3px);border-color:rgba(232,196,121,.55);box-shadow:0 18px 38px rgba(0,4,12,.55)}
+footer{border-top:1px solid rgba(232,196,121,.13);margin-top:10px}
+@media(max-width:560px){header{margin:0 -22px;padding:12px 22px 10px}nav.tabs button{padding:8px 14px!important}}
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
+/*FINAL REVIEW — rà soát cuối: nhịp thị giác gọn hơn, trạng thái rõ ràng hơn, lưới tủ đồ 2 cột trên điện thoại hẹp*/
+h1{line-height:1.22;padding-bottom:.08em}
+h1.metal{filter:drop-shadow(0 2px 14px rgba(120,210,255,.28))}
+button:focus-visible,.chip:focus-visible,a:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+nav.tabs button{position:relative}
+nav.tabs button.on::after{content:"";position:absolute;left:50%;bottom:3px;width:16px;height:2px;border-radius:2px;transform:translateX(-50%);background:linear-gradient(90deg,var(--aqua),var(--gold))}
+.steps button.cur{font-weight:700}
+.steps button.done{color:#cfe8f8}
+.sechead{border-bottom:1px solid rgba(143,190,225,.14);padding-bottom:8px}
+.ocard{transition:transform .3s var(--ease),border-color .3s}
+.ocard:hover{transform:translateY(-2px);border-color:rgba(232,196,121,.5)}
+.pcard,.comboitem,.cstat{box-shadow:inset 0 1px 0 rgba(255,255,255,.05)}
+.empty{border:1.5px dashed rgba(143,190,225,.25);border-radius:16px;background:rgba(2,13,27,.35)}
+.chatbox .empty,#loading{border:0;background:none}
+.send{border-top:1px solid rgba(143,190,225,.14);padding-top:14px}
+.styprofile{box-shadow:inset 0 1px 0 rgba(255,255,255,.05)}
+.closetbar input{box-shadow:inset 0 2px 7px rgba(0,3,10,.55)}
+.item b{line-height:1.4;display:block}
+.item .hint{margin-top:5px}
+.iacts{border-top:1px solid rgba(143,190,225,.12);padding-top:10px}
+#s3 .actions{border-top:1px solid rgba(143,190,225,.14);padding-top:16px}
+.verdict{box-shadow:inset 0 1px 0 rgba(255,255,255,.06)}
+.drop.has{border-color:rgba(232,196,121,.45)}
+@media(max-width:560px){
+.wardrobe{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.item{padding:9px}
+.item b{font-size:15px;overflow-wrap:anywhere}
+.ph em{font-size:19px;padding:3px 8px}
+.ph.duo .half em{font-size:15px;padding:2px 6px}
+.iacts .iact{padding:6px 9px;font-size:12.5px}
+.cstats{gap:9px}
+.comboitem .size-mid{font-size:46px}
+.size-big{font-size:72px!important}
+}
+/*STYLIST COLOR SEPARATION — mục đề xuất tách màu riêng khỏi khung trò chuyện: đề xuất = nền ngọc/aqua đậm, trò chuyện = nền navy gần đen riêng biệt bên trong cùng một khung Stylist*/
+#stylist .chatbox>h1{margin-bottom:14px}
+#quick{background:linear-gradient(180deg,rgba(13,74,96,.96),rgba(7,44,62,.97));border:1px solid rgba(127,214,245,.48);border-radius:18px;padding:16px 16px 4px;margin-bottom:16px;box-shadow:inset 0 1px 0 rgba(255,255,255,.09),0 12px 28px rgba(0,4,12,.32)}
+#quick .qgroup{margin-bottom:12px}
+#quick .qglab{color:#a9e9ff}
+#quick .chip{background:rgba(2,20,32,.62);border-color:rgba(169,233,255,.38);color:#eef9ff}
+#quick .chip:hover{background:rgba(22,96,122,.88);border-color:var(--gold);color:#fff}
+#quick .chip:active{transform:scale(.96)}
+.chat{background:rgba(1,9,20,.72);border:1px solid rgba(143,190,225,.2);border-radius:18px;padding:14px;box-shadow:inset 0 2px 10px rgba(0,3,10,.45)}
+.chat .msg.a{background:rgba(6,28,50,.92)}
+#followChips{background:linear-gradient(180deg,rgba(13,74,96,.96),rgba(7,44,62,.97));border:1px solid rgba(127,214,245,.48);border-radius:16px;padding:14px 16px;margin-top:14px;box-shadow:inset 0 1px 0 rgba(255,255,255,.09)}
+#followChips .qglab{color:#a9e9ff}
+#followChips .chip{background:rgba(2,20,32,.62);border-color:rgba(169,233,255,.38);color:#eef9ff}
+#followChips .chip:hover{background:rgba(22,96,122,.88);border-color:var(--gold);color:#fff}
+@media(max-width:560px){#quick{padding:14px 12px 2px}.chat{padding:10px}#followChips{padding:12px}}
 </style>
 </head>
 <body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><symbol id="cs" viewBox="-12 -12 24 24"><path d="M0-11 2-2 11 0 2 2 0 11-2 2-11 0-2-2Z"/><path d="M-6.5-6.5-1-1.3 0 0-1.3-1Zm13 0L1.3-1 0 0 1 1.3Zm0 13L1 1.3 0 0 1.3 1Zm-13 0L-1 1.3 0 0-1.3 1Z" opacity=".55"/></symbol></svg>
+<div class="deepbg" aria-hidden="true"><svg viewBox="0 0 1440 900" preserveAspectRatio="xMidYMin slice" focusable="false">
+<defs>
+<linearGradient id="ray" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#cfeeff" stop-opacity=".85"/><stop offset="1" stop-color="#cfeeff" stop-opacity="0"/></linearGradient>
+<radialGradient id="glowTop" cx=".5" cy="0" r=".65"><stop offset="0" stop-color="#9fd8ff" stop-opacity=".5"/><stop offset="1" stop-color="#9fd8ff" stop-opacity="0"/></radialGradient>
+</defs>
+<rect width="1440" height="900" fill="url(#glowTop)"/>
+<g fill="url(#ray)" opacity=".16">
+<polygon points="700,-20 760,-20 1010,900 830,900"/><polygon points="640,-20 672,-20 560,900 380,900"/><polygon points="790,-20 812,-20 1250,900 1090,900"/><polygon points="580,-20 596,-20 190,900 60,900"/><polygon points="716,-20 730,-20 760,900 690,900"/>
+</g>
+<g fill="#010a18" opacity=".62">
+<path d="M0 0h150l-18 90 34 70-26 84 30 96-22 110 28 120-14 130 20 120-6 80H0Z"/>
+<path d="M1440 0h-140l16 84-30 76 24 88-28 92 20 118-26 116 12 132-18 118 4 76h166Z"/>
+<path d="M0 900v-70l120-34 150 18 170-40 190 26 210-30 200 24 190-28 210 30v104Z" opacity=".8"/>
+</g>
+<g fill="#0a2c4e" opacity=".5"><path d="M0 900v-34l160-16 220 14 260-20 260 16 280-14 260 18v36Z"/></g>
+<g fill="#02101f" opacity=".35">
+<path d="M1180 430q26-14 52 0-26 12-52 0Z"/><path d="M1230 470q22-11 44 0-22 10-44 0Z"/><path d="M1130 500q19-10 38 0-19 9-38 0Z"/>
+</g>
+<g fill="none" stroke="#d8f1ff" stroke-opacity=".5">
+<circle cx="180" cy="520" r="7" fill="#fff" fill-opacity=".07"/><circle cx="205" cy="470" r="4.5" fill="#fff" fill-opacity=".07"/><circle cx="160" cy="430" r="3.2" fill="#fff" fill-opacity=".07"/>
+<circle cx="1258" cy="300" r="9" fill="#fff" fill-opacity=".07"/><circle cx="1290" cy="360" r="5" fill="#fff" fill-opacity=".07"/><circle cx="1232" cy="392" r="3.4" fill="#fff" fill-opacity=".07"/>
+<circle cx="330" cy="660" r="4" fill="#fff" fill-opacity=".05"/><circle cx="1120" cy="620" r="5.5" fill="#fff" fill-opacity=".05"/>
+</g>
+<g fill="#e8c479"><circle cx="720" cy="70" r="2.4" opacity=".8"/><circle cx="668" cy="110" r="1.6" opacity=".55"/><circle cx="782" cy="118" r="1.8" opacity=".6"/><path d="M720 44l3.2 14.8L738 62l-14.8 3.2L720 80l-3.2-14.8L702 62l14.8-3.2Z" opacity=".75"/></g>
+</svg></div>
 <div class="app">
 <header>
   <div class="brand"><div class="brandimg" aria-hidden="true"><svg><use href="#cs"/></svg></div><div class="wm"><div class="logo metal"><span>fitme</span><svg><use href="#cs"/></svg><span>AI</span></div><span class="team">Team 1-One hit wonder</span></div></div>
@@ -185,6 +401,7 @@ footer{position:relative;z-index:1;text-align:center;color:var(--mute);font-size
           <svg viewBox="0 0 300 470" id="man" role="img" aria-label="Hình người minh họa theo số đo"></svg>
           <div class="drop stbd off" id="bdrop" tabindex="0" role="button" aria-label="Tải ảnh toàn thân"></div>
         </div>
+        <div class="stcap"><span>Studio FitMe</span><b id="stcapB">Mô hình 2D · số đo minh họa</b></div>
         <div class="stat" id="stat"><div><b id="bmi">–</b><span id="bmiCat">BMI</span></div><div><b id="whr">–</b>Eo/Mông</div><div><b class="sm" id="shapeName">–</b>Phom</div></div>
         <div class="mtools" id="mtools">
           <button type="button" class="chip" id="mBack" aria-pressed="false">Xoay mặt sau</button>
@@ -242,6 +459,7 @@ footer{position:relative;z-index:1;text-align:center;color:var(--mute);font-size
       <div>
         <div class="col">
           <div><label for="link">Link sản phẩm (tùy chọn)</label><input id="link" type="url" placeholder="Dán link để ghi nhớ"><p class="hint">Các sàn chặn đọc link tự động, nên AI sẽ đọc từ ảnh của bạn.</p></div>
+          <div><span class="lab">Bạn mặc bộ này đi đâu? <span style="font-weight:400;color:var(--mute)">(để gợi ý outfit đa dạng theo dịp)</span></span><div class="chips" id="occChips"></div></div>
           <div><span class="lab">Bảng size món 1 (nếu có)</span><div class="sz" id="t1"></div><p class="hint">Điền theo bảng của shop. Shop chỉ ghi cân nặng (kg) thì điền cột Cân nặng, cột hay size nào không có thì để trống.</p></div>
           <div><span class="lab">Bảng size món 2: quần/váy (nếu có)</span><div class="sz" id="t2"></div></div>
           <p class="hint">Món 1 là áo/đầm. Thêm món 2 (quần/váy) nếu muốn mặc thử cả bộ.</p>
@@ -261,14 +479,13 @@ footer{position:relative;z-index:1;text-align:center;color:var(--mute);font-size
       <div id="fit" hidden>
         <label style="margin-top:18px">Bạn mặc món này trông thế nào?</label>
         <div id="maskBox" class="wrap-m" hidden>
-          <p class="hint" style="margin:0 0 6px">Vùng tô đỏ là chỗ AI sẽ vẽ quần/váy. Kéo cho phủ từ eo tới cổ chân, chừa giày ra.</p>
+          <p class="hint" style="margin:0 0 6px">Vùng tô đỏ là chỗ sẽ mặc quần/váy. Kéo cho phủ từ eo tới cổ chân, chừa giày ra.</p>
           <canvas id="mprev"></canvas>
           <label for="mTop" style="margin-top:10px">Từ eo trở xuống</label><input id="mTop" type="range" min="25" max="60" value="38">
           <label for="mBot">Đến cổ chân</label><input id="mBot" type="range" min="70" max="99" value="90">
         </div>
         <button class="btn" id="aiBtn" type="button" style="margin-top:14px">Mặc thử bằng AI (miễn phí)</button>
         <div id="aiOut" style="margin:14px 0"></div>
-        <p class="hint">Ảnh do AI tạo, chỉ để hình dung kiểu dáng và màu sắc, không cho biết có vừa size hay không. Hãy chọn size theo gợi ý ở trên. Mô hình miễn phí làm tốt nhất với áo và đầm. Khi ghép cả bộ, AI mặc lần lượt từng món nên lâu hơn, còn quần/váy được mặc vào vùng từ eo xuống chân, ước lượng theo ảnh đứng thẳng thấy đủ chân.</p>
       </div>
       <div class="err" id="e4" role="alert"></div>
       <div class="actions"><button class="btn ghost" id="again">Chọn lại món</button><button class="btn" id="save">Lưu vào tủ đồ</button></div>
@@ -278,9 +495,10 @@ footer{position:relative;z-index:1;text-align:center;color:var(--mute);font-size
 <section class="view" id="stylist">
   <div class="chatbox">
     <h1 class="metal">Stylist <em>AI</em></h1>
-    <p class="sub">Hỏi phối đồ, màu hợp, đi tiệc/đi làm mặc gì. Stylist dựa trên hồ sơ của bạn.</p>
-    <div class="chips" id="quick" style="margin-bottom:14px"></div>
+    <div id="styProfile" class="styprofile"></div>
+    <div id="quick"></div>
     <div class="chat" id="chat" aria-live="polite"></div>
+    <div id="followChips" hidden></div>
     <div class="send"><input id="q" placeholder="Hỏi Stylist..." aria-label="Câu hỏi" maxlength="500"><button class="btn" id="ask">Gửi</button></div>
     <button class="link" id="clr" style="color:var(--mute)">Xóa cuộc trò chuyện</button>
     <div class="err" id="e3" role="alert"></div>
@@ -288,6 +506,11 @@ footer{position:relative;z-index:1;text-align:center;color:var(--mute);font-size
 </section>
 <section class="view" id="closet">
   <h1 class="metal" style="margin-bottom:16px">Tủ <em>đồ</em></h1>
+  <div class="cstats" id="closetStats"></div>
+  <div class="closetbar">
+    <input id="closetSearch" type="search" placeholder="Tìm món trong tủ theo tên…" aria-label="Tìm món trong tủ đồ">
+    <div class="chips" id="closetFilters"></div>
+  </div>
   <div class="wardrobe" id="wardrobe"></div>
 </section>
 </main>
@@ -308,21 +531,23 @@ const SHAPES = ["Quả lê","Đồng hồ cát","Chữ nhật","Tam giác ngư�
 const SKINS = [["Rất sáng","#f8e0d0"],["Sáng","#efc9ab"],["Trung bình","#deae88"],["Rám","#c68e65"],["Ngăm","#9c6a47"],["Nâu đậm","#6b4430"]];
 const UNDERS = ["Ấm","Lạnh","Trung tính"];
 const SEXES = ["Nữ","Nam","Unisex"];
+const OCCS = ["Đi làm","Dạo phố","Hẹn hò","Dự tiệc","Du lịch","Ở nhà thoải mái"];
+let OCC = "";
 let P = Object.assign({h:"",w:"",bust:"",waist:"",hip:"",sex:"",shape:"",skin:"",under:"",note:""}, store.get("fm_profile", {}));
 let HIST = store.get("fm_hist", []);
 let img = null, thumb = null, img2 = null, thumb2 = null, body = null, busy = false, last = null, history = store.get("fm_chat", []);
-document.querySelectorAll("nav.tabs button").forEach(b => b.onclick = () => {
-document.querySelectorAll("nav.tabs button").forEach(x => x.classList.toggle("on", x === b));
+document.querySelectorAll("nav.tabs button").forEach(b => { b.setAttribute("role", "tab"); b.setAttribute("aria-selected", b.classList.contains("on") ? "true" : "false"); b.onclick = () => {
+document.querySelectorAll("nav.tabs button").forEach(x => { const on = x === b; x.classList.toggle("on", on); x.setAttribute("aria-selected", on ? "true" : "false"); });
 document.querySelectorAll(".view").forEach(v => v.classList.toggle("on", v.id === b.dataset.tab));
 if (b.dataset.tab === "closet") renderCloset();
-if (b.dataset.tab === "stylist") drawChat();
-});
+if (b.dataset.tab === "stylist") { renderStyProfile(); drawChat(); }
+}; });
 let curStep = 1;
 function step(n){
 curStep = n;
 if (n === 1 && typeof syncGhostBtn === "function"){ syncGhostBtn(); updateMan(); }
 ["s1","s2","s3"].forEach((id, i) => { const el = $("#"+id), on = i+1 === n; el.hidden = !on; if (on){ el.classList.remove("enter"); void el.offsetWidth; el.classList.add("enter"); } });
-[...$("#steps").children].forEach((s, i) => { s.classList.toggle("on", i < n); s.classList.toggle("cur", i+1 === n); });
+[...$("#steps").children].forEach((s, i) => { s.classList.toggle("on", i < n); s.classList.toggle("cur", i+1 === n); s.classList.toggle("done", i+1 < n); s.setAttribute("aria-current", i+1 === n ? "step" : "false"); });
 window.scrollTo({top:0, behavior: REDUCE ? "auto" : "smooth"});
 }
 function seg(el, items, key, onChange){
@@ -366,8 +591,9 @@ updateMan();
 FIELDS.forEach(k => { $("#"+k).value = P[k]; $("#"+k).addEventListener("input", persist); });
 $("#note").value = P.note || ""; $("#note").addEventListener("input", persist);
 const syncSex = seg($("#sexSeg"), SEXES, "sex");
-seg($("#underSeg"), UNDERS, "under");
+const syncUnder = seg($("#underSeg"), UNDERS, "under");
 chips($("#shapeChips"), SHAPES, "shape");
+(function(){const el=$("#occChips");OCCS.forEach(n=>{const b=document.createElement("button");b.type="button";b.className="chip";b.textContent=n;b.onclick=()=>{OCC=OCC===n?"":n;el.querySelectorAll(".chip").forEach(c=>c.classList.toggle("on",c.textContent===OCC))};el.appendChild(b)})})();
 swatches($("#skinChips"));
 showHist();
 if (P.bust || P.waist || P.hip || P.shape) $("#accBtn").click();
@@ -552,12 +778,13 @@ const t0=performance.now();
 (function f(now){const u=Math.min(1,(now-t0)/450),e=1-Math.pow(1-u,3);el.textContent=(from+(to-from)*e).toFixed(dec);if(u<1)requestAnimationFrame(f)})(t0);
 }
 function statTween(t){
-tween("bmi",t.have?t.bmi:null,1);tween("whr",t.W/t.Hp,2);
+tween("bmi",t.have?t.bmi:null,1);tween("whr",t.have?t.W/t.Hp:null,2);
+$("#stcapB").textContent = t.have ? "Mô hình 2D theo số đo của bạn" : "Mô hình 2D · số đo minh họa";
 $("#bmiCat").textContent=t.have?(t.bmi<18.5?"Nhẹ cân":t.bmi<23?"Cân đối":t.bmi<25?"Hơi đầy đặn":"Đầy đặn"):"BMI";
 $("#shapeName").textContent=P.shape||(t.gB&&t.gW&&t.gH?"–":t.auto+" (gợi ý)");
 const q=prevP(),el=$("#delta"),dl=[];
-if(q&&+P.w&&q.w){const a=+P.w-q.w;dl.push("Cân nặng "+(a>0?"+":a<0?"−":"")+Math.abs(a).toFixed(1).replace(".",",")+" kg")}
-if(q&&+P.waist&&q.waist){const a=+P.waist-q.waist;dl.push("Eo "+(a>0?"+":a<0?"−":"")+Math.abs(a).toFixed(1).replace(".",",")+" cm")}
+if(q&&+P.w&&q.w){const a=Math.round((+P.w-q.w)*10)/10;if(a)dl.push("Cân nặng "+(a>0?"+":"−")+Math.abs(a).toFixed(1).replace(".",",")+" kg")}
+if(q&&+P.waist&&q.waist){const a=Math.round((+P.waist-q.waist)*10)/10;if(a)dl.push("Eo "+(a>0?"+":"−")+Math.abs(a).toFixed(1).replace(".",",")+" cm")}
 el.hidden=!dl.length;el.textContent=dl.length?"So với lần lưu "+(HIST[0].d||"trước")+": "+dl.join(" · "):"";
 }
 /* Điều khiển */
@@ -584,7 +811,7 @@ sync(); return sync;
 })();
 $("#to2").onclick = () => {
 persist(); store.set("fm_profile", P);
-if (!(+P.h >= 120 && +P.h <= 220 && +P.w >= 30 && +P.w <= 200)) { $("#e1").textContent = "Nhập chiều cao (120–220 cm) và cân nặng (30–200 kg) để tiếp tục."; return; }
+if (!(+P.h >= 120 && +P.h <= 220 && +P.w >= 30 && +P.w <= 200)) { $("#e1").textContent = "Nhập chiều cao (120–220 cm) và cân nặng (30–200 kg) để tiếp tục."; const bad = !(+P.h >= 120 && +P.h <= 220) ? $("#h") : $("#w"); bad.focus(); bad.scrollIntoView({ block: "center", behavior: REDUCE ? "auto" : "smooth" }); return; }
 const note = (P.note || "").trim();
 if (!HIST.length || +HIST[0].w !== +P.w || note || snapKey(HIST[0].p) !== snapKey(P)){ HIST.unshift({ d: new Date().toLocaleDateString("vi-VN"), w: +P.w, n: note, p: snap(P) }); HIST = HIST.slice(0, 10); store.set("fm_hist", HIST); P.note = ""; $("#note").value = ""; store.set("fm_profile", P); showHist(); }
 $("#e1").textContent = ""; step(2);
@@ -599,9 +826,10 @@ if (n === 2) return step(2);
 if (last) return step(3);
 $("#go").click();
 });
+let wipeArm = false;
 $("#wipe").onclick = () => {
-if (!confirm("Xóa hồ sơ, tủ đồ, lịch sử cân nặng và lịch sử chat trên trình duyệt này?")) return;
-["fm_profile","fm_closet","fm_chat","fm_hist","fm_man"].forEach(k => store.del(k)); location.reload();
+if (!wipeArm){ wipeArm = true; $("#wipe").textContent = "Bấm lại lần nữa để xóa toàn bộ dữ liệu"; setTimeout(()=>{ wipeArm = false; $("#wipe").textContent = "Xóa toàn bộ dữ liệu của tôi"; }, 4000); return; }
+["fm_profile","fm_closet","fm_chat","fm_hist","fm_man","fm_body"].forEach(k => store.del(k)); location.reload();
 };
 const readImg = (file, max = 1024) => new Promise((ok, no) => {
 if (!file || !file.type.startsWith("image/")) return no(new Error("Hãy chọn một file ảnh."));
@@ -636,23 +864,34 @@ el.ondrop = e => { e.preventDefault(); el.classList.remove("over"); const f = e.
 }
 async function loadImg(file, n = 1){
 try{
-const c = await readImg(file), url = c.toDataURL("image/jpeg", .85), th = mkThumb(c);
+const c = await readImg(file, 768), url = c.toDataURL("image/jpeg", .82), th = mkThumb(c);
 if (n === 2){ img2 = url.split(",")[1]; thumb2 = th; } else { img = url.split(",")[1]; thumb = th; }
 setDrop(n === 2 ? "#drop2" : "#drop", url, "Ảnh sản phẩm " + n); $("#e2").textContent = "";
 }catch(e){ $("#e2").textContent = e.message; }
 }
 async function loadBody(file){
-try{ body = await readImg(file); setDrop("#bdrop", body.toDataURL("image/jpeg", .8), "Ảnh của bạn"); view = "Ảnh của bạn"; viewSync(); $("#e1").textContent = ""; }
+try{ body = await readImg(file); const bu = body.toDataURL("image/jpeg", .82); setDrop("#bdrop", bu, "Ảnh của bạn"); try{ store.set("fm_body", bu); }catch(e){} view = "Ảnh của bạn"; viewSync(); $("#e1").textContent = ""; }
 catch(e){ $("#e1").textContent = e.message; }
 }
 wireDrop("#drop", "#file", f => loadImg(f, 1));
 wireDrop("#drop2", "#file2", f => loadImg(f, 2));
 wireDrop("#bdrop", "#bfile", loadBody);
+/* Khôi phục ảnh toàn thân đã lưu (fm_body) khi mở lại trang: trước đây ảnh vẫn còn trong bộ nhớ
+   nhưng biến body bị reset nên giao diện trống và mặc thử AI báo thiếu ảnh toàn thân. */
+setTimeout(() => {
+const savedBody = store.get("fm_body", "");
+if (!savedBody || body) return;
+const im = new Image();
+im.onload = () => { const sc = Math.min(1, 1024 / Math.max(im.width, im.height)), cv = document.createElement("canvas"); cv.width = Math.max(1, Math.round(im.width * sc)); cv.height = Math.max(1, Math.round(im.height * sc)); cv.getContext("2d").drawImage(im, 0, 0, cv.width, cv.height); body = cv; setDrop("#bdrop", savedBody, "Ảnh của bạn"); };
+im.src = savedBody;
+}, 0);
 document.addEventListener("paste", e => {
 if ($("#s2").hidden || !$("#tryon").classList.contains("on")) return;
 const f = [...(e.clipboardData?.files || [])].find(f => f.type.startsWith("image/")); if (f) loadImg(f, !img ? 1 : !img2 ? 2 : 1);
 });
+const _aiCache = new Map();
 async function callAI(system, messages, max = 1200, temperature){
+const ck = system.length + "|" + JSON.stringify(messages).length + "|" + (messages[0] && messages[0].content && messages[0].content[0] && messages[0].content[0].source ? messages[0].content[0].source.data.length : "");
 let r;
 try { r = await fetch(WORKER_URL, { method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify({ system, messages, max_tokens: max, temperature }) }); }
 catch (e) { throw new Error("Không kết nối được tới " + (WORKER_URL.startsWith("http") ? WORKER_URL : location.origin + WORKER_URL) + ". Hãy mở web bằng địa chỉ Worker (dạng https://ten.ten-ban.workers.dev), không mở file trên máy."); }
@@ -672,7 +911,18 @@ if (P.under) l.push("Undertone (người dùng xác nhận): " + P.under);
 if (!P.skin && !P.under) l.push("Chưa xác nhận tông da/undertone: KHÔNG được đoán.");
 return l.join("; ");
 }
-const SYS = () => "Bạn là FitMe AI, stylist và chuyên gia chọn size quần áo cho người Việt. Trả lời tiếng Việt, ngắn gọn, thẳng thắn, không bịa số liệu. Hồ sơ người dùng: " + profileText();
+const STYLE_RULES = "LUẬT PHỐI THEO HỌ PHONG CÁCH (bắt buộc, quan trọng nhất): Trước hết xác định đúng HỌ của món đồ từ ảnh — tên món trong trường product phải ghi rõ loại thật (ví dụ 'Áo jersey Brazil', không ghi chung chung 'áo thun'). Mọi gợi ý phối (styling, outfits) CHỈ được dùng món thuộc cùng họ hoặc họ trung tính đi kèm được: "
++ "1) HỌ THỂ THAO / STREET (áo jersey, áo đấu bóng đá/bóng rổ, áo thể thao, áo tập gym, hoodie thể thao): CHỈ phối với quần short thể thao, quần jogger, quần đùi, quần cargo, jeans ống suông/baggy, legging; giày sneaker, giày chạy bộ, dép sandal thể thao; phụ kiện mũ lưỡi trai, balo mini, túi đeo chéo nhỏ, tất cổ cao. TUYỆT ĐỐI KHÔNG phối quần tây, quần âu, giày Oxford, giày Derby, giày loafer da, blazer, áo vest, sơ mi, cà vạt, túi tote da — jersey đi với quần tây/Oxford là SAI và bị cấm tuyệt đối. "
++ "2) HỌ CÔNG SỞ / FORMAL (sơ mi, blazer, quần tây, đầm công sở, áo vest): phối quần tây, chân váy bút chì/midi, giày Oxford, loafer, cao gót; KHÔNG phối quần short thể thao, jogger, dép lê, áo jersey. "
++ "3) HỌ DẠO PHỐ / CASUAL (áo thun thường, jeans, áo khoác denim, váy hoa): phối linh hoạt trong nhóm casual — jeans, short vải, chân váy, sneaker, sandal; không tự ý nâng lên giày Oxford + quần tây trừ khi người dùng chọn dịp Đi làm và món chính vốn là sơ mi/đầm lịch sự. "
++ "4) HỌ DỰ TIỆC (đầm dạ hội, sequin, satin): phối giày cao gót/giày da bóng, clutch, trang sức; không phối sneaker chạy bộ hay jogger. "
++ "Nếu dịp người dùng chọn xung đột với họ của món đồ (ví dụ jersey mà chọn Đi làm), hãy nói thẳng món này không hợp dịp đó và gợi ý dịp phù hợp hơn, KHÔNG được ép phối sang họ formal.";
+function closetText(){
+const c = store.get("fm_closet", []);
+if (!c.length) return "";
+return c.slice(0, 6).map(x => `${x.product} (size ${x.size}${x.fit ? ", form " + x.fit : ""}${x.family ? ", họ " + x.family : ""})`).join("; ");
+}
+const SYS = () => "Bạn là FitMe AI, stylist và chuyên gia chọn size quần áo cho người Việt. Trả lời tiếng Việt, thẳng thắn, không bịa số liệu. TRẢ LỜI CỰC NGẮN, CHỈ 1 ĐỀ XUẤT DUY NHẤT (bắt buộc): mỗi câu trả lời tối đa khoảng 90 từ, CHỈ nêu ĐÚNG 1 phương án/bộ đồ tốt nhất — không liệt kê phương án 2, không thêm danh sách món gợi ý, không mở bài, không lặp lại hồ sơ người dùng, không chào hỏi hay chúc tụng ở cuối. Với câu hỏi phối đồ / chọn đồ / phom dáng, trả lời đúng 4 dòng theo thứ tự logic này, mỗi dòng bắt đầu đúng mẫu và chỉ chứa ĐÚNG 1 ý tối đa 18 từ: 'Ưu điểm:' (điểm mạnh nổi bật nhất của phương án duy nhất) → 'Khuyết điểm:' (điểm yếu đáng lo nhất) → 'Cách khắc phục:' (cách xử lý cụ thể cho đúng khuyết điểm đó) → 'Chốt:' (kết luận nên mặc gì, 1 câu). Với câu hỏi ngắn khác (màu sắc, chất liệu, bảo quản...), trả lời 1-2 câu ngắn, không ép theo 4 dòng. " + STYLE_RULES + " Hồ sơ người dùng: " + profileText() + (closetText() ? " Tủ đồ người dùng đang có (ƯU TIÊN phối từ chính các món này khi phù hợp và nói rõ món nào trong gợi ý là món trong tủ): " + closetText() + "." : " Tủ đồ người dùng đang trống: nếu người dùng hỏi phối từ tủ đồ, hãy nhắc họ thử đồ rồi nhấn Lưu vào tủ đồ trước.");
 function localSize(bottom){
 const h = +P.h, w = +P.w, b = bottom ? +P.hip : +P.bust, order = ["XS","S","M","L","XL","XXL"];
 let i = b ? (bottom ? (b<86?0:b<92?1:b<98?2:b<104?3:b<110?4:5) : (b<82?0:b<88?1:b<94?2:b<100?3:b<106?4:5)) : (w<45?0:w<55?1:w<65?2:w<75?3:w<85?4:5);
@@ -686,27 +936,209 @@ function normalize(o){
 const f = String(o.fit || "vừa").toLowerCase(), ok = P.skin || P.under;
 return { product: String(o.product || "Sản phẩm của bạn"), size: String(o.size || "?").trim().toUpperCase(),
 confidence: Math.max(0, Math.min(100, parseInt(o.confidence) || 60)), fit: ["ôm","vừa","rộng","oversize"].find(x => f.includes(x)) || "vừa",
-reasons: arr(o.reasons), alt_size: String(o.alt_size || "").trim().toUpperCase(), warnings: arr(o.warnings), styling: arr(o.styling), colors: ok ? arr(o.colors) : [] };
+reasons: arr(o.reasons).slice(0,2), alt_size: String(o.alt_size || "").trim().toUpperCase(), warnings: arr(o.warnings).slice(0,1), styling: arr(o.styling).slice(0,2), colors: ok ? arr(o.colors).slice(0,3) : [],
+family: String(o.family || ""), pros: arr(o.pros).slice(0,2), cons: arr(o.cons).slice(0,2),
+outfits: Array.isArray(o.outfits) ? o.outfits.slice(0,2).map(x => ({ name: String(x && x.name || "Bộ phối"), occasion: String(x && x.occasion || ""), items: String(x && x.items || ""), colors: arr(x && x.colors) })) : [] };
+}
+/* ---- Luật phối theo họ phong cách: chặn gợi ý lệch tông ngay trên máy (kể cả khi AI trả sai) ---- */
+function detectFamily(txt){
+const t = String(txt || "").toLowerCase();
+if (/jersey|áo đấu|áo bóng đá|áo bóng rổ|áo thể thao|áo tập|gym|running|chạy bộ|áo đội tuyển|brazil|football|soccer|basketball/.test(t)) return "sport";
+if (/dạ hội|sequin|đầm tiệc|váy tiệc|satin lụa/.test(t)) return "party";
+if (/sơ mi|blazer|áo vest|quần tây|quần âu|đầm công sở|giày oxford|derby/.test(t)) return "formal";
+if (/pijama|đồ ngủ|ở nhà|loungewear/.test(t)) return "home";
+return "casual";
+}
+const FAMILY_BAN = {
+sport: ["quần tây","quần âu","oxford","derby","loafer","blazer","áo vest","cà vạt","túi tote da","giày da bóng","sơ mi"],
+formal: ["quần short thể thao","jogger","jersey","áo đấu","dép lê","quần đùi thể thao","legging"],
+party: ["jogger","jersey","áo đấu","dép lê","quần short thể thao","giày chạy bộ"],
+home: ["oxford","blazer","cà vạt","giày cao gót"],
+casual: []
+};
+function keepInFamily(texts, fam){
+const ban = FAMILY_BAN[fam] || [];
+if (!ban.length) return texts;
+return (texts || []).filter(s => { const t = String(s).toLowerCase(); return !ban.some(b => t.includes(b)); });
+}
+function sanitizeStyle(r, bottom){
+const fam = r.family && FAMILY_BAN.hasOwnProperty(r.family) ? r.family : detectFamily(r.product);
+r.family = fam;
+r.styling = keepInFamily(r.styling, fam);
+r.outfits = (r.outfits || []).filter(o => keepInFamily([o.items, o.name], fam).length === 2);
+if (fam === "sport"){
+  if (!r.styling.length) r.styling = ["Áo jersey + quần short thể thao hoặc jogger tông đen/trắng + sneaker trắng và tất cổ cao — đúng chất sporty, gọn và mát.","Muốn street hơn: jersey sơ vin một phần vào quần cargo hoặc jeans baggy + sneaker cổ thấp + mũ lưỡi trai."];
+}
+if (r.outfits.length < 1) r.outfits = localOutfits(r, bottom);
+return r;
 }
 async function analyze(imgData, text, link, bottom, pre){
-const prompt = `Chọn size cho người dùng. Link: ${link||"không có"}. Bảng size shop: ${text||"không có (hãy dùng bảng size chung, nói rõ nếu ước tính)"}.${pre ? ` Đã đối chiếu bảng size bằng phép tính chính xác: size ${pre}. Bắt buộc dùng đúng size này, không tự suy luận lại.` : ""}
+const prompt = `Chọn size cho người dùng. Link: ${link||"không có"}. Bảng size shop: ${text||"không có (hãy dùng bảng size chung, nói rõ nếu ước tính)"}. Dịp mặc: ${OCC||"chưa chọn"}. Loại món: ${bottom?"quần/váy (món dưới)":"áo/đầm (món trên)"}.${pre ? ` Đã đối chiếu bảng size bằng phép tính chính xác: size ${pre}. Bắt buộc dùng đúng size này, không tự suy luận lại.` : ""}
+BƯỚC 1 — NHẬN DIỆN ĐÚNG MÓN: Nhìn kỹ ảnh và ghi vào product đúng loại thật + chi tiết nhận dạng (ví dụ "Áo jersey Brazil sân nhà vàng-xanh", "Áo sơ mi trắng công sở"), KHÔNG ghi chung chung "áo thun". Đồng thời xếp món vào đúng 1 họ ở trường family: sport (jersey/áo đấu/áo thể thao/áo tập), formal (sơ mi/blazer/quần tây/đầm công sở), casual (thun/jeans/denim/thường ngày), party (dạ hội/sequin), home (đồ ở nhà).
+BƯỚC 2 — PHỐI THEO ĐÚNG HỌ (theo LUẬT PHỐI ở phần vai trò): styling và outfits CHỈ dùng món cùng họ/trung tính đi kèm được. Nếu là jersey/áo đấu (sport) thì chỉ quần short thể thao, jogger, cargo, jeans baggy + sneaker/giày chạy + mũ lưỡi trai/balo mini; CẤM quần tây, quần âu, giày Oxford/Derby/loafer, blazer, sơ mi, cà vạt. Nếu dịp đã chọn xung đột với họ món đồ, outfits vẫn giữ đúng họ và ghi rõ trong occasion dịp thật sự phù hợp.
+TRẢ LỜI NGẮN GỌN, GIỮ Ý CHÍNH (bắt buộc): reasons tối đa 2 ý, mỗi ý tối đa 18 từ, chỉ nêu số đo quyết định size. warnings tối đa 1 ý, tối đa 18 từ, chỉ cảnh báo quan trọng nhất. pros tối đa 2 ý, mỗi ý tối đa 20 từ: ưu điểm nổi bật nhất của món này trên phom dáng người dùng (tôn dáng, che được vùng nào). cons tối đa 2 ý, mỗi ý tối đa 22 từ: khuyết điểm/rủi ro đáng lo nhất kèm cách khắc phục ngay trong cùng câu. styling tối đa 2 ý ngắn. outfits tối đa 2 bộ, cùng đúng họ phong cách, theo các dịp phù hợp với họ đó, mỗi bộ ghi rõ các món phối cùng và 2-3 màu chủ đạo dạng mã hex. Không lặp lại cùng một ý ở nhiều trường.
 Chỉ trả về JSON hợp lệ, không markdown:
-{"product":"tên/loại món đồ","size":"size đề xuất","confidence":0-100,"fit":"ôm|vừa|rộng|oversize","reasons":["..."],"alt_size":"size dự phòng hoặc rỗng","warnings":["..."],"styling":["gợi ý phối đồ"],"colors":["màu hợp, chỉ khi đã có tông da/undertone xác nhận, nếu không để mảng rỗng"]}`;
+{"product":"tên/loại món đồ thật","family":"sport|formal|casual|party|home","size":"size đề xuất","confidence":0-100,"fit":"ôm|vừa|rộng|oversize","reasons":["..."],"alt_size":"size dự phòng hoặc rỗng","warnings":["..."],"pros":["ưu điểm cụ thể"],"cons":["khuyết điểm + cách khắc phục"],"styling":["gợi ý phối đồ đúng họ"],"outfits":[{"name":"tên bộ","occasion":"dịp phù hợp","items":"các món phối cùng, đúng họ","colors":["#1c1c24","#e8c479"]}],"colors":["màu hợp, chỉ khi đã có tông da/undertone xác nhận, nếu không để mảng rỗng"]}`;
 const content = [];
 if (imgData) content.push({type:"image", source:{type:"base64", media_type:"image/jpeg", data:imgData}});
 content.push({type:"text", text:prompt});
 try {
-const out = await callAI(SYS(), [{role:"user", content}], 1400, .2);
+const out = await callAI(SYS(), [{role:"user", content}], 900, .2);
 const m = out.match(/\{[\s\S]*\}/);
 if (!m) throw new Error("AI trả về dữ liệu không đọc được.");
 const r = normalize(JSON.parse(m[0])); r.ai = true;
-return r;
+if (!r.pros.length || !r.cons.length){ const pc = localProsCons(r, bottom); if (!r.pros.length) r.pros = pc[0]; if (!r.cons.length) r.cons = pc[1]; }
+return sanitizeStyle(r, bottom);
 } catch (e) {
 const k = bottom ? P.hip : P.bust;
-return { product: bottom ? "Món 2 của bạn" : "Sản phẩm của bạn", size: localSize(bottom), confidence: 45, fit: "vừa", ai: false,
+const fb = { product: bottom ? "Món 2 của bạn" : "Sản phẩm của bạn", size: localSize(bottom), confidence: 45, fit: "vừa", ai: false,
 reasons: ["Ước tính offline từ chiều cao/cân nặng" + (k ? (bottom ? " và vòng mông" : " và vòng ngực") : "") + "."],
-warnings: [e.message, "Kết quả chỉ mang tính tham khảo, hãy đối chiếu bảng size của shop."], styling: [], colors: [], alt_size: "" };
+warnings: [e.message, "Kết quả chỉ mang tính tham khảo, hãy đối chiếu bảng size của shop."], styling: [], colors: [], alt_size: "", pros: [], cons: [], outfits: [] };
+const pc = localProsCons(fb, bottom); fb.pros = pc[0]; fb.cons = pc[1];
+return sanitizeStyle(fb, bottom);
 }
+}
+
+function localProsCons(r, bottom){
+  const shape = P.shape || targetParams().auto, fit = r.fit || "vừa";
+  const pro = [], con = [];
+  if (bottom){
+    pro.push("Cạp và ống quần/váy đúng size giúp chân trông dài và tỉ lệ eo – mông cân đối hơn.");
+    if (shape === "Quả lê") pro.push("Phom dáng quả lê hợp quần/váy cạp cao: ôm eo nhỏ, thả nhẹ qua mông nên tổng thể gọn hơn.");
+    if (shape === "Quả táo") pro.push("Chọn cạp cao vừa dưới rốn giúp phần bụng được giữ gọn mà không siết khó chịu.");
+    if (shape === "Đồng hồ cát") pro.push("Đường cong eo – mông rõ sẵn, quần/váy ôm vừa sẽ tôn đúng điểm mạnh nhất của bạn.");
+    con.push("Nếu ống quá ôm ở đùi/bắp chân sẽ lộ rõ vùng dễ tích mỡ — ưu tiên vải có độ đứng hoặc co giãn nhẹ.");
+    con.push("Cạp thấp dễ làm chân trông ngắn và lộ bụng khi ngồi — khắc phục bằng sơ vin một phần áo.");
+  } else {
+    pro.push("Áo/đầm đúng size giữ vai và ngực gọn gàng, tránh cảm giác luộm thuộm hay chật kéo vải.");
+    if (shape === "Quả táo") pro.push("Kiểu áo suông nhẹ, cổ V hoặc cổ tròn sâu vừa giúp phần thân trên trông thanh thoát hơn.");
+    if (shape === "Tam giác ngược") pro.push("Vai rộng là điểm mạnh: áo cổ tròn/cổ thuyền khoe được khung vai mà vẫn cân đối.");
+    if (shape === "Chữ nhật") pro.push("Áo có chiết eo hoặc thắt lưng tạo đường cong giả, giúp phom chữ nhật mềm mại hơn.");
+    con.push("Áo quá ôm dễ lộ bụng và nếp gấp ở nách khi vận động — nếu phân vân hai size, ưu tiên size lớn hơn.");
+    con.push("Chất vải bóng hoặc quá mỏng làm vùng ngực/bụng nổi rõ hơn dưới ánh sáng mạnh.");
+  }
+  if (fit === "ôm") con.push("Form ôm: đẹp khi đứng nhưng dễ khó chịu khi ngồi lâu — kiểm tra độ co giãn của vải trước khi chốt.");
+  if (fit === "rộng" || fit === "oversize") con.push("Form rộng dễ nuốt dáng nếu bạn thấp — khắc phục bằng sơ vin hoặc thêm thắt lưng.");
+  return [pro.slice(0,2), con.slice(0,2)];
+}
+const OUTFIT_BANK = [
+  {name:"Công sở thanh lịch", occasion:"Đi làm", items:"Áo sơ mi sáng màu + quần tây ống đứng + giày loafer + túi tote da", colors:["#eef1f5","#0b2a4d","#c99a4b"]},
+  {name:"Dạo phố cuối tuần", occasion:"Dạo phố", items:"Áo thun vừa người + quần jeans ống rộng + sneaker trắng + kính râm", colors:["#16507c","#eef1f5","#1c1c24"]},
+  {name:"Hẹn hò nhẹ nhàng", occasion:"Hẹn hò", items:"Áo/đầm tông pastel hoặc trung tính + sandal quai mảnh + túi nhỏ đeo chéo", colors:["#e58aa8","#f3dca8","#b5444f"]},
+  {name:"Tiệc tối nổi bật", occasion:"Dự tiệc", items:"Trang phục tông đậm + phụ kiện ánh kim + giày cao gót hoặc giày da bóng", colors:["#1c1c24","#e8c479","#b5444f"]},
+  {name:"Du lịch thoải mái", occasion:"Du lịch", items:"Áo thoáng mát + quần short/linen + mũ cói + sandal đế bệt, ưu tiên vải ít nhăn", colors:["#4f8a5b","#f3dca8","#eef1f5"]},
+  {name:"Tối giản ở nhà", occasion:"Ở nhà thoải mái", items:"Set đồ thun mềm co giãn + dép đi trong nhà, tông màu trung tính dễ chịu", colors:["#8fb3cf","#eef1f5","#5b3a29"]}
+];
+const SPORT_OUTFITS = [
+  {name:"Sporty sân cỏ", occasion:"Xem bóng đá / Dạo phố", items:"Áo jersey + quần short thể thao đen hoặc trắng + sneaker trắng + tất cổ cao + mũ lưỡi trai", colors:["#ffdf00","#009c3b","#eef1f5"]},
+  {name:"Street thể thao", occasion:"Dạo phố", items:"Áo jersey sơ vin một phần + quần cargo hoặc jeans baggy ống suông + sneaker cổ thấp + túi đeo chéo nhỏ", colors:["#1c1c24","#16507c","#eef1f5"]},
+  {name:"Năng động đi tập nhẹ", occasion:"Vận động nhẹ", items:"Áo jersey + quần jogger co giãn + giày chạy bộ + balo mini, chất vải thoáng và thấm mồ hôi", colors:["#009c3b","#1c1c24","#7fd6f5"]},
+  {name:"Cổ vũ cuối tuần", occasion:"Hẹn bạn bè", items:"Áo jersey + quần đùi jeans hoặc short kaki + sneaker trắng + kính râm, thêm áo khoác gió mỏng khi trời se lạnh", colors:["#ffdf00","#16507c","#eef1f5"]}
+];
+const FORMAL_OUTFITS = [
+  {name:"Công sở thanh lịch", occasion:"Đi làm", items:"Món chính + quần tây ống đứng hoặc chân váy midi + giày Oxford hoặc loafer + túi tote da", colors:["#eef1f5","#0b2a4d","#c99a4b"]},
+  {name:"Họp quan trọng", occasion:"Đi làm", items:"Thêm blazer cùng tông + đồng hồ dây da + giày da giữ phom, sơ vin gọn gàng", colors:["#0b2a4d","#1c1c24","#e8c479"]},
+  {name:"Tiệc công ty", occasion:"Dự tiệc", items:"Phối tông đậm + phụ kiện ánh kim vừa phải + giày da bóng, tránh sneaker và đồ thể thao", colors:["#1c1c24","#e8c479","#b5444f"]}
+];
+const PARTY_OUTFITS = [
+  {name:"Tiệc tối nổi bật", occasion:"Dự tiệc", items:"Trang phục chính + giày cao gót hoặc giày da bóng + clutch nhỏ + trang sức ánh kim", colors:["#1c1c24","#e8c479","#b5444f"]},
+  {name:"Hẹn hò buổi tối", occasion:"Hẹn hò", items:"Tông màu trang phục làm chủ đạo + giày lịch sự + nước hoa nhẹ, phụ kiện tối giản", colors:["#e58aa8","#f3dca8","#1c1c24"]}
+];
+function localOutfits(r, bottom){
+  const fam = (r && r.family) || detectFamily(r && r.product);
+  if (fam === "sport") return SPORT_OUTFITS.slice(0,2);
+  if (fam === "formal") return FORMAL_OUTFITS.slice(0,2);
+  if (fam === "party") return PARTY_OUTFITS.concat(OUTFIT_BANK.filter(o => o.occasion === "Hẹn hò")).slice(0,2);
+  const want = OCC ? OUTFIT_BANK.filter(o => o.occasion === OCC) : [];
+  const rest = OUTFIT_BANK.filter(o => o.occasion !== OCC);
+  return want.concat(rest).slice(0,2);
+}
+/* ---- Khi có 2 món: gộp thành MỘT bộ outfit chung (đánh giá cả bộ mặc cùng nhau, không tách riêng từng món) ---- */
+function dedupe(a, n){ const seen = new Set(), out = []; for (const s of a || []) { const k = String(s).trim().toLowerCase(); if (k && !seen.has(k)) { seen.add(k); out.push(String(s)); } } return n ? out.slice(0, n) : out; }
+function comboFamily(a, b){
+const ok = f => f && FAMILY_BAN.hasOwnProperty(f) ? f : "casual";
+a = ok(a); b = ok(b);
+if (a === b) return a;
+const s = [a, b];
+if (s.includes("sport") && s.includes("formal")) return "casual";
+if (s.includes("sport")) return "sport";
+if (s.includes("party")) return "party";
+if (s.includes("formal")) return "formal";
+if (s.includes("home")) return "home";
+return "casual";
+}
+const COMBO_EXTRAS = {
+sport: [
+{name:"Nguyên bộ đi cổ vũ", occasion:"Dạo phố", extra:"sneaker trắng + tất cổ cao + mũ lưỡi trai", colors:["#ffdf00","#009c3b","#eef1f5"]},
+{name:"Thêm khoác gió", occasion:"Du lịch", extra:"áo khoác gió mỏng trơn + giày chạy bộ + balo mini", colors:["#1c1c24","#16507c","#eef1f5"]},
+{name:"Street cuối tuần", occasion:"Hẹn bạn bè", extra:"sneaker cổ thấp + túi đeo chéo nhỏ + kính râm", colors:["#16507c","#eef1f5","#1c1c24"]}],
+formal: [
+{name:"Nguyên bộ đi làm", occasion:"Đi làm", extra:"giày Oxford hoặc loafer da + thắt lưng cùng tông giày + đồng hồ tối giản", colors:["#eef1f5","#0b2a4d","#c99a4b"]},
+{name:"Họp quan trọng", occasion:"Đi làm", extra:"thêm blazer cùng tông + túi tote da, sơ vin gọn toàn bộ", colors:["#0b2a4d","#1c1c24","#e8c479"]},
+{name:"Tiệc công ty", occasion:"Dự tiệc", extra:"giày da bóng + phụ kiện ánh kim vừa phải, giữ nguyên bộ làm trung tâm", colors:["#1c1c24","#e8c479","#b5444f"]}],
+party: [
+{name:"Nguyên bộ dự tiệc", occasion:"Dự tiệc", extra:"giày lịch sự da bóng hoặc ánh kim + clutch nhỏ + một món trang sức điểm nhấn", colors:["#1c1c24","#e8c479","#b5444f"]},
+{name:"Hẹn hò buổi tối", occasion:"Hẹn hò", extra:"giày lịch sự + nước hoa nhẹ, phụ kiện còn lại thật tối giản", colors:["#e58aa8","#f3dca8","#1c1c24"]}],
+home: [
+{name:"Nguyên bộ ở nhà", occasion:"Ở nhà thoải mái", extra:"dép mềm đi trong nhà, ưu tiên vải thoáng và co giãn", colors:["#8fb3cf","#eef1f5","#5b3a29"]},
+{name:"Ra ngoài nhanh", occasion:"Dạo phố", extra:"khoác thêm áo mỏng trung tính + sneaker sạch", colors:["#eef1f5","#16507c","#1c1c24"]}],
+casual: [
+{name:"Nguyên bộ đi làm nhẹ nhàng", occasion:"Đi làm", extra:"sneaker trắng tối giản hoặc loafer + đồng hồ dây da", colors:["#16507c","#eef1f5","#c99a4b"]},
+{name:"Nguyên bộ dạo phố", occasion:"Dạo phố", extra:"sneaker trắng + túi đeo chéo + kính râm", colors:["#16507c","#eef1f5","#1c1c24"]},
+{name:"Nguyên bộ hẹn hò", occasion:"Hẹn hò", extra:"giày lịch sự sạch + nước hoa nhẹ, sơ vin một phần áo cho gọn tỉ lệ", colors:["#e58aa8","#f3dca8","#16507c"]},
+{name:"Nguyên bộ du lịch", occasion:"Du lịch", extra:"sneaker êm hoặc sandal + mũ + túi tote vải, ưu tiên ít nhăn", colors:["#4f8a5b","#f3dca8","#eef1f5"]}]
+};
+function comboOutfits(top, bot, fam){
+const bank = COMBO_EXTRAS[fam] || COMBO_EXTRAS.casual;
+return bank.slice(0, 2).map(o => ({ name: o.name, occasion: o.occasion, items: `${top.product} + ${bot.product} + ${o.extra}`, colors: o.colors }));
+}
+function comboStyling(top, bot, fam){
+const pair = `${top.product} (size ${top.size}) mặc cùng ${bot.product} (size ${bot.size})`;
+const byFam = {
+sport: [`Mặc nguyên bộ ${pair}: đi sneaker trắng hoặc giày chạy tông trung tính, thêm mũ lưỡi trai và tất cổ cao là tròn bài sporty cho cả bộ.`, "Trời se lạnh thì khoác thêm áo gió mỏng hoặc hoodie trơn — tránh blazer và giày da vì sẽ làm cả bộ lệch họ."],
+formal: [`Mặc nguyên bộ ${pair}: hoàn thiện bằng giày Oxford/loafer da, thắt lưng cùng tông giày và đồng hồ mặt tròn tối giản.`, "Sơ vin gọn toàn bộ, giữ tay áo và ống quần phẳng — cả bộ này kỵ sneaker và phụ kiện thể thao."],
+party: [`Mặc nguyên bộ ${pair}: thêm giày lịch sự da bóng hoặc ánh kim, clutch/túi nhỏ và một món trang sức làm điểm nhấn cho cả bộ.`, "Giữ các phụ kiện còn lại thật tối giản để chính bộ đồ là trung tâm."],
+home: [`Mặc nguyên bộ ${pair}: dép mềm đi trong nhà và chất vải thoáng là đủ — ưu tiên sự thoải mái của cả bộ.`, "Cần ra ngoài nhanh thì khoác thêm áo khoác mỏng trung tính và đổi sang sneaker sạch."],
+casual: [`Mặc nguyên bộ ${pair}: sneaker trắng là lựa chọn an toàn nhất cho cả bộ, thêm túi đeo chéo và kính râm khi dạo phố.`, "Muốn chững chạc hơn: đổi sang loafer/giày da tối giản + đồng hồ. Muốn trẻ trung hơn: sơ vin một phần áo phía trước và thêm mũ lưỡi trai."]
+};
+return byFam[fam] || byFam.casual;
+}
+function localCombo(top, bot){
+const fam = comboFamily(top.family, bot.family);
+const pros = dedupe([...(top.pros || []), ...(bot.pros || [])], 2);
+const cons = dedupe([...(top.cons || []), ...(bot.cons || [])], 2);
+if (top.fit === "rộng" || top.fit === "oversize") cons.push("Mặc cả bộ: áo form rộng đi với món dưới dễ nuốt mất vòng eo — sơ vin một phần áo phía trước để giữ tỉ lệ chân.");
+if (top.fit === "ôm" && (bot.fit === "ôm")) cons.push("Cả bộ đều ôm: đẹp khi đứng nhưng dễ khó chịu khi ngồi lâu — ưu tiên vải có co giãn ở cả hai món.");
+if (top.family && bot.family && top.family !== bot.family && ((top.family === "sport" && bot.family === "formal") || (top.family === "formal" && bot.family === "sport"))) cons.push("Hai món vốn thuộc hai họ phong cách khác nhau (thể thao × lịch sự): giữ giày và phụ kiện ở tông trung tính sạch (sneaker trắng trơn, túi trơn) để cả bộ không bị lệch tông.");
+if (!pros.length) pros.push("Hai món mặc cùng nhau tạo thành một bộ hoàn chỉnh: tỉ lệ thân trên – thân dưới cân đối, không phải phối thêm áo/quần khác.");
+return { pros: pros.slice(0, 2), cons: cons.slice(0, 2), styling: comboStyling(top, bot, fam), outfits: comboOutfits(top, bot, fam), family: fam, ai: false };
+}
+async function comboAnalyze(top, bot){
+try {
+const prompt = `Người dùng sẽ mặc CÙNG NHAU đúng hai món này thành MỘT bộ outfit: MÓN TRÊN: "${top.product}" (size ${top.size}, form ${top.fit}, họ phong cách ${top.family || "casual"}). MÓN DƯỚI: "${bot.product}" (size ${bot.size}, form ${bot.fit}, họ phong cách ${bot.family || "casual"}). Dịp mặc ưu tiên: ${OCC || "chưa chọn"}.
+Đánh giá CẢ BỘ khi mặc cùng nhau, KHÔNG đánh giá lại từng món riêng lẻ và KHÔNG đề xuất thay áo hay quần khác:
+- pros: ưu điểm của chính sự kết hợp này (tỉ lệ thân trên/dưới, hai món có hợp nhau về kiểu và tông không, tôn dáng ở đâu khi mặc cùng nhau).
+- cons: khuyết điểm/rủi ro của chính sự kết hợp kèm cách khắc phục ngay trong câu (sơ vin thế nào, thêm thắt lưng, đổi loại giày...). Nếu hai món lệch họ phong cách nhau phải nói rõ và cho cách trung hòa.
+- styling: gợi ý hoàn thiện CẢ BỘ: giày, túi, mũ, đồng hồ, lớp khoác thêm — phải cùng họ phong cách chung của cả bộ (theo LUẬT PHỐI ở phần vai trò).
+- outfits: tối đa 2 biến tấu theo dịp, mỗi biến tấu BẮT BUỘC dùng đúng nguyên bộ "${top.product} + ${bot.product}" và chỉ thay giày/phụ kiện/lớp khoác đi kèm; ghi rõ trong items.
+GIỮ NGẮN GỌN: pros và cons mỗi mảng tối đa 2 ý, mỗi ý tối đa 22 từ, không lặp ý đã nêu ở phân tích từng món; styling tối đa 2 ý ngắn.
+Chỉ trả về JSON hợp lệ, không markdown:
+{"pros":["..."],"cons":["..."],"styling":["..."],"outfits":[{"name":"tên biến tấu","occasion":"dịp","items":"${top.product} + ${bot.product} + giày/phụ kiện đi kèm","colors":["#1c1c24","#e8c479"]}]}`;
+const out = await callAI(SYS(), [{ role: "user", content: prompt }], 800, .35);
+const m = out.match(/\{[\s\S]*\}/);
+if (!m) throw new Error("bad");
+const o = JSON.parse(m[0]);
+const fam = comboFamily(top.family, bot.family);
+const c = { pros: arr(o.pros).slice(0,2), cons: arr(o.cons).slice(0,2), styling: keepInFamily(arr(o.styling), fam).slice(0,2),
+outfits: Array.isArray(o.outfits) ? o.outfits.slice(0, 2).map(x => ({ name: String(x && x.name || "Bộ phối"), occasion: String(x && x.occasion || ""), items: String(x && x.items || ""), colors: arr(x && x.colors) })).filter(x => x.items) : [], family: fam, ai: true };
+c.outfits = c.outfits.filter(x => keepInFamily([x.items, x.name], fam).length === 2);
+if (!c.pros.length || !c.cons.length || !c.styling.length || c.outfits.length < 1) { const lc = localCombo(top, bot); if (!c.pros.length) c.pros = lc.pros; if (!c.cons.length) c.cons = lc.cons; if (!c.styling.length) c.styling = lc.styling; if (c.outfits.length < 1) c.outfits = lc.outfits; }
+return c;
+} catch (e) { return localCombo(top, bot); }
+}
+function outfitGrid(outfits, title, sub){
+outfits = (outfits || []).slice(0, 2);
+return outfits.length ? `<div class="sechead"><h3>${esc(title)}</h3><span>${esc(sub)}</span></div><div class="ogrid">${outfits.map(o => `<div class="ocard"><span class="occ">${esc(o.occasion || "")}</span><h4>${esc(o.name)}</h4><p>${esc(o.items)}</p>${o.colors && o.colors.length ? `<div class="pal">${o.colors.map(c => `<i style="background:${esc(c)}" title="${esc(c)}"></i>`).join("")}</div>` : ""}</div>`).join("")}</div>` : "";
 }
 const SIZES = ["M","L","XL"];
 function mkSizeTable(id, cols){
@@ -768,33 +1200,46 @@ function applyChart(r, m){
 if (!m) return r;
 const bad = t => [...String(t).matchAll(/\bsize\s+([A-Za-z0-9]{1,4})\b/gi)].some(x => x[1].toUpperCase() !== m.size);
 r.size = m.size;
-r.reasons = [chartReason(m)].concat((r.reasons || []).filter(t => !bad(t) && !/\d+\s*[-–]\s*\d+\s*(kg|cm)/i.test(t)));
+r.reasons = [chartReason(m)].concat((r.reasons || []).filter(t => !bad(t) && !/\d+\s*[-–]\s*\d+\s*(kg|cm)/i.test(t))).slice(0, 2);
 const w = (r.warnings || []).filter(t => !bad(t));
 if (m.alt){ r.alt_size = m.alt; w.unshift(`Số đo của bạn nằm đúng ranh giới giữa size ${m.alt} và ${m.size}: thích ôm thì chọn ${m.alt}, thích rộng thì chọn ${m.size}.`); }
 else if (r.alt_size === m.size) r.alt_size = "";
 if (!m.exact) w.unshift("Số đo của bạn chưa nằm trọn trong size nào của bảng, đây là size gần nhất.");
-r.warnings = w;
+r.warnings = w.slice(0, 2);
 r.confidence = m.exact ? Math.max(r.confidence || 0, 85) : Math.min(r.confidence || 60, 65);
 return r;
 }
 $("#go").onclick = async () => {
 const text = chartText("#t1"), link = $("#link").value.trim(), text2 = chartText("#t2");
 if (!img && !text && !link) { $("#e2").textContent = "Thêm ít nhất một ảnh, bảng size hoặc link cho món 1."; return; }
-$("#e2").textContent = ""; $("#go").disabled = true; step(3);
+$("#e2").textContent = ""; $("#go").disabled = true; const goTxt = $("#go").textContent; $("#go").textContent = "Đang phân tích…"; step(3);
 $("#result").innerHTML = ""; $("#loading").hidden = false; $("#save").hidden = true; $("#fit").hidden = true; $("#e4").textContent = "";
+try {
 const m1 = matchChart("#t1"), m2 = matchChart("#t2");
 const jobs = [analyze(img, text, link, false, m1 && m1.size).then(r => applyChart(r, m1))];
 if (img2 || text2) jobs.push(analyze(img2, text2, "", true, m2 && m2.size).then(r => applyChart(r, m2)));
 last = await Promise.all(jobs);
 const date = new Date().toLocaleDateString("vi-VN");
 last.forEach((r, i) => { r.date = date; r.link = i ? "" : link; r.thumb = i ? thumb2 : thumb; });
-$("#go").disabled = false;
-renderResult(); initFit(); $("#loading").hidden = true; $("#save").hidden = false;
+if (last.length > 1) last.combo = await comboAnalyze(last[0], last[1]);
+renderResult(); initFit(); $("#save").hidden = false;
+} catch (e) {
+last = null;
+$("#result").innerHTML = `<div class="empty">Chưa phân tích được. ${esc(e && e.message ? e.message : "Đã có lỗi xảy ra.")}<br><button type="button" class="chip" style="margin-top:12px" onclick="document.getElementById('again').click()">Quay lại chọn món</button></div>`;
+} finally {
+$("#loading").hidden = true; $("#go").disabled = false; $("#go").textContent = goTxt;
+}
 };
 const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const list = a => a && a.length ? `<ul class="clean">${a.map(x => `<li>${esc(x)}</li>`).join("")}</ul>` : "";
+function moreBlock(key, inner){
+return inner ? `<div class="morewrap"><button type="button" class="chip moretoggle" data-more="${key}" aria-expanded="false">Xem chi tiết</button><div class="morebody" id="more-${key}" hidden>${inner}</div></div>` : "";
+}
 function renderOne(r, i){
 const fitCls = r.fit === "vừa" ? "ok" : "warn";
+const reasons = (r.reasons || []).slice(0, 2), warns = (r.warnings || []).slice(0, 1), warnsMore = (r.warnings || []).slice(1);
+const pros = (r.pros || []).slice(0, 2), cons = (r.cons || []).slice(0, 2);
+const more = `${warnsMore.length ? `<label style="margin-top:14px">Lưu ý thêm</label>${list(warnsMore)}` : ""}${r.styling?.length ? `<label style="margin-top:14px">Gợi ý phối đồ</label>${list((r.styling || []).slice(0, 2))}` : ""}${outfitGrid(r.outfits, "Outfit cho bạn", "Tối đa 2 bộ, phối theo dịp")}${r.colors?.length ? `<label style="margin-top:14px">Màu hợp với bạn</label>${r.colors.slice(0, 3).map(c => `<span class="tag">${esc(c)}</span>`).join("")}` : ""}`;
 return `<div class="enter">
 ${r.thumb ? `<img class="rthumb" src="${r.thumb}" alt="Ảnh sản phẩm">` : ""}
 <p class="sub" style="margin:0">${last.length > 1 ? `<b>Món ${i+1}</b> · ` : ""}${esc(r.product)}</p>
@@ -802,123 +1247,568 @@ ${r.thumb ? `<img class="rthumb" src="${r.thumb}" alt="Ảnh sản phẩm">` : "
 <div><span class="tag ${fitCls}">Form ${esc(r.fit)}</span>${r.alt_size ? `<span class="tag">Dự phòng: ${esc(r.alt_size)}</span>` : ""}${r.ai ? "" : `<span class="tag warn">Offline</span>`}</div></div>
 <div class="meter" role="img" aria-label="Độ tin cậy ${+r.confidence||0}%"><div style="width:${+r.confidence||0}%"></div></div>
 <div class="hint">Độ tin cậy ${+r.confidence||0}%</div>
-<label style="margin-top:14px">Vì sao chọn size này</label>${list(r.reasons)}
-${r.warnings?.length ? `<label style="margin-top:14px">Lưu ý</label>${list(r.warnings)}` : ""}
-${r.styling?.length ? `<label style="margin-top:14px">Gợi ý phối đồ</label>${list(r.styling)}` : ""}
-${r.colors?.length ? `<label style="margin-top:14px">Màu hợp với bạn</label>${r.colors.map(c => `<span class="tag">${esc(c)}</span>`).join("")}` : ""}</div>`;
+<label style="margin-top:14px">Vì sao chọn size này</label>${list(reasons)}
+${warns.length ? `<label style="margin-top:14px">Lưu ý</label>${list(warns)}` : ""}
+${(pros.length || cons.length) ? `<label style="margin-top:16px">Ưu &amp; khuyết điểm khi bạn mặc món này</label><div class="pcgrid">${pros.length ? `<div class="pcard pro"><h4>✓ Ưu điểm</h4><ul>${pros.map(x=>`<li>${esc(x)}</li>`).join("")}</ul></div>` : ""}${cons.length ? `<div class="pcard con"><h4>! Khuyết điểm cần lưu ý</h4><ul>${cons.map(x=>`<li>${esc(x)}</li>`).join("")}</ul></div>` : ""}</div>` : ""}
+${moreBlock("one" + i, more)}</div>`;
+}
+function renderCombo(){
+const top = last[0], bot = last[1], combo = last.combo || localCombo(top, bot);
+const conf = Math.round(((+top.confidence || 0) + (+bot.confidence || 0)) / 2);
+const itemBlock = (r, tag) => `<div class="comboitem">
+${r.thumb ? `<img class="cthumb" src="${r.thumb}" alt="Ảnh ${esc(tag)}">` : ""}
+<p class="sub" style="margin:0"><b>${esc(tag)}</b> · ${esc(r.product)}</p>
+<div style="display:flex;align-items:flex-end;gap:12px;flex-wrap:wrap;margin-top:2px"><div class="size-mid metal">${esc(r.size)}</div>
+<div><span class="tag ${r.fit === "vừa" ? "ok" : "warn"}">Form ${esc(r.fit)}</span>${r.alt_size ? `<span class="tag">Dự phòng: ${esc(r.alt_size)}</span>` : ""}${r.ai ? "" : `<span class="tag warn">Offline</span>`}</div></div>
+<div class="meter" role="img" aria-label="Độ tin cậy ${+r.confidence || 0}%"><div style="width:${+r.confidence || 0}%"></div></div>
+<div class="hint">Độ tin cậy ${+r.confidence || 0}%</div>
+<label style="margin-top:12px">Vì sao chọn size này</label>${list((r.reasons || []).slice(0, 2))}
+${r.warnings && r.warnings.length ? `<label style="margin-top:12px">Lưu ý</label>${list(r.warnings.slice(0, 1))}` : ""}</div>`;
+const colorsAll = dedupe([...(top.colors || []), ...(bot.colors || [])]).slice(0, 3);
+const cpros = (combo.pros || []).slice(0, 2), ccons = (combo.cons || []).slice(0, 2), csty = (combo.styling || []).slice(0, 2);
+const cmore = `${csty.length > 1 ? `<label style="margin-top:14px">Phối hoàn thiện thêm</label>${list(csty.slice(1))}` : ""}${outfitGrid(combo.outfits, "Biến tấu từ chính bộ này", "Giữ nguyên áo + quần, chỉ đổi giày và phụ kiện theo dịp")}${colorsAll.length ? `<label style="margin-top:14px">Màu hợp với bạn</label>${colorsAll.map(c => `<span class="tag">${esc(c)}</span>`).join("")}` : ""}`;
+return `<div class="enter">
+<div class="sechead" style="margin-top:0"><h3>Bộ outfit hoàn chỉnh của bạn</h3><span>Hai món được đánh giá như một bộ mặc cùng nhau</span></div>
+<p class="sub" style="margin:0 0 2px">${esc(top.product)} <b style="color:var(--gold)">+</b> ${esc(bot.product)}</p>
+<div class="hint">Độ tin cậy chung của cả bộ: <b style="color:var(--gold)">${conf}%</b> — size từng món vẫn được đối chiếu riêng theo bảng size của shop ở hai ô dưới.</div>
+<div class="comboitems">${itemBlock(top, "Món 1 · Áo/đầm")}${itemBlock(bot, "Món 2 · Quần/váy")}</div>
+${csty.length ? `<div class="verdict"><b>Chốt cả bộ:</b> ${esc(csty[0])}</div>` : ""}
+${cpros.length || ccons.length ? `<label style="margin-top:18px">Ưu &amp; khuyết điểm khi mặc CẢ BỘ cùng nhau</label><div class="pcgrid">${cpros.length ? `<div class="pcard pro"><h4>✓ Ưu điểm của cả bộ</h4><ul>${cpros.map(x => `<li>${esc(x)}</li>`).join("")}</ul></div>` : ""}${ccons.length ? `<div class="pcard con"><h4>! Khuyết điểm của cả bộ cần lưu ý</h4><ul>${ccons.map(x => `<li>${esc(x)}</li>`).join("")}</ul></div>` : ""}</div>` : ""}
+${moreBlock("combo", cmore)}</div>`;
 }
 function renderResult(){
-$("#result").innerHTML = last.map(renderOne).join('<hr style="border:0;border-top:1px solid var(--line);margin:22px 0;clear:both">');
+$("#result").innerHTML = last.length > 1 ? renderCombo() : last.map(renderOne).join('<hr style="border:0;border-top:1px solid var(--line);margin:22px 0;clear:both">');
+$("#result").querySelectorAll("[data-more]").forEach(b => b.onclick = () => { const el = document.getElementById("more-" + b.dataset.more); if (!el) return; const show = el.hidden; el.hidden = !show; b.textContent = show ? "Thu gọn" : "Xem chi tiết"; b.setAttribute("aria-expanded", String(show)); });
+}
+/* ---------- Mặc thử AI (Hugging Face IDM-VTON): chuẩn bị ảnh thông minh → gửi có thử lại → hậu xử lý & so sánh ---------- */
+const TRY_W = 768, TRY_H = 1024;
+const TRY = { stages: [], mode: "enh", view: -1, personUrl: "", t0: 0, timer: 0, abort: null, cancel: false };
+const loadImgEl = src => new Promise((res, rej) => { const im = new Image(); im.onload = () => res(im); im.onerror = () => rej(new Error("Không đọc được ảnh")); im.src = src; });
+function sampleStats(cv, step){
+if (!cv.getContext) { const t = document.createElement("canvas"); const sc = Math.min(1, 256 / Math.max(cv.naturalWidth || cv.width, cv.naturalHeight || cv.height)); t.width = Math.max(1, Math.round((cv.naturalWidth || cv.width) * sc)); t.height = Math.max(1, Math.round((cv.naturalHeight || cv.height) * sc)); t.getContext("2d").drawImage(cv, 0, 0, t.width, t.height); cv = t; }
+const w = cv.width, h = cv.height, x = cv.getContext("2d", { willReadFrequently: true });
+const d = x.getImageData(0, 0, w, h).data; let sum = 0, sum2 = 0, n = 0;
+for (let i = 0; i < d.length; i += 4 * (step || 24)) { const lum = .2126 * d[i] + .7152 * d[i+1] + .0722 * d[i+2]; sum += lum; sum2 += lum * lum; n++; }
+const mean = sum / Math.max(1, n); return { mean, sd: Math.sqrt(Math.max(0, sum2 / Math.max(1, n) - mean * mean)) };
 }
 function initFit(){
-$("#aiOut").innerHTML = "";
+$("#aiOut").innerHTML = ""; TRY.stages = []; TRY.view = -1;
 const ok = !!(body && img);
 $("#fit").hidden = !ok;
 $("#maskBox").hidden = !(ok && img2); if (ok && img2) drawMask();
 $("#e4").textContent = ok ? "" : "Muốn xem bạn mặc món này: quay lại và thêm ảnh toàn thân của bạn (bước 1) cùng ảnh sản phẩm (bước 2).";
 }
+function maskPath(x, cx, y0, y1, hwTop, hwBot){
+x.beginPath();
+x.moveTo(cx - hwTop, y0);
+x.quadraticCurveTo(cx - hwTop * .99, (y0 + y1) / 2, cx - hwBot, y1);
+x.quadraticCurveTo(cx, y1 + (y1 - y0) * .035, cx + hwBot, y1);
+x.quadraticCurveTo(cx + hwTop * .99, (y0 + y1) / 2, cx + hwTop, y0);
+x.quadraticCurveTo(cx, y0 - (y1 - y0) * .03, cx - hwTop, y0);
+x.closePath();
+}
 const drawMask = () => {
 if (!body) return;
 const c = $("#mprev"), w = 240, h = Math.round(w * body.height / body.width), x = c.getContext("2d");
 c.width = w; c.height = h; x.drawImage(body, 0, 0, w, h);
-const t = $("#mTop").value / 100, b = $("#mBot").value / 100;
-x.fillStyle = "rgba(255,40,40,.4)"; x.fillRect(w * .2, h * t, w * .6, h * Math.max(.05, b - t));
+const t = $("#mTop").value / 100, b = Math.max(t + .05, $("#mBot").value / 100);
+x.fillStyle = "rgba(255,40,40,.42)"; maskPath(x, w / 2, h * t, h * b, w * .31, w * .225); x.fill();
+x.strokeStyle = "rgba(255,120,120,.85)"; x.lineWidth = 1.4; x.stroke();
 };
 ["#mTop", "#mBot"].forEach(k => $(k).addEventListener("input", drawMask));
-const lowerMask = src => new Promise((res, rej) => {
-const im = new Image();
-im.onload = () => {
-const w = 384, h = Math.round(w * im.height / im.width), c = document.createElement("canvas");
-c.width = w; c.height = h;
-const x = c.getContext("2d"); x.fillStyle = "#000"; x.fillRect(0, 0, w, h);
-const t = $("#mTop").value / 100, b = $("#mBot").value / 100;
-x.fillStyle = "#fff"; x.fillRect(w * .2, h * t, w * .6, h * Math.max(.05, b - t));
-res(c.toDataURL("image/png"));
-};
-im.onerror = () => rej(new Error("Không tạo được vùng mặc quần/váy"));
-im.src = src;
-});
-const jpegOf = src => new Promise((res, rej) => {
-const im = new Image();
-im.onload = () => { const c = document.createElement("canvas"); c.width = im.width; c.height = im.height; c.getContext("2d").drawImage(im, 0, 0); res(c.toDataURL("image/jpeg", .9)); };
-im.onerror = () => rej(new Error("Không đọc được ảnh kết quả"));
-im.src = src;
-});
+function autoLevels(x, w, h){
+try {
+const d = x.getImageData(0, 0, w, h), px = d.data, hist = new Uint32Array(256);
+for (let i = 0; i < px.length; i += 16) hist[Math.round(.2126 * px[i] + .7152 * px[i+1] + .0722 * px[i+2])]++;
+const total = Math.max(1, Math.floor(px.length / 16));
+let lo = 0, hi = 255, acc = 0;
+for (let v = 0; v < 256; v++) { acc += hist[v]; if (acc > total * .01) { lo = v; break; } }
+acc = 0;
+for (let v = 255; v >= 0; v--) { acc += hist[v]; if (acc > total * .01) { hi = v; break; } }
+if (hi - lo < 70 || hi - lo > 245) return; /* ảnh đã đủ tương phản hoặc quá gắt: giữ nguyên */
+const sc = 255 / (hi - lo);
+for (let i = 0; i < px.length; i += 4) for (let k = 0; k < 3; k++) px[i+k] = Math.max(0, Math.min(255, (px[i+k] - lo) * sc));
+x.putImageData(d, 0, 0);
+} catch (e) {}
+}
+/* Căn ảnh người về khung dọc 768×1024: nền đệm là chính ảnh đó làm mờ, người nằm giữa, không cắt đầu/chân */
+function preparePerson(){
+const c = document.createElement("canvas"); c.width = TRY_W; c.height = TRY_H;
+const x = c.getContext("2d");
+const cover = Math.max(TRY_W / body.width, TRY_H / body.height);
+x.filter = "blur(26px) brightness(.72) saturate(.85)";
+x.drawImage(body, (TRY_W - body.width * cover) / 2, (TRY_H - body.height * cover) / 2, body.width * cover, body.height * cover);
+x.filter = "none";
+const sc = Math.min(TRY_W / body.width, TRY_H / body.height);
+const dw = Math.round(body.width * sc), dh = Math.round(body.height * sc);
+const ox = Math.round((TRY_W - dw) / 2), oy = Math.round((TRY_H - dh) / 2);
+x.drawImage(body, ox, oy, dw, dh);
+autoLevels(x, TRY_W, TRY_H);
+return { url: c.toDataURL("image/jpeg", .9), ox, oy, dw, dh };
+}
+/* Mặt nạ quần/váy trong đúng tọa độ ảnh đã chuẩn bị: vát theo ống chân + mép lông (feather) để đường ghép không bị răng cưa */
+function lowerMaskPrep(tr){
+const t = $("#mTop").value / 100, b = Math.max(t + .05, $("#mBot").value / 100);
+const shape = document.createElement("canvas"); shape.width = TRY_W; shape.height = TRY_H;
+const sx = shape.getContext("2d"); sx.fillStyle = "#fff";
+maskPath(sx, tr.ox + tr.dw / 2, tr.oy + t * tr.dh, tr.oy + b * tr.dh, tr.dw * .31, tr.dw * .225); sx.fill();
+const c = document.createElement("canvas"); c.width = TRY_W; c.height = TRY_H;
+const x = c.getContext("2d"); x.fillStyle = "#000"; x.fillRect(0, 0, TRY_W, TRY_H);
+x.filter = "blur(7px)"; x.drawImage(shape, 0, 0); x.filter = "none";
+/* vùng lõi vẽ lại sắc nét để AI vẫn phủ kín thân dưới, chỉ mép ngoài là mềm */
+x.globalAlpha = .92; maskPath(x, tr.ox + tr.dw / 2, tr.oy + t * tr.dh, tr.oy + b * tr.dh, tr.dw * .295, tr.dw * .212); x.fillStyle = "#fff"; x.fill(); x.globalAlpha = 1;
+return c.toDataURL("image/png");
+}
+/* Ảnh sản phẩm: dò màu nền ở 4 góc, cắt viền nền thừa, đặt giữa nền trắng có đệm đều */
+async function prepareGarment(b64){
+const im = await loadImgEl("data:image/jpeg;base64," + b64);
+const src = document.createElement("canvas"); src.width = im.naturalWidth; src.height = im.naturalHeight;
+const sx = src.getContext("2d", { willReadFrequently: true }); sx.fillStyle = "#fff"; sx.fillRect(0, 0, src.width, src.height); sx.drawImage(im, 0, 0);
+const w = src.width, h = src.height, d = sx.getImageData(0, 0, w, h).data;
+const corner = (px, py) => { const i = (py * w + px) * 4; return [d[i], d[i+1], d[i+2]]; };
+const bg = corner(2, 2).map((v, k) => Math.round((v + corner(w - 3, 2)[k] + corner(2, h - 3)[k] + corner(w - 3, h - 3)[k]) / 4));
+const diff = i => Math.abs(d[i] - bg[0]) + Math.abs(d[i+1] - bg[1]) + Math.abs(d[i+2] - bg[2]);
+let x0 = w, y0 = h, x1 = 0, y1 = 0;
+for (let yy = 0; yy < h; yy += 2) for (let xx = 0; xx < w; xx += 2) { if (diff((yy * w + xx) * 4) > 42) { if (xx < x0) x0 = xx; if (xx > x1) x1 = xx; if (yy < y0) y0 = yy; if (yy > y1) y1 = yy; } }
+let crop = null;
+if (x1 > x0 && y1 > y0 && (x1 - x0) * (y1 - y0) < w * h * .9) {
+const mx = w * .045, my = h * .045;
+crop = { x: Math.max(0, x0 - mx), y: Math.max(0, y0 - my), w: Math.min(w, x1 + mx) - Math.max(0, x0 - mx), h: Math.min(h, y1 + my) - Math.max(0, y0 - my) };
+}
+const cw = crop ? crop.w : w, ch = crop ? crop.h : h;
+const sc = Math.min(1, 768 / Math.max(cw, ch)), ow = Math.max(8, Math.round(cw * sc)), oh = Math.max(8, Math.round(ch * sc));
+const pad = Math.round(Math.max(ow, oh) * .06);
+const out = document.createElement("canvas"); out.width = ow + pad * 2; out.height = oh + pad * 2;
+const ox2 = out.getContext("2d"); ox2.fillStyle = "#fff"; ox2.fillRect(0, 0, out.width, out.height);
+ox2.drawImage(src, crop ? crop.x : 0, crop ? crop.y : 0, cw, ch, pad, pad, ow, oh);
+return out.toDataURL("image/jpeg", .92);
+}
+/* Kết quả trung gian giữa 2 món: thu về tối đa 1024px, nén vừa đủ để vòng ghép sau không bị mờ dây chuyền */
+async function normalizeStage(src){
+const im = await loadImgEl(src);
+const sc = Math.min(1, 1024 / Math.max(im.naturalWidth, im.naturalHeight));
+if (sc >= 1) return src;
+const c = document.createElement("canvas"); c.width = Math.round(im.naturalWidth * sc); c.height = Math.round(im.naturalHeight * sc);
+c.getContext("2d").drawImage(im, 0, 0, c.width, c.height);
+return c.toDataURL("image/jpeg", .92);
+}
+/* Ảnh trả về: tinh chỉnh nhẹ (tương phản/màu) + nét cạnh 1 lượt, giữ bản gốc để người dùng tự chọn */
+function enhanceResult(im){
+const c = document.createElement("canvas"); c.width = im.naturalWidth; c.height = im.naturalHeight;
+const x = c.getContext("2d", { willReadFrequently: true });
+x.filter = "contrast(1.05) saturate(1.06) brightness(1.01)"; x.drawImage(im, 0, 0); x.filter = "none";
+try {
+const d = x.getImageData(0, 0, c.width, c.height), srcp = new Uint8ClampedArray(d.data), px = d.data, w = c.width, h = c.height, K = .22;
+for (let yy = 1; yy < h - 1; yy++) for (let xx = 1; xx < w - 1; xx++) {
+const i = (yy * w + xx) * 4;
+for (let k = 0; k < 3; k++) px[i+k] = srcp[i+k] * (1 + 4 * K) - K * (srcp[i - 4 + k] + srcp[i + 4 + k] + srcp[i - w * 4 + k] + srcp[i + w * 4 + k]);
+}
+x.putImageData(d, 0, 0);
+} catch (e) {}
+return c.toDataURL("image/jpeg", .92);
+}
+const waitMs = ms => new Promise(r => setTimeout(r, ms));
+/* ===== MẶC THỬ QUA 1 SPACE CHÍNH DUY NHẤT: yisol/IDM-VTON =====
+   Chỉ có đúng 1 Space thật, gọi qua đúng 1 địa chỉ Worker cũ: POST {API_BASE}/api/tryon.
+   Không có Space dự phòng nào khác. Khi Space chính chưa trả ảnh, app
+   thử lại chính Space đó và gọi đúng tên là thử lại Space chính. */
+const TRYON_SPACE = "yisol/IDM-VTON";
+const TRYON_TIMEOUT = 150000;
+/* Chờ mà vẫn hủy được ngay: ngủ theo từng nhịp ngắn, kiểm tra nút Hủy liên tục */
+async function waitCancellable(ms){
+const t0 = Date.now();
+while (Date.now() - t0 < ms) {
+if (TRY.cancel) throw new Error("__cancel");
+await waitMs(Math.min(250, ms - (Date.now() - t0)));
+}
+if (TRY.cancel) throw new Error("__cancel");
+}
+/* Khoảng chờ giữa các lần thử lại tăng dần: 5s → 8s → 12s → 18s → 27s → 40s → tối đa 60s */
+function tryonBackoff(attempt){ return Math.min(60000, Math.round(5000 * Math.pow(1.5, attempt))); }
+/* 1 lần gửi tới Space chính: có ảnh thì trả ảnh, mọi trường hợp còn lại đều ném lỗi cho vòng thử lại */
+async function sendTryonOnce(payload){
+const ctl = new AbortController(); TRY.abort = ctl;
+const to = setTimeout(() => ctl.abort(), TRYON_TIMEOUT);
+try {
+const bodyPayload = Object.assign({}, payload, { space: TRYON_SPACE });
+const r = await fetch(API_BASE + "/api/tryon", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(bodyPayload), signal: ctl.signal });
+clearTimeout(to);
+const d = await r.json().catch(() => ({}));
+if (r.ok && d.image) return d.image;
+throw new Error("retry");
+} catch (e) {
+clearTimeout(to);
+if (TRY.cancel) throw new Error("__cancel");
+throw e;
+}
+}
+/* Thử lại Space chính KHÔNG GIỚI HẠN số lần cho tới khi ghép được thì thôi.
+   Suốt lúc đó không hiện lỗi, không hiện thông báo gián đoạn — màn hình chỉ giữ
+   1 trạng thái chờ duy nhất. Chỉ dừng khi người dùng tự bấm Hủy. */
+async function sendTryon(payload){
+let attempt = 0;
+for (;;) {
+if (TRY.cancel) throw new Error("__cancel");
+try { return await sendTryonOnce(payload); }
+catch (e) {
+if (TRY.cancel || (e && e.message === "__cancel")) throw new Error("__cancel");
+attempt++;
+await waitCancellable(tryonBackoff(attempt - 1));
+}
+}
+}
+/* Trạng thái chờ DUY NHẤT trong lúc ghép: 1 dòng nhẹ nhàng + đồng hồ đếm thời gian + nút Hủy duy nhất */
+function showTryWaiting(){
+$("#aiOut").innerHTML = '<div class="tryprog" style="text-align:center"><div class="tp-head" style="justify-content:center"><svg class="compass" style="width:30px;height:30px;margin:0"><use href="#cs"/></svg><b>Đang ghép, vui lòng chờ…</b><span class="tp-time" id="tryTime">0 giây</span></div>'
++ '<p class="hint" style="margin:2px 0 12px">Cứ để trang mở, app sẽ ghép tiếp cho tới khi có ảnh. Bấm Hủy nếu bạn muốn dừng hẳn.</p>'
++ '<div class="actions" style="margin-top:4px;justify-content:center"><button class="btn ghost" type="button" id="tryCancel" style="min-height:44px;padding:0 26px;font-size:15px">Hủy</button></div></div>';
+const cb = $("#tryCancel"); if (cb) cb.onclick = () => { TRY.cancel = true; if (TRY.abort) TRY.abort.abort(); };
+}
+function startTryTimer(){
+clearInterval(TRY.timer); TRY.t0 = Date.now();
+TRY.timer = setInterval(() => { const el = $("#tryTime"); if (el) { const s = Math.round((Date.now() - TRY.t0) / 1000); el.textContent = s >= 60 ? Math.floor(s / 60) + " phút " + (s % 60) + " giây" : s + " giây"; } }, 500);
+}
+function stopTryTimer(){ clearInterval(TRY.timer); }
+function currentStageSrc(){ const st = TRY.stages[TRY.view < 0 ? TRY.stages.length - 1 : TRY.view]; return st ? (TRY.mode === "enh" ? st.enh : st.orig) : ""; }
+function renderTryResult(note){
+const idx = TRY.view < 0 ? TRY.stages.length - 1 : TRY.view, st = TRY.stages[idx];
+if (!st) { $("#aiOut").innerHTML = ""; return; }
+const src = TRY.mode === "enh" ? st.enh : st.orig;
+const secs = Math.round((Date.now() - TRY.t0) / 1000);
+$("#aiOut").innerHTML = `<div class="cmpwrap">
+<div class="cmp" id="cmpBox"><img src="${src}" alt="Ảnh mặc thử do AI tạo"><div class="cmp-before" id="cmpBefore"><img src="${TRY.personUrl}" alt="Ảnh gốc của bạn"></div><div class="cmp-handle" id="cmpHandle"></div><span class="cmp-tag l">TRƯỚC</span><span class="cmp-tag r">SAU</span></div>
+<input type="range" class="cmpslider" id="cmpRange" min="0" max="100" value="50" aria-label="Kéo để so sánh ảnh trước và sau khi mặc thử">
+<div class="trybar">
+<button type="button" class="chip ${TRY.mode === "enh" ? "on" : ""}" id="modeEnh">Ảnh đã tinh chỉnh</button>
+<button type="button" class="chip ${TRY.mode === "orig" ? "on" : ""}" id="modeOrig">Ảnh gốc từ AI</button>
+<a class="btn ghost" href="${src}" download="fitme-mac-thu.png" style="min-height:44px;padding:0 22px;font-size:15px">Tải ảnh về</a>
+</div>
+${TRY.stages.length > 1 ? `<div class="trysteps-thumbs">${TRY.stages.map((s2, i) => `<figure><img src="${s2.enh}" data-v="${i}" class="${i === idx ? "on" : ""}" alt="Kết quả sau món ${i+1}"><figcaption>${i === 0 ? "Sau quần/váy" : "Cả bộ hoàn chỉnh"}</figcaption></figure>`).join("")}</div>` : ""}
+<p class="trymeta">${esc(st.label)} · ảnh trả về ${st.w}×${st.h}px${st.blankWarn ? " · <span style='color:var(--warn)'>ảnh có vẻ ít chi tiết bất thường — thử ảnh toàn thân rõ hơn nếu chưa ưng</span>" : ""} · tổng thời gian ${secs >= 60 ? Math.floor(secs / 60) + " phút " + (secs % 60) + " giây" : secs + " giây"}. Kéo thanh trượt để so sánh với ảnh gốc của bạn.${note ? " " + esc(note) : ""}</p>
+</div>`;
+const box = $("#cmpBox"), before = $("#cmpBefore"), handle = $("#cmpHandle"), range = $("#cmpRange");
+const setPct = p => { p = Math.max(0, Math.min(100, p)); before.style.clipPath = "inset(0 " + (100 - p) + "% 0 0)"; handle.style.left = p + "%"; if (range && +range.value !== Math.round(p)) range.value = Math.round(p); };
+setPct(50);
+if (range) range.addEventListener("input", () => setPct(+range.value));
+let drag = false;
+const fromEvent = e => { const r = box.getBoundingClientRect(); setPct((e.clientX - r.left) / r.width * 100); };
+box.addEventListener("pointerdown", e => { drag = true; box.setPointerCapture(e.pointerId); fromEvent(e); });
+box.addEventListener("pointermove", e => { if (drag) fromEvent(e); });
+box.addEventListener("pointerup", () => drag = false);
+box.addEventListener("pointercancel", () => drag = false);
+$("#modeEnh").onclick = () => { TRY.mode = "enh"; renderTryResult(note); };
+$("#modeOrig").onclick = () => { TRY.mode = "orig"; renderTryResult(note); };
+$("#aiOut").querySelectorAll(".trysteps-thumbs img").forEach(im => im.onclick = () => { TRY.view = +im.dataset.v; renderTryResult(note); });
+}
 $("#aiBtn").onclick = async () => {
 const err = $("#e4"); err.textContent = "";
 if (!body || !img) { err.textContent = "Cần ảnh toàn thân và ảnh sản phẩm."; return; }
-const steps = img2 ? [{ g: img2, low: true }, { g: img }] : [{ g: img }], n = steps.length;
-if (!confirm("Ảnh của bạn và ảnh sản phẩm sẽ được gửi tới Hugging Face (Space IDM-VTON) để tạo ảnh mặc thử" + (n > 1 ? ", lần lượt từng món" : "") + ". Tiếp tục?")) return;
-$("#aiBtn").disabled = true;
-const show = src => `<img class="tryimg" src="${src}" alt="Ảnh mặc thử do AI tạo">
-<div class="actions"><a class="btn ghost" href="${src}" download="fitme-mac-thu.png">Tải ảnh về</a></div>`;
-let person = body.toDataURL("image/jpeg", .9), out = null;
+const steps = img2 ? [{ g: img2, low: true, name: "quần/váy" }, { g: img, low: false, name: "áo" }] : [{ g: img, low: false, name: "món đồ" }], n = steps.length;
+if (!window.__tryonOk){ window.__tryonOk = true; $("#aiOut").innerHTML = '<p class="hint" style="text-align:center">Ảnh của bạn và ảnh sản phẩm sẽ được gửi tới Hugging Face (Space IDM-VTON) để tạo ảnh mặc thử' + (n > 1 ? ", lần lượt từng món" : "") + '. Bấm nút lần nữa để đồng ý và tiếp tục.</p>'; $("#aiBtn").textContent = "Đồng ý gửi ảnh & mặc thử AI"; return; }
+$("#aiBtn").disabled = true; $("#aiBtn").textContent = "Đang mặc thử…";
+TRY.cancel = false; TRY.stages = []; TRY.view = -1; TRY.mode = "enh";
+startTryTimer();
+showTryWaiting();
+let prep = null, preps = [];
 try {
+prep = preparePerson();
+TRY.personUrl = body.toDataURL("image/jpeg", .85);
 for (let i = 0; i < n; i++) {
-$("#aiOut").innerHTML = '<div class="empty"><svg class="compass"><use href="#cs"/></svg>AI đang mặc thử' + (n > 1 ? " " + (steps[i].low ? "quần/váy" : "áo") + " (" + (i+1) + "/" + n + ")" : "") + ', có thể mất 1–3 phút<span class="dots"><span>.</span><span>.</span><span>.</span></span></div>';
-const r = await fetch(API_BASE + "/api/tryon", {
-method: "POST", headers: { "Content-Type": "application/json" },
-body: JSON.stringify({ person, garment: "data:image/jpeg;base64," + steps[i].g, mask: steps[i].low ? await lowerMask(person) : undefined })
-});
-const d = await r.json().catch(() => ({}));
-if (!r.ok || !d.image) throw new Error((n > 1 ? (steps[i].low ? "Quần/váy" : "Áo") + ": " : "") + (d.error || "Lỗi " + r.status));
-out = d.image;
-if (i < n - 1) person = await jpegOf(out);
+preps.push({ garment: await prepareGarment(steps[i].g), mask: steps[i].low ? lowerMaskPrep(prep) : undefined, low: steps[i].low, name: steps[i].name });
+if (TRY.cancel) throw new Error("__cancel");
 }
-$("#aiOut").innerHTML = show(out);
+TRY.prep = prep; TRY.preps = preps;
+let person = prep.url;
+for (let i = 0; i < n; i++) {
+const raw = await sendTryon({ person, garment: preps[i].garment, mask: preps[i].mask });
+const im = await loadImgEl(raw);
+const st = sampleStats(im);
+TRY.stages.push({ orig: raw, enh: enhanceResult(im), w: im.naturalWidth, h: im.naturalHeight, blankWarn: st.sd < 6, label: n > 1 ? (steps[i].low ? "Đã mặc quần/váy" : "Đã mặc cả bộ") : "Đã mặc thử xong" });
+if (i < n - 1) person = await normalizeStage(raw);
+}
+stopTryTimer();
+renderTryResult();
 } catch (e) {
-$("#aiOut").innerHTML = out ? show(out) : "";
-err.textContent = "Không tạo được ảnh: " + (e.message || "lỗi mạng") + "." + (out ? " Ảnh bên trên mới chỉ mặc được món trước đó." : "");
+stopTryTimer();
+if (e && e.message === "__cancel") { $("#aiOut").innerHTML = ""; err.textContent = "Đã hủy mặc thử. Bấm nút khi muốn thử lại."; }
+else if (TRY.stages.length) { TRY.view = -1; renderTryResult(); err.textContent = "Đã dừng lại — ảnh đang hiển thị là kết quả đã ghép xong món trước đó. Bấm nút mặc thử để ghép tiếp khi sẵn sàng."; }
+else { $("#aiOut").innerHTML = ""; err.textContent = "Chưa đọc được ảnh để ghép. Kiểm tra lại ảnh toàn thân và ảnh sản phẩm rồi bấm thử lại."; }
 }
-$("#aiBtn").disabled = false;
+$("#aiBtn").disabled = false; $("#aiBtn").textContent = "Mặc thử bằng AI (miễn phí)";
 };
 $("#again").onclick = () => { $("#aiOut").innerHTML = ""; $("#e2").textContent = ""; step(2); };
+/* Lưu tủ đồ kèm ẢNH GỐC + ảnh toàn thân + hồ sơ, để "Mặc thử lại" khôi phục được 100% (trước đây chỉ lưu thumb nên bấm Mặc thử lại là mất hết ảnh) */
+const fullOf = b64 => b64 ? "data:image/jpeg;base64," + b64 : "";
+const currentBodyData = () => { try { return body ? body.toDataURL("image/jpeg", .82) : (store.get("fm_body", "") || ""); } catch (e) { return store.get("fm_body", "") || ""; } };
+function saveCloset(c){
+let arr = c.slice(0, 20);
+const attempt = a => { try { localStorage.setItem("fm_closet", JSON.stringify(a)); mem.fm_closet = a; return true; } catch (e) { return false; } };
+if (attempt(arr)) return arr;
+arr = arr.map((r, i) => i > 2 ? Object.assign({}, r, { bodyImg: "" }) : r);
+if (attempt(arr)) return arr;
+arr = arr.slice(0, 10); if (attempt(arr)) return arr;
+arr = arr.slice(0, 5); attempt(arr); return arr;
+}
 $("#save").onclick = () => {
 if (!last) return;
-const c = store.get("fm_closet", []); c.unshift(...last); store.set("fm_closet", c.slice(0, 30));
+const c = store.get("fm_closet", []);
+const bodyImg = currentBodyData(), profSnap = Object.assign({}, P);
+if (last.length > 1) {
+/* Kết quả là MỘT bộ 2 món: chỉ lưu ĐÚNG 1 bản ghi cho cả bộ (2 ảnh gốc + 2 thumb + 2 size, độ tin cậy chung) */
+const combo = last.combo || {};
+const pairName = last.map(x => x.product).join(" + ");
+c.unshift({ outfit: true, product: pairName, pair: pairName, date: last[0].date, link: last[0].link || "", bodyImg, profile: profSnap,
+items: last.map((r, i) => ({ product: r.product, size: r.size, fit: r.fit, confidence: r.confidence, thumb: r.thumb || "", full: fullOf(i ? img2 : img), family: r.family, alt_size: r.alt_size || "", pros: (r.pros || []).slice(0, 1), cons: (r.cons || []).slice(0, 1), reasons: (r.reasons || []).slice(0, 1) })),
+size: last.map(x => x.size).join(" / "), fit: last[0].fit, confidence: Math.round(last.reduce((s, r) => s + (+r.confidence || 0), 0) / last.length),
+pros: (combo.pros || []).slice(0, 2), cons: (combo.cons || []).slice(0, 2), family: combo.family || last[0].family || "" });
+} else {
+/* Món đơn: lưu kèm ảnh gốc (full), ảnh toàn thân và hồ sơ tại thời điểm lưu */
+c.unshift(Object.assign({}, last[0], { full: fullOf(img), bodyImg, profile: profSnap }));
+}
+saveCloset(c);
 $("#save").textContent = "Đã lưu"; setTimeout(() => $("#save").textContent = "Lưu vào tủ đồ", 1500);
 };
+let closetFilter = "Tất cả", closetQuery = "";
+const CLOSET_CATS = ["Tất cả", "Áo", "Quần & váy", "Đầm", "Bộ outfit"];
+function closetCat(x){
+const t = String((x && x.product) || "").toLowerCase();
+if (/đầm|váy liền|áo dài|dress|jumpsuit/.test(t)) return "Đầm";
+if (/quần|chân váy|váy ngắn|váy midi|jeans|denim|short|jogger|cargo|legging|skirt/.test(t)) return "Quần & váy";
+return "Áo";
+}
+/* Gộp hiển thị: bản ghi bộ mới (outfit) + các thẻ rời cũ có cùng "pair" & ngày lưu → 1 thẻ bộ duy nhất.
+   Thẻ rời nào có pair trùng với một bản ghi bộ thì được HẤP THỤ vào thẻ bộ đó (không hiện riêng nữa). */
+function closetGroups(c){
+const groups = [], byKey = {};
+c.forEach((x, i) => {
+if (x && x.outfit && Array.isArray(x.items) && x.items.length > 1) {
+const key = x.pair ? x.pair + "|" + (x.date || "") : "";
+const ex = key ? byKey[key] : null;
+if (ex && !ex.rec) { ex.rec = x; ex.outfit = true; ex.idxs.push(i); return; }
+const g = { outfit: true, rec: x, idxs: [i] };
+groups.push(g);
+if (key) byKey[key] = g;
+return;
+}
+if (x && x.pair) {
+const key = x.pair + "|" + (x.date || ""), g = byKey[key];
+if (g) { if (!g.rec) { g.parts.push(x); } g.idxs.push(i); return; }
+const ng = { outfit: false, legacy: true, parts: [x], idxs: [i] };
+byKey[key] = ng; groups.push(ng); return;
+}
+groups.push({ outfit: false, rec: x, idxs: [i] });
+});
+groups.forEach(g => { if (g.legacy) { if (g.parts.length > 1) g.outfit = true; else g.rec = g.parts[0]; } });
+return groups;
+}
+/* Tìm ảnh cho 1 món trong TOÀN BỘ tủ: bản ghi bộ vốn không có thumb riêng ở cấp bản ghi,
+   nên phải lấy thumb/full từ chính từng món trong items, hoặc từ bản ghi thành viên cùng tên món. */
+function findClosetImg(product, c, field){
+if (!product) return "";
+for (const rec of c || []) {
+if (!rec) continue;
+if (Array.isArray(rec.items)) { for (const it of rec.items) { if (it && it.product === product && it[field]) return it[field]; } }
+else if (rec.product === product && rec[field]) return rec[field];
+}
+return "";
+}
+function enrichItem(it, c){
+const thumb = it.thumb || it.full || findClosetImg(it.product, c, "thumb") || findClosetImg(it.product, c, "full") || "";
+const full = it.full || findClosetImg(it.product, c, "full") || thumb || "";
+return Object.assign({}, it, { thumb, full });
+}
+function groupView(g, c){
+if (!g.outfit) return { outfit: false, x: g.rec };
+if (g.rec) { const x = g.rec; return { outfit: true, title: x.product, items: (x.items || []).map(it => enrichItem(it, c)), date: x.date, conf: x.confidence, pros: x.pros, cons: x.cons, link: x.link, family: x.family, bodyImg: x.bodyImg || "", profile: x.profile || null }; }
+const items = g.parts.map(x => enrichItem({ product: x.product, size: x.size, fit: x.fit, confidence: x.confidence, thumb: x.thumb, full: x.full, family: x.family, alt_size: x.alt_size || "", pros: x.pros, cons: x.cons, reasons: x.reasons }, c));
+return { outfit: true, title: g.parts[0].pair, items, date: g.parts[0].date,
+conf: Math.round(items.reduce((s, it) => s + (+it.confidence || 0), 0) / Math.max(1, items.length)),
+pros: g.parts[0].pros, cons: g.parts[0].cons, link: g.parts[0].link, family: items.map(it => it.family).find(Boolean) || "",
+bodyImg: (g.parts.find(x => x.bodyImg) || {}).bodyImg || "", profile: (g.parts.find(x => x.profile) || {}).profile || null };
+}
+function renderClosetStats(views){
+const el = $("#closetStats");
+if (!views.length) { el.innerHTML = ""; return; }
+const counts = {};
+views.forEach(v => { const ss = v.outfit ? v.items.map(it => it.size) : [v.x && v.x.size]; ss.forEach(s0 => { const s = String(s0 || "?"); counts[s] = (counts[s] || 0) + 1; }); });
+const topSize = Object.keys(counts).sort((a, b) => counts[b] - counts[a])[0];
+const latest = views[0].outfit ? views[0].date : (views[0].x && views[0].x.date);
+el.innerHTML = `<div class="cstat"><b>${views.length}</b><span>Bộ/món đã lưu</span></div><div class="cstat"><b>${esc(topSize)}</b><span>Size hay dùng</span></div><div class="cstat"><b>${esc(latest || "—")}</b><span>Lưu gần nhất</span></div>`;
+}
+/* ---- Mặc thử lại: khôi phục ĐẦY ĐỦ từ thẻ tủ đồ về bước 2 (ảnh món 1 + món 2, ảnh toàn thân, hồ sơ/số đo) ---- */
+const dataOf = s => { s = String(s || ""); return !s ? "" : (s.startsWith("data:") ? s : "data:image/jpeg;base64," + s); };
+const stripData = s => String(s || "").replace(/^data:[^,]*,/, "");
+async function canvasFromData(url){
+const im = await loadImgEl(url);
+const sc = Math.min(1, 1024 / Math.max(im.naturalWidth, im.naturalHeight));
+const cv = document.createElement("canvas"); cv.width = Math.max(1, Math.round(im.naturalWidth * sc)); cv.height = Math.max(1, Math.round(im.naturalHeight * sc));
+cv.getContext("2d").drawImage(im, 0, 0, cv.width, cv.height);
+return cv;
+}
+async function retryCloset(v){
+const its = v.outfit ? (v.items || []) : [v.x];
+const prof = v.profile || (v.x && v.x.profile) || null;
+if (prof && (prof.h || prof.w)) {
+Object.assign(P, prof);
+FIELDS.forEach(k => { const el = $("#" + k); if (el) el.value = P[k] || ""; });
+$("#note").value = P.note || "";
+store.set("fm_profile", P); showHist();
+try { syncSex(); } catch (e) {}
+try { syncUnder(); } catch (e) {}
+chips($("#shapeChips"), SHAPES, "shape"); swatches($("#skinChips"));
+}
+const first = its[0], second = its[1];
+const full1 = first ? dataOf(first.full || first.thumb || "") : "";
+if (first && full1) { img = stripData(full1); thumb = first.thumb || full1; setDrop("#drop", full1, "Ảnh sản phẩm 1"); }
+const full2 = second ? dataOf(second.full || second.thumb || "") : "";
+if (second && full2) { img2 = stripData(full2); thumb2 = second.thumb || full2; setDrop("#drop2", full2, "Ảnh sản phẩm 2"); }
+else { img2 = null; thumb2 = null; setDrop("#drop2", null); }
+$("#link").value = v.link || (v.x && v.x.link) || "";
+const bdata = dataOf(v.bodyImg || (v.x && v.x.bodyImg) || store.get("fm_body", "") || "");
+if (bdata) {
+try { body = await canvasFromData(bdata); setDrop("#bdrop", bdata, "Ảnh của bạn"); view = "Ảnh của bạn"; viewSync(); } catch (e) {}
+} else if (body) { try { setDrop("#bdrop", body.toDataURL("image/jpeg", .85), "Ảnh của bạn"); } catch (e) {} }
+last = its.filter(Boolean).map(it => ({ product: it.product, size: it.size, fit: it.fit || "vừa", confidence: it.confidence || 0, thumb: it.thumb || "", full: it.full || "", reasons: it.reasons || [], warnings: [], pros: it.pros || [], cons: it.cons || [], styling: [], outfits: [], colors: [], alt_size: it.alt_size || "", family: it.family || "", ai: true, date: v.date || (v.x && v.x.date) || "", link: $("#link").value }));
+if (v.outfit && last.length > 1) last.combo = { pros: v.pros || [], cons: v.cons || [], styling: [], outfits: [], family: v.family || "" };
+document.querySelector('[data-tab="tryon"]').click();
+step(2);
+$("#e2").textContent = "";
+updateMan();
+}
 function renderCloset(){
 const c = store.get("fm_closet", []);
-$("#wardrobe").innerHTML = c.length ? c.map((x, i) => `<div class="item" style="animation-delay:${Math.min(i, 8)*40}ms"><div class="ph">${x.thumb ? `<img src="${x.thumb}" alt="${esc(x.product)}">` : "✦"}<em>${esc(x.size)}</em></div><b>${esc(x.product)}</b>
-<div class="hint">${esc(x.date)} · Form ${esc(x.fit)} · ${+x.confidence||0}%</div>
-${x.reasons && x.reasons[0] ? `<div class="hint">${esc(x.reasons[0])}</div>` : ""}
-${x.link ? `<div class="hint" style="word-break:break-all">${esc(x.link)}</div>` : ""}
-<button class="link" data-i="${i}">Xóa</button></div>`).join("")
-: `<div class="empty" style="grid-column:1/-1">Tủ đồ còn trống. Thử một món rồi nhấn “Lưu vào tủ đồ”.</div>`;
-$("#wardrobe").querySelectorAll("button").forEach(b => b.onclick = () => { c.splice(+b.dataset.i, 1); store.set("fm_closet", c); renderCloset(); });
+const views = closetGroups(c).map((g, gi) => Object.assign(groupView(g, c), { gi, idxs: g.idxs }));
+renderClosetStats(views);
+const fEl = $("#closetFilters");
+fEl.innerHTML = CLOSET_CATS.map(n => `<button type="button" class="chip${closetFilter === n ? " on" : ""}" data-f="${esc(n)}">${esc(n)}</button>`).join("");
+fEl.querySelectorAll("button").forEach(b => b.onclick = () => { closetFilter = b.dataset.f; renderCloset(); });
+const box = $("#wardrobe");
+if (!c.length) { box.innerHTML = `<div class="empty" style="grid-column:1/-1">Tủ đồ còn trống. Thử một món rồi nhấn “Lưu vào tủ đồ”.</div>`; return; }
+const q = closetQuery.trim().toLowerCase();
+const vis = views.filter(v => {
+const catOk = closetFilter === "Tất cả" ? true : closetFilter === "Bộ outfit" ? v.outfit : (!v.outfit && closetCat(v.x) === closetFilter);
+if (!catOk) return false;
+if (!q) return true;
+const hay = v.outfit ? (v.title + " " + v.items.map(it => it.product).join(" ")).toLowerCase() : String(v.x.product || "").toLowerCase();
+return hay.includes(q);
+});
+if (!vis.length) {
+box.innerHTML = `<div class="empty" style="grid-column:1/-1">Không tìm thấy món nào khớp với bộ lọc / từ khóa hiện tại.<br><button type="button" class="chip" id="clrFilter" style="margin-top:12px">Xóa bộ lọc &amp; tìm kiếm</button></div>`;
+$("#clrFilter").onclick = () => { closetFilter = "Tất cả"; closetQuery = ""; $("#closetSearch").value = ""; renderCloset(); };
+return;
 }
-const QUICK = ["Đi làm nên mặc gì?","Phối đồ đi hẹn hò","Màu nào hợp với tôi?","Áo che bụng cho phom của tôi"];
-$("#quick").innerHTML = QUICK.map(q => `<button class="chip" type="button">${q}</button>`).join("");
+const shortTxt = (s, n) => { s = String(s || "").replace(/\s+/g, " ").trim(); return s.length > n ? s.slice(0, n - 1).trim() + "…" : s; };
+const singleCard = v => { const x = v.x; const sum = (x.pros && x.pros[0]) || (x.reasons && x.reasons[0]) || ""; return `<div class="item" style="animation-delay:${Math.min(v.gi, 8)*40}ms"><div class="ph">${x.thumb ? `<img src="${x.thumb}" alt="${esc(x.product)}">` : "✦"}<em>${esc(x.size)}</em></div><b>${esc(x.product)}</b>
+<div class="hint">${esc(x.date || "")} · Form ${esc(x.fit || "vừa")} · ${+x.confidence || 0}%</div>
+${sum ? `<div class="hint">${esc(shortTxt(sum, 70))}</div>` : ""}
+<div class="iacts"><button type="button" class="chip iact" data-ask="${v.gi}">Hỏi Stylist</button><button type="button" class="chip iact" data-retry="${v.gi}">Mặc thử lại</button><button type="button" class="link idel" data-del="${v.gi}">Xóa</button></div></div>`; };
+const outfitCard = v => `<div class="item" style="animation-delay:${Math.min(v.gi, 8)*40}ms"><div class="ph duo">${v.items.map(it => `<div class="half"><span class="phx">✦</span>${it.thumb ? `<img src="${it.thumb}" alt="${esc(it.product)}">` : ""}<em>${esc(it.size || "?")}</em></div>`).join("")}</div><b>Bộ outfit hoàn chỉnh</b>
+<div class="hint" style="color:#d6ecfa">${v.items.map(it => `${esc(it.product)} (${esc(it.size || "?")})`).join(" + ")}</div>
+<div class="hint">${esc(v.date || "")} · Cả bộ · Tin cậy ${+v.conf || 0}%</div>
+${v.pros && v.pros[0] ? `<div class="hint">${esc(shortTxt(v.pros[0], 70))}</div>` : ""}
+<div class="iacts"><button type="button" class="chip iact" data-ask="${v.gi}">Hỏi Stylist</button><button type="button" class="chip iact" data-retry="${v.gi}">Mặc thử lại</button><button type="button" class="link idel" data-del="${v.gi}">Xóa cả bộ</button></div></div>`;
+box.innerHTML = vis.map(v => v.outfit ? outfitCard(v) : singleCard(v)).join("");
+box.querySelectorAll(".ph img").forEach(im => { im.onerror = () => { im.remove(); }; if (im.complete && im.naturalWidth === 0 && im.src) im.remove(); });
+box.querySelectorAll("[data-del]").forEach(b => b.onclick = () => {
+const v = views[+b.dataset.del]; if (!v) return;
+if (b.dataset.arm) { const c2 = store.get("fm_closet", []); [...v.idxs].sort((a, b2) => b2 - a).forEach(ix => c2.splice(ix, 1)); store.set("fm_closet", c2); renderCloset(); }
+else { b.dataset.arm = "1"; b.textContent = "Chạm lần nữa để xóa"; b.classList.add("arm"); setTimeout(() => { if (b.isConnected) { delete b.dataset.arm; b.textContent = v.outfit ? "Xóa cả bộ" : "Xóa"; b.classList.remove("arm"); } }, 2600); }
+});
+box.querySelectorAll("[data-ask]").forEach(b => b.onclick = () => {
+const v = views[+b.dataset.ask]; if (!v) return;
+document.querySelector('[data-tab="stylist"]').click();
+$("#q").value = v.outfit
+? `Phối đồ với BỘ outfit này trong tủ của tôi: ${v.items.map(it => `"${it.product}" (size ${it.size}${it.fit ? ", form " + it.fit : ""})`).join(" mặc cùng ")}. Bộ này mặc được dịp nào, thêm giày và phụ kiện gì cho hoàn chỉnh?`
+: `Phối đồ với món này trong tủ của tôi: "${v.x.product}" (size ${v.x.size}${v.x.fit ? ", form " + v.x.fit : ""}). Món này mặc được những dịp nào, phối với gì đẹp nhất?`;
+sendQ();
+});
+box.querySelectorAll("[data-retry]").forEach(b => b.onclick = () => { const v = views[+b.dataset.retry]; if (v) retryCloset(v); });
+}
+$("#closetSearch").addEventListener("input", e => { closetQuery = e.target.value; renderCloset(); });
+function renderStyProfile(){
+const el = $("#styProfile"); if (!el) return;
+const t = targetParams();
+const shape = P.shape || (!(t.gB && t.gW && t.gH) ? t.auto : "");
+const parts = [];
+if (+P.h && +P.w) parts.push(`${P.h} cm · ${P.w} kg`);
+if (P.sex) parts.push(P.sex);
+if (shape) parts.push("Phom " + shape + (P.shape ? "" : " (gợi ý từ số đo)"));
+if (P.bust || P.waist || P.hip) parts.push(`3 vòng ${P.bust || "?"}–${P.waist || "?"}–${P.hip || "?"} cm`);
+if (P.skin) parts.push("Tông da: " + P.skin);
+if (P.under) parts.push("Undertone: " + P.under);
+const n = closetGroups(store.get("fm_closet", [])).length;
+parts.push(n ? `Tủ đồ: ${n} bộ/món (Stylist sẽ ưu tiên phối từ tủ)` : "Tủ đồ đang trống");
+if (+P.h && +P.w) {
+el.innerHTML = `<span class="sp-lab">Stylist đang dựa trên hồ sơ của bạn</span><span class="sp-vals">${parts.map(x => esc(x)).join(" · ")}</span>`;
+} else {
+el.innerHTML = `<span class="sp-lab">Stylist cần hồ sơ của bạn để tư vấn chuẩn</span><span class="sp-vals">Hãy nhập chiều cao và cân nặng ở tab Thử đồ trước.</span><button type="button" class="chip" id="spGo">Điền hồ sơ</button>`;
+const g = $("#spGo"); if (g) g.onclick = () => { document.querySelector('[data-tab="tryon"]').click(); step(1); };
+}
+}
+const QUICK_GROUPS = [
+{ label: "Theo dịp", items: ["Đi làm nên mặc gì?","Phối đồ đi hẹn hò","Dạo phố mặc gì?"] },
+{ label: "Phom & tủ đồ của tôi", items: ["Áo nào che bụng tốt?","Màu nào hợp với tôi?","Phối đồ từ tủ đồ của tôi"] }
+];
+$("#quick").innerHTML = QUICK_GROUPS.map(g => `<div class="qgroup"><span class="qglab">${esc(g.label)}</span><div class="chips">${g.items.map(q => `<button class="chip" type="button">${esc(q)}</button>`).join("")}</div></div>`).join("");
 $("#quick").querySelectorAll("button").forEach(b => b.onclick = () => { $("#q").value = b.textContent; sendQ(); });
+const FOLLOW = ["Phối với đồ trong tủ của tôi","Bộ này cần tránh gì nhất?"];
+function renderFollow(){
+const el = $("#followChips"); if (!el) return;
+const hasA = history.some(m => m.role === "assistant");
+el.hidden = !hasA;
+if (!hasA) { el.innerHTML = ""; return; }
+el.innerHTML = `<span class="qglab">Hỏi tiếp về gợi ý trên</span><div class="chips">${FOLLOW.map(q => `<button class="chip" type="button">${esc(q)}</button>`).join("")}</div>`;
+el.querySelectorAll("button").forEach(b => b.onclick = () => { $("#q").value = b.textContent; sendQ(); });
+}
+function formatMsg(t){
+return esc(t).replace(/\*\*([^*]+)\*\*/g, "<b>$1</b>").split("\n").map(line => {
+const m = line.match(/^\s*(Ưu điểm|Khuyết điểm|Cách khắc phục|Gợi ý chốt|Chốt|Gợi ý|Lưu ý)\s*[:：]\s*(.*)$/i);
+if (!m) return line;
+const cls = /khuyết/i.test(m[1]) ? "con" : /khắc phục/i.test(m[1]) ? "fix" : "pro";
+return `<span class="msgsec ${cls}">${m[1]}:</span> ${m[2]}`;
+}).join("\n");
+}
+function localStylistFallback(q){
+const c = store.get("fm_closet", []);
+const shape = P.shape || targetParams().auto;
+const outs = localOutfits({ product: q, family: detectFamily(q) }, false);
+const lines = ["Stylist đang mất kết nối — gợi ý nhanh trên máy:"];
+if (outs[0]) lines.push("Ưu điểm: " + outs[0].items + " — hướng này hợp phom " + shape + ".");
+lines.push("Khuyết điểm: gợi ý offline chưa thấy ảnh và chất vải thật nên chưa chắc độ ôm.");
+if (outs[0]) lines.push("Cách khắc phục: giữ giày và phụ kiện cùng họ phong cách với món chính trong bộ trên.");
+lines.push("Chốt: ưu tiên bộ " + (outs[0] ? outs[0].name : "đơn giản, vừa người") + (c.length ? ", bắt đầu từ món đã có trong tủ đồ của bạn." : "."));
+return lines.join("\n");
+}
 let drawn = -1;
 function drawChat(){
 const box = $("#chat");
-if (!history.length && !busy){ box.innerHTML = `<div class="empty">Chọn một câu hỏi nhanh hoặc tự hỏi bên dưới.</div>`; drawn = 0; return; }
+if (!history.length && !busy){ box.innerHTML = `<div class="empty">Chọn câu hỏi nhanh ở trên hoặc tự hỏi bên dưới — Stylist chỉ gợi ý 1 phương án tốt nhất, trả lời ngắn theo 4 bước: Ưu điểm · Khuyết điểm · Cách khắc phục · Chốt.</div>`; drawn = 0; renderFollow(); return; }
 if (drawn < 1 || drawn > history.length) { box.innerHTML = ""; drawn = 0; }
 box.querySelectorAll(".typing").forEach(e => e.remove());
-history.slice(drawn).forEach(m => { const d = document.createElement("div"); d.className = "msg " + (m.role === "user" ? "u" : "a"); d.textContent = m.content; box.appendChild(d); });
+history.slice(drawn).forEach(m => { const d = document.createElement("div"); d.className = "msg " + (m.role === "user" ? "u" : "a"); if (m.role === "assistant") d.innerHTML = formatMsg(m.content); else d.textContent = m.content; box.appendChild(d); });
 drawn = history.length;
 if (busy) box.insertAdjacentHTML("beforeend", '<div class="msg a typing dots"><span>.</span><span>.</span><span>.</span></div>');
 box.scrollTop = box.scrollHeight;
+renderFollow();
 }
 async function sendQ(){
 if (busy) return;
 const q = $("#q").value.trim(); if (!q) return;
-if (!(+P.h && +P.w)) { $("#e3").textContent = "Hãy nhập chiều cao và cân nặng ở tab Thử đồ trước."; return; }
+if (!(+P.h && +P.w)) { $("#e3").textContent = "Hãy nhập chiều cao và cân nặng ở tab Thử đồ trước — Stylist cần hồ sơ của bạn để tư vấn."; document.querySelector('[data-tab="stylist"]').click(); renderStyProfile(); return; }
 $("#e3").textContent = ""; $("#q").value = "";
 history.push({role:"user", content:q}); busy = true; drawChat(); $("#ask").disabled = true;
 try {
-const hh = history.slice(-12); while (hh.length && hh[0].role !== "user") hh.shift();
-const a = await callAI(SYS(), hh, 900, .6);
+const hh = history.slice(-4); while (hh.length && hh[0].role !== "user") hh.shift();
+const a = await callAI(SYS(), hh, 320, .6);
 if (!a.trim()) throw new Error("AI chưa trả lời, hãy thử lại.");
 history.push({role:"assistant", content:a});
-} catch (e) { $("#e3").textContent = e.message; history.pop(); drawn = -1; $("#q").value = q; }
+} catch (e) { history.push({role:"assistant", content: localStylistFallback(q)}); }
 busy = false; store.set("fm_chat", history.slice(-30)); drawChat(); $("#ask").disabled = false;
 }
 $("#ask").onclick = sendQ;
 $("#clr").onclick = () => { history = []; drawn = -1; store.set("fm_chat", []); drawChat(); };
 $("#q").onkeydown = e => { if (e.key === "Enter") sendQ(); };
+renderStyProfile();
 drawChat();
 updateMan();
 </script>
