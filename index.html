@@ -271,7 +271,7 @@ footer{position:relative;z-index:1;text-align:center;color:var(--mute);font-size
         <p class="hint">Ảnh do AI tạo, chỉ để hình dung kiểu dáng và màu sắc, không cho biết có vừa size hay không. Hãy chọn size theo gợi ý ở trên. Mô hình miễn phí làm tốt nhất với áo và đầm. Khi ghép cả bộ, AI mặc lần lượt từng món nên lâu hơn, còn quần/váy được mặc vào vùng từ eo xuống chân, ước lượng theo ảnh đứng thẳng thấy đủ chân.</p>
       </div>
       <div class="err" id="e4" role="alert"></div>
-      <div class="actions"><button class="btn ghost" id="again">Thử món khác</button><button class="btn" id="save">Lưu vào tủ đồ</button></div>
+      <div class="actions"><button class="btn ghost" id="again">Chọn lại món</button><button class="btn" id="save">Lưu vào tủ đồ</button></div>
     </div>
   </div>
 </section>
@@ -828,7 +828,7 @@ err.textContent = "Không tạo được ảnh: " + (e.message || "lỗi mạng"
 }
 $("#aiBtn").disabled = false;
 };
-$("#again").onclick = () => { clearImg("#drop"); clearImg("#drop2"); clearTable("#t1"); clearTable("#t2"); $("#link").value = ""; $("#aiOut").innerHTML = ""; $("#e2").textContent = ""; step(2); };
+$("#again").onclick = () => { $("#aiOut").innerHTML = ""; $("#e2").textContent = ""; step(2); };
 $("#save").onclick = () => {
 if (!last) return;
 const c = store.get("fm_closet", []); c.unshift(...last); store.set("fm_closet", c.slice(0, 30));
