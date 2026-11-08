@@ -688,8 +688,8 @@ return { product: String(o.product || "Sản phẩm của bạn"), size: String(
 confidence: Math.max(0, Math.min(100, parseInt(o.confidence) || 60)), fit: ["ôm","vừa","rộng","oversize"].find(x => f.includes(x)) || "vừa",
 reasons: arr(o.reasons), alt_size: String(o.alt_size || "").trim().toUpperCase(), warnings: arr(o.warnings), styling: arr(o.styling), colors: ok ? arr(o.colors) : [] };
 }
-async function analyze(imgData, text, link, bottom){
-const prompt = `Chọn size cho người dùng. Link: ${link||"không có"}. Bảng size shop: ${text||"không có (hãy dùng bảng size chung, nói rõ nếu ước tính)"}.
+async function analyze(imgData, text, link, bottom, pre){
+const prompt = `Chọn size cho người dùng. Link: ${link||"không có"}. Bảng size shop: ${text||"không có (hãy dùng bảng size chung, nói rõ nếu ước tính)"}.${pre ? ` Đã đối chiếu bảng size bằng phép tính chính xác: size ${pre}. Bắt buộc dùng đúng size này, không tự suy luận lại.` : ""}
 Chỉ trả về JSON hợp lệ, không markdown:
 {"product":"tên/loại món đồ","size":"size đề xuất","confidence":0-100,"fit":"ôm|vừa|rộng|oversize","reasons":["..."],"alt_size":"size dự phòng hoặc rỗng","warnings":["..."],"styling":["gợi ý phối đồ"],"colors":["màu hợp, chỉ khi đã có tông da/undertone xác nhận, nếu không để mảng rỗng"]}`;
 const content = [];
@@ -734,13 +734,57 @@ return sz && v.length ? sz + ": " + v.join(", ") : "";
 function clearTable(id){ $(id).querySelectorAll("input[data-k]").forEach(i => i.value = ""); }
 mkSizeTable("#t1", [["Ngực","cm"],["Eo","cm"],["Mông","cm"],["Cân nặng","kg"]]);
 mkSizeTable("#t2", [["Eo","cm"],["Mông","cm"],["Cân nặng","kg"]]);
+const num1 = x => parseFloat(String(x).replace(",", "."));
+const rng = t => { const n = (String(t).replace(/,/g, ".").match(/\d+(?:\.\d+)?/g) || []).map(Number); return n.length > 1 ? [Math.min(n[0], n[1]), Math.max(n[0], n[1])] : n.length ? [n[0], n[0]] : null; };
+function chartRows(id){
+return [...$(id).querySelectorAll("tbody tr")].map(tr => {
+const ins = [...tr.querySelectorAll("input")], o = { size: ins[0].value.trim().toUpperCase(), r: {} };
+let a = NaN, b = NaN;
+ins.slice(1).forEach(i => {
+const k = i.dataset.k, x = i.value.trim(); if (!x) return;
+if (i.dataset.r === "a") a = num1(x);
+else if (i.dataset.r === "b") b = num1(x);
+else { const g = rng(x); if (g) o.r[k] = g; }
+});
+if (!isNaN(a) || !isNaN(b)) o.r["Cân nặng"] = [isNaN(a) ? -Infinity : (isNaN(b) ? a : Math.min(a, b)), isNaN(b) ? Infinity : (isNaN(a) ? b : Math.max(a, b))];
+return o;
+});
+}
+const userVals = () => ({ "Ngực": +P.bust, "Eo": +P.waist, "Mông": +P.hip, "Cân nặng": +P.w });
+function matchChart(id){
+const U = userVals(), rows = chartRows(id).filter(r => r.size && Object.keys(r.r).length);
+const sc = rows.map(r => { let d = 0, n = 0; for (const k in r.r){ const u = U[k]; if (!u) continue; n++; const [lo, hi] = r.r[k]; d += u < lo ? lo - u : u > hi ? u - hi : 0; } return { r, d, n }; }).filter(x => x.n);
+if (!sc.length) return null;
+const m = Math.min(...sc.map(x => x.d)), best = sc.filter(x => x.d === m), pick = best[best.length - 1];
+return { size: pick.r.size, alt: best.length > 1 ? best[0].r.size : "", exact: m === 0, row: pick.r.r };
+}
+const fmtR = ([lo, hi]) => lo === -Infinity ? "tối đa " + hi : hi === Infinity ? "từ " + lo : lo === hi ? String(lo) : lo + "–" + hi;
+function chartReason(m){
+const U = userVals();
+const parts = Object.keys(m.row).filter(k => U[k]).map(k => { const u = U[k], [lo, hi] = m.row[k], ut = k === "Cân nặng" ? "kg" : "cm"; return `${k.toLowerCase()} ${u} ${ut} ${u >= lo && u <= hi ? "nằm trong" : "ngoài"} khoảng ${fmtR(m.row[k])} ${ut}`; });
+return `Size ${m.size} ${m.exact ? "khớp" : "gần khớp nhất với"} bảng của shop: ${parts.join(", ")}.`;
+}
+function applyChart(r, m){
+if (!m) return r;
+const bad = t => [...String(t).matchAll(/\bsize\s+([A-Za-z0-9]{1,4})\b/gi)].some(x => x[1].toUpperCase() !== m.size);
+r.size = m.size;
+r.reasons = [chartReason(m)].concat((r.reasons || []).filter(t => !bad(t) && !/\d+\s*[-–]\s*\d+\s*(kg|cm)/i.test(t)));
+const w = (r.warnings || []).filter(t => !bad(t));
+if (m.alt){ r.alt_size = m.alt; w.unshift(`Số đo của bạn nằm đúng ranh giới giữa size ${m.alt} và ${m.size}: thích ôm thì chọn ${m.alt}, thích rộng thì chọn ${m.size}.`); }
+else if (r.alt_size === m.size) r.alt_size = "";
+if (!m.exact) w.unshift("Số đo của bạn chưa nằm trọn trong size nào của bảng, đây là size gần nhất.");
+r.warnings = w;
+r.confidence = m.exact ? Math.max(r.confidence || 0, 85) : Math.min(r.confidence || 60, 65);
+return r;
+}
 $("#go").onclick = async () => {
 const text = chartText("#t1"), link = $("#link").value.trim(), text2 = chartText("#t2");
 if (!img && !text && !link) { $("#e2").textContent = "Thêm ít nhất một ảnh, bảng size hoặc link cho món 1."; return; }
 $("#e2").textContent = ""; $("#go").disabled = true; step(3);
 $("#result").innerHTML = ""; $("#loading").hidden = false; $("#save").hidden = true; $("#fit").hidden = true; $("#e4").textContent = "";
-const jobs = [analyze(img, text, link, false)];
-if (img2 || text2) jobs.push(analyze(img2, text2, "", true));
+const m1 = matchChart("#t1"), m2 = matchChart("#t2");
+const jobs = [analyze(img, text, link, false, m1 && m1.size).then(r => applyChart(r, m1))];
+if (img2 || text2) jobs.push(analyze(img2, text2, "", true, m2 && m2.size).then(r => applyChart(r, m2)));
 last = await Promise.all(jobs);
 const date = new Date().toLocaleDateString("vi-VN");
 last.forEach((r, i) => { r.date = date; r.link = i ? "" : link; r.thumb = i ? thumb2 : thumb; });
