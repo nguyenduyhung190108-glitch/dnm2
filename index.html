@@ -186,7 +186,6 @@ footer{position:relative;z-index:1;text-align:center;color:var(--mute);font-size
           <button type="button" class="chip" id="mBack" aria-pressed="false">Xoay mặt sau</button>
           <button type="button" class="chip on" id="mDims" aria-pressed="true">Hiện số đo</button>
           <button type="button" class="chip" id="mGhost" aria-pressed="false">So với lần lưu trước</button>
-          <button type="button" class="chip" id="mPng">Tải ảnh PNG</button>
         </div>
         <p class="hint" id="delta" hidden></p>
       </aside>
@@ -541,13 +540,6 @@ const el=$("#man");if(REDUCE){renderMan();return}el.classList.add("flip");setTim
 $("#mBack").textContent=M.back?"Xoay mặt trước":"Xoay mặt sau";
 $("#mDims").onclick=()=>{M.dims=!M.dims;press($("#mDims"),M.dims);saveM();renderMan()};
 $("#mGhost").onclick=()=>{M.ghost=!M.ghost;saveM();syncGhostBtn();renderMan()};
-$("#mPng").onclick=()=>{
-const x=new XMLSerializer().serializeToString($("#man")).replace("<svg",'<svg width="300" height="470"'),im=new Image();
-im.onload=()=>{const c=document.createElement("canvas");c.width=900;c.height=1410;const g=c.getContext("2d"),gr=g.createLinearGradient(0,0,0,1410);
-gr.addColorStop(0,"#0a2e52");gr.addColorStop(1,"#031528");g.fillStyle=gr;g.fillRect(0,0,900,1410);g.drawImage(im,0,0,900,1410);
-const a=document.createElement("a");a.download="fitme-mo-hinh.png";a.href=c.toDataURL("image/png");a.click()};
-im.src="data:image/svg+xml;charset=utf-8,"+encodeURIComponent(x);
-};
 let view = "Mô hình 2D";
 const viewSync = (function(){
 const items = ["Mô hình 2D", "Ảnh của bạn"], el = $("#viewSeg"); el.className = "seg";
@@ -678,10 +670,10 @@ reasons: ["Ước tính offline từ chiều cao/cân nặng" + (k ? (bottom ? "
 warnings: [e.message, "Kết quả chỉ mang tính tham khảo, hãy đối chiếu bảng size của shop."], styling: [], colors: [], alt_size: "" };
 }
 }
-const SIZES = ["S","M","L","XL","2XL","3XL"];
+const SIZES = ["M","L","XL"];
 function mkSizeTable(id, cols){
 const el = $(id);
-const row = n => `<tr><td><input value="${n}" aria-label="Size" maxlength="6"></td>${cols.map(c => `<td><input placeholder="${c[1]}" aria-label="${c[0]}" data-k="${c[0]}"></td>`).join("")}<td class="dl"><button type="button" class="rm" aria-label="Xóa size" title="Xóa size">×</button></td></tr>`;
+const row = n => `<tr><td><input value="${n}" aria-label="Size" maxlength="6"></td>${cols.map(c => `<td><input aria-label="${c[0]}" data-k="${c[0]}"></td>`).join("")}<td class="dl"><button type="button" class="rm" aria-label="Xóa size" title="Xóa size">×</button></td></tr>`;
 el.innerHTML = `<table><thead><tr><th>Size</th>${cols.map(c => `<th>${c[0]} (cm)</th>`).join("")}<th></th></tr></thead><tbody>${SIZES.map(row).join("")}</tbody></table><button type="button" class="chip addrow" style="margin-top:4px">+ Thêm size</button>`;
 el.querySelector(".addrow").onclick = () => el.querySelector("tbody").insertAdjacentHTML("beforeend", row(""));
 el.onclick = e => { const b = e.target.closest(".rm"); if (b) b.closest("tr").remove(); };
