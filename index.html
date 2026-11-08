@@ -36,10 +36,11 @@ main{padding:6px 0 10px}
 .enter{animation:in .5s var(--ease)}
 [hidden]{display:none!important}
 .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;width:min(560px,100%);margin:4px 0 22px}
-.steps div{font-size:12.5px;color:var(--mute);transition:color .4s}
-.steps div:before{content:"";display:block;height:3px;border-radius:3px;margin-bottom:8px;background:linear-gradient(90deg,var(--gold),#fff3cf) left/0 100% no-repeat,rgba(143,190,225,.22);transition:background-size .6s var(--ease)}
-.steps div.on:before{background-size:100% 100%}
-.steps div.cur{color:var(--ink);font-weight:600}
+.steps button{display:block;background:none;border:0;padding:0;text-align:left;cursor:pointer;font-size:12.5px;color:var(--mute);transition:color .4s}
+.steps button:hover{color:var(--ink)}
+.steps button:before{content:"";display:block;height:3px;border-radius:3px;margin-bottom:8px;background:linear-gradient(90deg,var(--gold),#fff3cf) left/0 100% no-repeat,rgba(143,190,225,.22);transition:background-size .6s var(--ease)}
+.steps button.on:before{background-size:100% 100%}
+.steps button.cur{color:var(--ink);font-weight:600}
 h1{font:700 clamp(30px,5.4vw,46px)/1.12 "Playfair Display",Georgia,serif;margin:0 0 6px;letter-spacing:-.3px}
 h1 em{font-style:italic;-webkit-text-fill-color:transparent;background:linear-gradient(180deg,#e3f6ff,#7fd6f5 60%,#f1dcaa);-webkit-background-clip:text;background-clip:text}
 h1.metal{display:inline-block}
@@ -146,10 +147,13 @@ footer{position:relative;z-index:1;text-align:center;color:var(--mute);font-size
 #delta{color:var(--aqua)}
 @media(min-width:901px){.stage{max-height:calc(100vh - 24px);overflow-y:auto;scrollbar-width:thin}}
 .sz{overflow-x:auto}
-.sz table{width:100%;min-width:300px;border-collapse:separate;border-spacing:0 6px}
+.sz table{width:100%;min-width:440px;border-collapse:separate;border-spacing:0 6px}
 .sz th{font-size:12px;font-weight:600;color:var(--mute);text-align:left;padding:0 4px}
 .sz td{padding:0 3px}
 .sz td:first-child{width:22%}
+.sz .rg{display:flex;align-items:center;gap:4px}
+.sz .rg span{color:var(--mute)}
+.sz .rg input{min-width:0}
 .sz td.dl{width:36px;text-align:center}
 .sz .rm{width:30px;height:30px;border-radius:50%;border:1px solid var(--line2);background:rgba(2,12,26,.78);color:var(--mute);cursor:pointer;font-size:16px;line-height:1;padding:0;transition:background .25s,color .25s}
 .sz .rm:hover{background:#b3394a;color:#fff}
@@ -171,7 +175,7 @@ footer{position:relative;z-index:1;text-align:center;color:var(--mute);font-size
 </header>
 <main>
 <section class="view on" id="tryon">
-  <div class="steps" id="steps"><div class="on cur">1 · Vóc dáng</div><div>2 · Sản phẩm</div><div>3 · Kết quả</div></div>
+  <div class="steps" id="steps"><button type="button" class="on cur">1 · Vóc dáng</button><button type="button">2 · Sản phẩm</button><button type="button">3 · Kết quả</button></div>
   <div id="s1" class="enter">
     <h1 class="metal">Mặc thử trước, <em>mua sau</em></h1>
     <div class="s1grid">
@@ -238,7 +242,7 @@ footer{position:relative;z-index:1;text-align:center;color:var(--mute);font-size
       <div>
         <div class="col">
           <div><label for="link">Link sản phẩm (tùy chọn)</label><input id="link" type="url" placeholder="Dán link để ghi nhớ"><p class="hint">Các sàn chặn đọc link tự động, nên AI sẽ đọc từ ảnh của bạn.</p></div>
-          <div><span class="lab">Bảng size món 1 (nếu có)</span><div class="sz" id="t1"></div><p class="hint">Điền khoảng số đo theo bảng của shop (VD 84-88). Size nào không có thì để trống.</p></div>
+          <div><span class="lab">Bảng size món 1 (nếu có)</span><div class="sz" id="t1"></div><p class="hint">Điền theo bảng của shop. Shop chỉ ghi cân nặng (kg) thì điền cột Cân nặng, cột hay size nào không có thì để trống.</p></div>
           <div><span class="lab">Bảng size món 2: quần/váy (nếu có)</span><div class="sz" id="t2"></div></div>
           <p class="hint">Món 1 là áo/đầm. Thêm món 2 (quần/váy) nếu muốn mặc thử cả bộ.</p>
         </div>
@@ -393,7 +397,7 @@ const cap=[[.98,.2],[.85,.53],[.6,.8],[.3,.95]].map(([q,w])=>[[Sx-Math.sin(th)*R
 const AC=[...cap.map(c=>c[0]),S_,pt(S_,E_,.4),pt(S_,E_,.8),E_,pt(E_,W_,.25),pt(E_,W_,.7),W_,pt(W_,T_,.1)];
 const AW=[...cap.map(c=>c[1]),R0,R0,R0*.82,elbD*SC/2,foreD*SC/2,lerp(foreD,wrD,.6)*SC/2,wrD*SC/2,wrD*SC/2*1.04];
 const W2=handW*SC/2,wr=wrD*SC/2,L=dl;
-return{y,s,bw,ww,hw,sw,nw,bF,wF,R0,body,arm:ribbon(AC,AW),W2,wr,L,Wx,Wy,Sy,hemX:lerp(Sx,Ex,.52),hemY:lerp(Sy,Ey,.52),hdeg:f1(-th*180/Math.PI),ang:Math.atan2(Ty-Wy,Tx-Wx)*180/Math.PI-90};
+return{y,s,bw,ww,hw,sw,nw,bF,wF,R0,body,arm:ribbon(AC,AW),W2,wr,L,Ex,Ey,ew:elbD*SC/2,Wx,Wy,Sy,hemX:lerp(Sx,Ex,.52),hemY:lerp(Sy,Ey,.52),hdeg:f1(-th*180/Math.PI),ang:Math.atan2(Ty-Wy,Tx-Wx)*180/Math.PI-90};
 }
 /* Bàn tay: lòng bàn tay + 4 ngón + ngón cái, tọa độ cục bộ: gốc ở cổ tay, +y hướng xuống, -x hướng vào thân */
 function handSVG(W2,wr,L,bk,skin,skinD){
@@ -402,13 +406,16 @@ const palm=`M${f1(-wr)} 0C${f1(-W2*1.02)} ${f1(L*.1)} ${f1(-W2*.98)} ${f1(L*.34)
 const fing=fx.map((x,i)=>`<line x1="${f1(x)}" y1="${y0}" x2="${f1(x)}" y2="${ft[i]}"/>`).join("");
 const th=bk?"":`<line x1="${f1(-W2*.72)}" y1="${f1(L*.2)}" x2="${f1(-W2*1.0)}" y2="${f1(L*.48)}"/>`;
 const sep=fx.slice(0,3).map((x,i)=>{const mx=f1((x+fx[i+1])/2);return`<line x1="${mx}" y1="${f1(L*.55)}" x2="${mx}" y2="${f1(Math.min(+ft[i],+ft[i+1])+r*.3)}"/>`}).join("");
+const ex=bk
+?fx.map((x,i)=>`<circle cx="${f1(x)}" cy="${f1(L*.47)}" r=".8" fill="${skinD}" fill-opacity=".35"/><ellipse cx="${f1(x)}" cy="${f1(+ft[i]+r*.1)}" rx="${f1(r*.55)}" ry="${f1(r*.8)}" fill="#fff" fill-opacity=".22"/><line x1="${f1(x*.45)}" y1="${f1(L*.06)}" x2="${f1(x)}" y2="${f1(L*.44)}" stroke="${skinD}" stroke-opacity=".22" stroke-width=".6"/>`).join("")
+:fx.map(x=>`<line x1="${f1(x-r*.5)}" y1="${f1(L*.66)}" x2="${f1(x+r*.5)}" y2="${f1(L*.66)}" stroke="${skinD}" stroke-opacity=".3" stroke-width=".6"/>`).join("");
 return`<g stroke-linecap="round" stroke-linejoin="round" fill="${skinD}" stroke="${skinD}" stroke-width="${f1(fw+1.2)}"><path d="${palm}" stroke-width="1.2"/>${fing}${th.replace("<line",`<line stroke-width="${f1(fw*1.1+1.2)}"`)}</g>`
 +`<g stroke-linecap="round" stroke-linejoin="round" fill="${skin}" stroke="${skin}" stroke-width="${f1(fw)}"><path d="${palm}" stroke-width="0"/>${fing}${th.replace("<line",`<line stroke-width="${f1(fw*1.1)}"`)}</g>`
-+`<g stroke="${skinD}" stroke-opacity=".5" stroke-width=".6" stroke-linecap="round">${sep}</g>`;
++`<g stroke="${skinD}" stroke-opacity=".5" stroke-width=".6" stroke-linecap="round">${sep}</g>`+ex;
 }
 function manSVG(p,o){
 o=o||{};
-const G=geom(p),{y,s,bw,ww,hw,sw,nw,bF,wF,R0,body,arm,Wx,Wy,hemX,hemY,hdeg,ang}=G,h=p.h,m=p.sx,Hp=p.Hp;
+const G=geom(p),{y,s,bw,ww,hw,sw,nw,bF,wF,R0,body,arm,Ex,Ey,ew,Wx,Wy,hemX,hemY,hdeg,ang}=G,h=p.h,m=p.sx,Hp=p.Hp;
 const bk=!!o.back,e=EASE[o.ease==null?1:o.ease],sw2=f1(2*e),topT=o.top||"Thun",botT=o.bot||"Short",tc=o.topC||PAL[0],bc=o.botC||PAL[2],hc=o.hair||HAIRS[0][1];
 const skin=`rgb(${p.sk.map(Math.round)})`,skinD=`rgb(${p.sk.map(v=>Math.round(v*.76))})`,gold="#e8c479",lh=cl(1-m*2,0,1);
 const rt=`translate(${CX} 0)`,mir=`translate(${CX} 0) scale(-1 1)`,sides=q=>`<g transform="${rt}">${q}</g><g transform="${mir}">${q}</g>`;
@@ -418,7 +425,7 @@ const band=(y0,y1,q)=>{const id="k"+cid++;defs.push(`<clipPath id="${id}"><rect 
 const tU=c=>`<use href="#half" fill="${c}" stroke="${c}" stroke-width="${sw2}" stroke-linejoin="round"/>`;
 const skirt=c=>{const P=[[ww+e+1,y(.6)],[lerp(ww,hw,.55)+e+1,y(.56)],[hw+e,y(.528)],[hw+e+5,y(.45)],[hw+e+12,y(.36)]];return sides(`<path d="M0 ${f1(P[0][1])}L${f1(P[0][0])} ${f1(P[0][1])}${cr(P)}L0 ${f1(P[4][1])}Z" fill="${c}" stroke="${dk(c,.7)}" stroke-width=".8"/>`)};
 const neckP=`M${f1(CX-nw*1.3)} ${f1(y(.862))}Q${CX} ${f1(y(.772))} ${f1(CX+nw*1.3)} ${f1(y(.862))}`;
-const shoe=g=>{const cx=CX+g*(.075*Hp*SC+1),cy=y(.013),rx=.052*Hp*SC,ry=2.9*s*SC;return`<g transform="rotate(${g*9} ${f1(cx)} ${f1(cy)})"><ellipse cx="${f1(cx)}" cy="${f1(cy)}" rx="${f1(rx)}" ry="${f1(ry)}" fill="#eef3f8" stroke="#9fb2c4" stroke-width=".8"/><ellipse cx="${f1(cx)}" cy="${f1(cy+ry*.55)}" rx="${f1(rx*.95)}" ry="${f1(ry*.35)}" fill="#c3d0dc"/></g>`};
+const shoe=g=>{const cx=CX+g*(.075*Hp*SC+1),cy=y(.013),rx=.052*Hp*SC,ry=2.9*s*SC;return`<g transform="rotate(${g*9} ${f1(cx)} ${f1(cy)})"><ellipse cx="${f1(cx)}" cy="${f1(cy)}" rx="${f1(rx)}" ry="${f1(ry)}" fill="#eef3f8" stroke="#9fb2c4" stroke-width=".8"/><ellipse cx="${f1(cx)}" cy="${f1(cy+ry*.55)}" rx="${f1(rx*.95)}" ry="${f1(ry*.35)}" fill="#c3d0dc"/>${bk?`<path d="M${f1(cx-rx*.45)} ${f1(cy+ry*.1)}Q${f1(cx)} ${f1(cy-ry*.95)} ${f1(cx+rx*.45)} ${f1(cy+ry*.1)}" stroke="#9fb2c4" stroke-width=".9" fill="none"/>`:`<path d="M${f1(cx-rx*.3)} ${f1(cy-ry*.5)}h${f1(rx*.6)}M${f1(cx-rx*.25)} ${f1(cy-ry*.1)}h${f1(rx*.5)}" stroke="#9fb2c4" stroke-width=".8" fill="none"/>`}</g>`};
 let g="";
 if(topT==="Đầm")g+=skirt(tc);
 else if(botT==="Váy")g+=skirt(bc);
@@ -427,18 +434,38 @@ const strap=q=>sides(`<path d="M${f1(nw*1.55)} ${f1(y(.858))}L${f1(bw*.66)} ${f1
 const neck=bk?`<path d="M${f1(CX-nw*1.25)} ${f1(y(.86))}Q${CX} ${f1(y(.85))} ${f1(CX+nw*1.25)} ${f1(y(.86))}" stroke="${dk(tc,.7)}" stroke-width="1.6" fill="none"/>`:`<path d="${neckP}Z" fill="${skin}"/><path d="${neckP}" stroke="${dk(tc,.7)}" stroke-width="2" fill="none"/>`;
 if(topT==="Ba lỗ"||topT==="Đầm")g+=band(y(.775),y(topT==="Đầm"?.575:.555),sides(tU(tc)))+strap(tc);
 else g+=band(y(.857),y(.555),sides(tU(tc)))+band(y(.565),y(.555),sides(tU(dk(tc,.7))))+neck;
+const sd=dk(tc,.6),bd=dk(bc,.6),LH=Hp*SC,lx=v=>f1(v*LH);
+if(topT==="Thun"){
+if(bk)g+=`<path d="M${CX} ${f1(y(.852))}L${CX} ${f1(y(.572))}" stroke="${sd}" stroke-opacity=".4" stroke-width="1" fill="none"/><rect x="${CX-3.5}" y="${f1(y(.846))}" width="7" height="4.5" rx="1" fill="#fff" fill-opacity=".55"/>`+sides(`<path d="M${f1(bw*.22)} ${f1(y(.79))}Q${f1(bw*.65)} ${f1(y(.775))} ${f1(bw*.8)} ${f1(y(.735))}Q${f1(bw*.62)} ${f1(y(.695))} ${f1(bw*.25)} ${f1(y(.705))}" stroke="${sd}" stroke-opacity=".28" stroke-width="1.2" fill="none" stroke-linecap="round"/>`);
+else g+=sides(`<path d="M${f1(bw*.98)} ${f1(y(.742))}Q${f1(bw*.82)} ${f1(y(.70))} ${f1(ww*1.04)} ${f1(y(.655))}M${f1(ww*.3)} ${f1(y(.612))}Q${f1(ww*.62)} ${f1(y(.598))} ${f1(ww*.95)} ${f1(y(.616))}" stroke="${sd}" stroke-opacity=".3" stroke-width="1" fill="none" stroke-linecap="round"/>`);
+}
+if(botT==="Short"&&topT!=="Đầm"){
+g+=bk
+?`<path d="M${CX} ${f1(y(.585))}L${CX} ${f1(y(.47))}" stroke="${bd}" stroke-opacity=".5" stroke-width="1" fill="none"/>`+sides(`<path d="M${f1(hw*.2)} ${f1(y(.55))}L${f1(hw*.8)} ${f1(y(.55))}L${f1(hw*.8)} ${f1(y(.505))}L${f1(hw*.5)} ${f1(y(.488))}L${f1(hw*.2)} ${f1(y(.505))}Z" stroke="${bd}" stroke-opacity=".6" stroke-width=".9" fill="none" stroke-linejoin="round"/>`)
+:`<path d="M${CX} ${f1(y(.572))}L${CX} ${f1(y(.50))}" stroke="${bd}" stroke-opacity=".5" stroke-width="1" fill="none"/>`+sides(`<path d="M${f1(ww*.8)} ${f1(y(.585))}Q${f1(ww*1.05)} ${f1(y(.55))} ${f1(hw*.96)} ${f1(y(.515))}" stroke="${bd}" stroke-opacity=".55" stroke-width=".9" fill="none" stroke-linecap="round"/>`)+`<path d="M${CX-1.5} ${f1(y(.58))}q-3 6-3.5 11M${CX+1.5} ${f1(y(.58))}q3 6 3.5 11" stroke="#eef1f5" stroke-width="1" fill="none" stroke-linecap="round"/>`;
+}
+g+=bk
+?sides(`<path d="M${lx(.037)} ${f1(y(.293))}Q${lx(.083)} ${f1(y(.279))} ${lx(.129)} ${f1(y(.293))}M${lx(.052)} ${f1(y(.272))}Q${lx(.083)} ${f1(y(.265))} ${lx(.114)} ${f1(y(.272))}" stroke="${skinD}" stroke-opacity=".45" stroke-width="1" fill="none" stroke-linecap="round"/><ellipse cx="${lx(.08)}" cy="${f1(y(.2))}" rx="${lx(.042)}" ry="${f1(h*SC*.04)}" fill="#fff" fill-opacity=".08"/><path d="M${lx(.078)} ${f1(y(.25))}L${lx(.076)} ${f1(y(.145))}M${lx(.058)} ${f1(y(.115))}L${lx(.061)} ${f1(y(.05))}M${lx(.082)} ${f1(y(.115))}L${lx(.079)} ${f1(y(.05))}" stroke="${skinD}" stroke-opacity=".3" stroke-width=".8" fill="none" stroke-linecap="round"/>`)
+:sides(`<ellipse cx="${lx(.083)}" cy="${f1(y(.287))}" rx="${lx(.032)}" ry="${f1(h*SC*.018)}" fill="#fff" fill-opacity=".07" stroke="${skinD}" stroke-opacity=".38" stroke-width=".8"/><path d="M${lx(.078)} ${f1(y(.262))}Q${lx(.072)} ${f1(y(.15))} ${lx(.068)} ${f1(y(.06))}" stroke="#fff" stroke-opacity=".12" stroke-width="2" fill="none" stroke-linecap="round"/><circle cx="${lx(.047)}" cy="${f1(y(.04))}" r="1.6" fill="${skinD}" fill-opacity=".25"/><circle cx="${lx(.094)}" cy="${f1(y(.034))}" r="1.6" fill="${skinD}" fill-opacity=".25"/>`);
+if(bk)g+=`<ellipse cx="${CX}" cy="${f1(y(.866))}" rx="2.4" ry="1.7" fill="${skinD}" fill-opacity=".3"/>`;
 const armU=(c,x)=>`<use href="#arm" transform="${rt}" fill="${c}" ${x||""}/><use href="#arm" transform="${mir}" fill="${c}" ${x||""}/>`;
 g+=armU(skin,`stroke="${skinD}" stroke-opacity=".5" stroke-width=".7"`);
 const sx=`stroke="${tc}" stroke-width="${sw2}" stroke-linejoin="round"`;
 if(topT==="Thun")defs.push(`<clipPath id="sl">${[rt,mir].map(t=>`<rect transform="${t} rotate(${hdeg} ${f1(hemX)} ${f1(hemY)})" x="-20" y="${f1(y(.93))}" width="190" height="${f1(hemY-y(.93))}"/>`).join("")}</clipPath>`),g+=`<g clip-path="url(#sl)">${armU(tc,sx)}</g>`;
 else if(topT==="Dài tay")g+=armU(tc,sx);
+const elb=q=>[rt,mir].map(t=>`<g transform="${t} rotate(${hdeg} ${f1(Ex)} ${f1(Ey)})">${q}</g>`).join("");
+g+=bk
+?elb(`<ellipse cx="${f1(Ex)}" cy="${f1(Ey+ew*.1)}" rx="${f1(ew*.5)}" ry="${f1(ew*.42)}" fill="${skinD}" fill-opacity=".14" stroke="${skinD}" stroke-opacity=".3" stroke-width=".7"/>`)
+:elb(`<path d="M${f1(Ex-ew*.55)} ${f1(Ey+ew*.1)}Q${f1(Ex)} ${f1(Ey+ew*.6)} ${f1(Ex+ew*.55)} ${f1(Ey+ew*.1)}" stroke="${skinD}" stroke-opacity=".4" stroke-width=".9" fill="none" stroke-linecap="round"/>`);
 g+=[rt,mir].map(b=>`<g transform="${hT(b)}">${handSVG(G.W2,G.wr,G.L,bk,skin,skinD)}</g>`).join("");
 const hk=lerp(.15,.1325,cl((h-110)/60,0,1))*h*SC/100,HG=`translate(${CX} ${f1(y(1))}) scale(${hk.toFixed(4)})`;
 const long=`<path d="M-40 36C-47-4-22-10 0-10S47-4 40 36C49 90 47 160 38 205H-38C-47 160-49 90-40 36Z" fill="url(#hg)"/>`;
 const ear=`<ellipse cx="-38" cy="52" rx="5" ry="10"/><ellipse cx="38" cy="52" rx="5" ry="10"/>`;
 const face=`<path d="M0 0C22 0 38 18 38 42C38 66 26 92 0 100C-26 92-38 66-38 42C-38 18-22 0 0 0Z"/>`;
+const strand=`<g fill="none" stroke="${dk(hc,.5)}" stroke-opacity=".55" stroke-width="1.3" stroke-linecap="round"><path d="M0 -6C-1 24 -2 60 0 100"/><path d="M-18 -4C-26 20 -30 56 -28 96"/><path d="M18 -4C26 20 30 56 28 96"/><path d="M-32 6C-40 28 -42 56 -37 86"/><path d="M32 6C40 28 42 56 37 86"/><path d="M-4 4C-9 8 -3 15 2 11C6 8 3 1 -1 3"/></g><path d="M-30 86Q0 110 30 86Q22 104 0 106Q-22 104 -30 86Z" fill="#000" opacity=".12"/>`;
+const longStrands=`<g fill="none" stroke="${dk(hc,.5)}" stroke-opacity=".5" stroke-width="1.3" stroke-linecap="round"><path d="M-30 60C-35 110 -34 160 -30 200"/><path d="M-12 100C-14 140 -14 170 -12 202"/><path d="M12 100C14 140 14 170 12 202"/><path d="M30 60C35 110 34 160 30 200"/></g>`;
 const head=bk
-?`<g transform="${HG}"><g fill="${skin}" stroke="${skinD}" stroke-opacity=".5" stroke-width=".8">${ear}</g>${face.replace("<path",`<path fill="${skin}"`)}<path d="M-41 44C-46 0-22-10 0-10C24-10 46 0 41 44C45 72 32 100 0 103C-32 100-45 72-41 44Z" fill="url(#hg)"/><g opacity="${lh.toFixed(2)}">${long}</g></g>`
+?`<g transform="${HG}"><g fill="${skin}" stroke="${skinD}" stroke-opacity=".5" stroke-width=".8">${ear}</g>${face.replace("<path",`<path fill="${skin}"`)}<path d="M-41 44C-46 0-22-10 0-10C24-10 46 0 41 44C45 72 32 100 0 103C-32 100-45 72-41 44Z" fill="url(#hg)"/><g opacity="${lh.toFixed(2)}">${long}${longStrands}</g>${strand}</g>`
 :`<g transform="${HG}"><ellipse cx="0" cy="104" rx="24" ry="7" fill="#000" opacity=".1"/><g fill="${skin}" stroke="${skinD}" stroke-opacity=".5" stroke-width=".8">${ear}</g>${face.replace("<path",`<path fill="${skin}"`)}${face.replace("<path",'<path fill="url(#sh)"')}
 <path d="M-30 74Q0 104 30 74Q22 94 0 100Q-22 94-30 74Z" fill="#000" opacity=".07"/>
 <g fill="#d9667a" opacity="${(lh*.16).toFixed(2)}"><ellipse cx="-22" cy="64" rx="9" ry="5"/><ellipse cx="22" cy="64" rx="9" ry="5"/></g>
@@ -448,6 +475,8 @@ const head=bk
 <path d="M-20.5 45Q-14 41-7.5 45M20.5 45Q14 41 7.5 45" stroke="#2a1b16" stroke-width="1.1" fill="none" stroke-linecap="round"/>
 <path d="M0 50Q-5 62-4 66Q0 68.5 4 66Q5 62 0 50" fill="none" stroke="#000" stroke-opacity=".2" stroke-width="1.4" stroke-linecap="round"/>
 <path d="M-10 78Q-4 74 0 76Q4 74 10 78Q0 80-10 78Z" fill="#b5544f"/><path d="M-9.5 78Q0 87 9.5 78Q0 80.5-9.5 78Z" fill="#c9706b"/>
+<g fill="none" stroke-linecap="round"><path d="M-19.5 40.5Q-14 36.5-8 40M19.5 40.5Q14 36.5 8 40" stroke="${skinD}" stroke-opacity=".55" stroke-width=".8"/><path d="M-18 49.5Q-14 51.8-10 49.5M18 49.5Q14 51.8 10 49.5" stroke="${skinD}" stroke-opacity=".25" stroke-width=".7"/><path d="M-20.5 45l-1.8-1.2M20.5 45l1.8-1.2" stroke="#2a1b16" stroke-width="1.1"/><path d="M40.5 46Q44 52 40.5 58M-40.5 46Q-44 52-40.5 58" stroke="${skinD}" stroke-opacity=".5" stroke-width=".8"/><path d="M0 48Q-1 56 0 62" stroke="#fff" stroke-opacity=".12" stroke-width="2"/></g>
+<ellipse cx="-3.4" cy="66.3" rx="1.5" ry=".9" fill="#000" opacity=".25"/><ellipse cx="3.4" cy="66.3" rx="1.5" ry=".9" fill="#000" opacity=".25"/><ellipse cx="0" cy="92" rx="6" ry="3" fill="#fff" opacity=".06"/>
 <g opacity="${lh.toFixed(2)}" fill="url(#hg)"><path d="M-40 46C-46 4-22-8 2-8C26-8 46 6 40 46C38 30 30 18 14 14C2 22-22 26-40 46Z"/><path d="M-40 40C-45 70-44 96-38 112C-36 90-36 66-33 44Z"/><path d="M40 40C45 70 44 96 38 112C36 90 36 66 33 44Z"/></g>
 <g opacity="${(1-lh).toFixed(2)}" fill="url(#hg)"><path d="M-40 42C-45 2-22-9 0-9C24-9 45 2 40 42C38 26 28 17 12 14C-4 16-26 22-40 42Z"/></g></g>`;
 const hairBehind=bk?"":`<g transform="${HG}" opacity="${lh.toFixed(2)}">${long}</g>`;
@@ -561,6 +590,15 @@ if (!HIST.length || +HIST[0].w !== +P.w || note || snapKey(HIST[0].p) !== snapKe
 $("#e1").textContent = ""; step(2);
 };
 $("#back1").onclick = () => step(1);
+[...$("#steps").children].forEach((b, i) => b.onclick = () => {
+const n = i + 1;
+if (n === curStep) return;
+if (n === 1) return step(1);
+if (curStep === 1){ $("#to2").click(); if (n === 3 && last && curStep === 2) step(3); return; }
+if (n === 2) return step(2);
+if (last) return step(3);
+$("#go").click();
+});
 $("#wipe").onclick = () => {
 if (!confirm("Xóa hồ sơ, tủ đồ, lịch sử cân nặng và lịch sử chat trên trình duyệt này?")) return;
 ["fm_profile","fm_closet","fm_chat","fm_hist","fm_man"].forEach(k => store.del(k)); location.reload();
@@ -673,20 +711,29 @@ warnings: [e.message, "Kết quả chỉ mang tính tham khảo, hãy đối chi
 const SIZES = ["M","L","XL"];
 function mkSizeTable(id, cols){
 const el = $(id);
-const row = n => `<tr><td><input value="${n}" aria-label="Size" maxlength="6"></td>${cols.map(c => `<td><input aria-label="${c[0]}" data-k="${c[0]}"></td>`).join("")}<td class="dl"><button type="button" class="rm" aria-label="Xóa size" title="Xóa size">×</button></td></tr>`;
-el.innerHTML = `<table><thead><tr><th>Size</th>${cols.map(c => `<th>${c[0]} (cm)</th>`).join("")}<th></th></tr></thead><tbody>${SIZES.map(row).join("")}</tbody></table><button type="button" class="chip addrow" style="margin-top:4px">+ Thêm size</button>`;
+const cell = c => c[1] === "kg"
+? `<td><div class="rg"><input inputmode="decimal" placeholder="Từ" aria-label="Cân nặng từ" data-k="Cân nặng" data-r="a"><span>–</span><input inputmode="decimal" placeholder="Đến" aria-label="Cân nặng đến" data-k="Cân nặng" data-r="b"></div></td>`
+: `<td><input aria-label="${c[0]}" data-k="${c[0]}"></td>`;
+const row = n => `<tr><td><input value="${n}" aria-label="Size" maxlength="6"></td>${cols.map(cell).join("")}<td class="dl"><button type="button" class="rm" aria-label="Xóa size" title="Xóa size">×</button></td></tr>`;
+el.innerHTML = `<table><thead><tr><th>Size</th>${cols.map(c => `<th>${c[0]} (${c[1]})</th>`).join("")}<th></th></tr></thead><tbody>${SIZES.map(row).join("")}</tbody></table><button type="button" class="chip addrow" style="margin-top:4px">+ Thêm size</button>`;
 el.querySelector(".addrow").onclick = () => el.querySelector("tbody").insertAdjacentHTML("beforeend", row(""));
 el.onclick = e => { const b = e.target.closest(".rm"); if (b) b.closest("tr").remove(); };
 }
 function chartText(id){
 return [...$(id).querySelectorAll("tbody tr")].map(tr => {
-const ins = [...tr.querySelectorAll("input")], sz = ins[0].value.trim(), v = ins.slice(1).filter(i => i.value.trim()).map(i => i.dataset.k.toLowerCase() + " " + i.value.trim());
+const ins = [...tr.querySelectorAll("input")], sz = ins[0].value.trim(), v = [];
+ins.slice(1).forEach(i => {
+const x = i.value.trim(); if (!x) return;
+if (i.dataset.r === "a"){ const b = i.parentNode.querySelector('[data-r="b"]').value.trim(); v.push("cân nặng " + (b ? x + "-" + b : "từ " + x) + " kg"); }
+else if (i.dataset.r === "b"){ if (!i.parentNode.querySelector('[data-r="a"]').value.trim()) v.push("cân nặng đến " + x + " kg"); }
+else v.push(i.dataset.k.toLowerCase() + " " + x);
+});
 return sz && v.length ? sz + ": " + v.join(", ") : "";
 }).filter(Boolean).join(" | ");
 }
 function clearTable(id){ $(id).querySelectorAll("input[data-k]").forEach(i => i.value = ""); }
-mkSizeTable("#t1", [["Ngực","84-88"],["Eo","66-70"],["Mông","90-94"]]);
-mkSizeTable("#t2", [["Eo","66-70"],["Mông","90-94"]]);
+mkSizeTable("#t1", [["Ngực","cm"],["Eo","cm"],["Mông","cm"],["Cân nặng","kg"]]);
+mkSizeTable("#t2", [["Eo","cm"],["Mông","cm"],["Cân nặng","kg"]]);
 $("#go").onclick = async () => {
 const text = chartText("#t1"), link = $("#link").value.trim(), text2 = chartText("#t2");
 if (!img && !text && !link) { $("#e2").textContent = "Thêm ít nhất một ảnh, bảng size hoặc link cho món 1."; return; }
