@@ -98,7 +98,7 @@ input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-
 .btn:disabled{opacity:.55;cursor:wait;transform:none}
 .link{background:none;border:0;color:var(--bad);cursor:pointer;font-size:15px;text-decoration:underline;padding:8px 2px}
 .stage{position:sticky;top:12px;background:var(--panel);border:1px solid var(--line);border-radius:22px;padding:14px;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);box-shadow:0 18px 54px rgba(0,4,12,.68),inset 0 1px 0 rgba(255,255,255,.08)}
-.stbody{position:relative;margin-top:12px;aspect-ratio:300/470;border-radius:16px;overflow:hidden;border:1px solid var(--line2);background:radial-gradient(ellipse 78% 46% at 50% 26%,rgba(190,228,255,.20),transparent 62%),linear-gradient(180deg,#123f68 0,#0d3157 58%,#0a2748 58.2%,#123a5f 78%,#081f3a 100%);box-shadow:inset 0 0 0 1px rgba(255,255,255,.04),inset 0 -34px 44px rgba(0,6,16,.45),inset 0 22px 34px rgba(160,215,255,.07)}
+.stbody{position:relative;margin-top:12px;aspect-ratio:300/470;border-radius:16px;overflow:hidden;border:1px solid var(--line2);background:radial-gradient(ellipse 52% 30% at 50% 34%,rgba(255,241,205,.13),transparent 62%),radial-gradient(ellipse 78% 46% at 50% 26%,rgba(190,228,255,.24),transparent 62%),radial-gradient(ellipse 36% 58% at 50% 47%,rgba(255,244,214,.10),transparent 70%),radial-gradient(ellipse 46% 9% at 50% 97.5%,rgba(155,210,248,.14),transparent 70%),linear-gradient(180deg,#123f68 0,#0d3157 58%,#0a2748 58.2%,#123a5f 78%,#081f3a 100%);box-shadow:inset 0 0 0 1px rgba(255,255,255,.04),inset 0 -34px 44px rgba(0,6,16,.45),inset 0 22px 34px rgba(160,215,255,.07),inset 0 0 64px rgba(0,5,14,.38)}
 .stbody::after{content:"";position:absolute;left:8%;right:8%;bottom:5.5%;height:14px;border-radius:50%;background:radial-gradient(ellipse at center,rgba(0,4,12,.5),transparent 68%);pointer-events:none}
 .stage .stcap{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:10px}
 .stage .stcap span{font-size:13px;letter-spacing:.7px;text-transform:uppercase;color:var(--mute);font-weight:600}
@@ -115,6 +115,10 @@ input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-
 .drop.tall{aspect-ratio:3/4}.drop.short{min-height:110px;margin-top:14px}
 .drop.stbd{border:0;border-radius:0;background:rgba(6,40,66,.5)}
 .drop.has{padding:0;border-style:solid;overflow:hidden}
+.drop.blocked{cursor:not-allowed;color:var(--mute)}
+.drop.blocked:hover{transform:none}
+.drop.blocked svg{stroke:var(--warn)}
+#bdrop.blocked,#drop.blocked,#drop2.blocked{background:rgba(2,13,27,.9)}
 .drop img{width:100%;height:100%;object-fit:cover;display:block;animation:in .45s var(--ease)}
 .drop .x{position:absolute;top:8px;right:8px;width:30px;height:30px;border-radius:50%;border:0;background:rgba(2,12,26,.78);color:#fff;cursor:pointer;font-size:16px;line-height:1;transition:background .25s}
 .drop .x:hover{background:#b3394a}
@@ -159,13 +163,12 @@ ul.clean{padding-left:20px;margin:8px 0;font-size:16.5px;line-height:1.7}
 .tstep.done{color:#cfe8f8}.tstep.done i{border-color:var(--ok);background:rgba(95,224,181,.18);color:var(--ok)}
 .tstep.act{color:#fff}.tstep.act i{border-color:var(--gold);color:var(--gold);animation:b 1s infinite}
 .cmpwrap{max-width:440px;margin:0 auto}
-.cmp{position:relative;border-radius:16px;overflow:hidden;border:1px solid var(--line);touch-action:none;cursor:ew-resize;background:#0a2748;line-height:0}
-.cmp img{display:block;width:100%;height:auto;user-select:none;-webkit-user-drag:none}
-.cmp .cmp-before{position:absolute;inset:0}
-.cmp .cmp-before img{width:100%;height:100%;object-fit:cover}
-.cmp .cmp-handle{position:absolute;top:0;bottom:0;width:2px;background:var(--gold);box-shadow:0 0 10px rgba(232,196,121,.8);transform:translateX(-1px)}
+.cmp{position:relative;width:100%;aspect-ratio:3/4;border-radius:16px;overflow:hidden;border:1px solid var(--line);touch-action:none;cursor:ew-resize;background:#0a2748;line-height:0}
+.cmp .cmp-after,.cmp .cmp-before{position:absolute;inset:0}
+.cmp .cmp-after img,.cmp .cmp-before img{position:absolute;inset:0;display:block;width:100%;height:100%;object-fit:cover;object-position:50% 50%;user-select:none;-webkit-user-drag:none}
+.cmp .cmp-handle{position:absolute;top:0;bottom:0;z-index:3;width:2px;background:var(--gold);box-shadow:0 0 10px rgba(232,196,121,.8);transform:translateX(-1px)}
 .cmp .cmp-handle::after{content:"◂ ▸";position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(2,12,26,.85);color:var(--gold);border:1px solid rgba(232,196,121,.6);border-radius:99px;padding:5px 9px;font-size:12px;line-height:1;white-space:nowrap}
-.cmp .cmp-tag{position:absolute;top:10px;font-size:12px;font-weight:700;letter-spacing:.5px;padding:4px 10px;border-radius:99px;background:rgba(2,12,26,.78);color:#fff;line-height:1.3}
+.cmp .cmp-tag{position:absolute;top:10px;z-index:4;font-size:12px;font-weight:700;letter-spacing:.5px;padding:4px 10px;border-radius:99px;background:rgba(2,12,26,.78);color:#fff;line-height:1.3}
 .cmp .cmp-tag.l{left:10px}.cmp .cmp-tag.r{right:10px;color:var(--gold)}
 .cmpslider{width:100%;margin-top:8px}
 .trybar{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:12px}
@@ -189,6 +192,33 @@ input[type=range]{padding:0;height:22px;accent-color:var(--gold);background:none
 .ph img{width:100%;height:100%;object-fit:cover}
 .ph em{position:absolute;top:8px;right:8px;font:700 24px/1 "Cormorant Garamond",serif;font-style:normal;background:linear-gradient(180deg,#f6dc9b,#c8973f);color:#1b1204;border-radius:8px;padding:4px 10px}
 footer{position:relative;z-index:1;text-align:center;color:var(--mute);font-size:14.5px;padding:28px 20px 40px}
+.gemini-policy{max-width:760px;margin:12px auto 0;padding:12px 16px;border:1px solid var(--line2);border-radius:14px;background:rgba(2,13,27,.55);text-align:left;font-size:13.5px;line-height:1.6;color:var(--mute)}
+.gemini-policy h2{margin:0 0 4px;font-size:14.5px;color:var(--ink);font-weight:700;letter-spacing:.01em;text-align:center}
+.gemini-policy p{margin:4px 0;line-height:1.6}
+.gemini-policy p:last-child{margin-bottom:0}
+.gemini-policy a{color:var(--aqua);text-decoration:underline;text-underline-offset:2px}
+.consent-link{margin-top:10px;background:none;border:0;color:var(--aqua);cursor:pointer;font-size:13.5px;text-decoration:underline;text-underline-offset:3px;padding:6px 4px}
+.consent-link:hover{color:var(--gold)}
+/*CONSENT GATE — hộp chính sách hiện lúc mới vào trang*/
+body.consent-lock{overflow:hidden}
+.consent-gate{position:fixed;inset:0;z-index:200;display:grid;place-items:center;padding:18px;background:rgba(1,7,16,.78);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+.consent-gate[hidden]{display:none!important}
+.consent-panel{width:min(560px,100%);max-height:calc(100vh - 36px);overflow-y:auto;background:linear-gradient(180deg,rgba(10,38,66,.98),rgba(3,16,31,.99));border:1px solid rgba(232,196,121,.5);border-radius:20px;padding:24px 22px 20px;box-shadow:0 30px 80px rgba(0,2,8,.8),inset 0 1px 0 rgba(255,255,255,.09);animation:in .45s var(--ease)}
+.consent-panel h2{margin:0 0 6px;font:700 30px/1.25 "Cormorant Garamond",Georgia,serif;color:#fff;text-align:center}
+.consent-panel .c-intro{margin:0 0 14px;text-align:center;color:var(--mute);font-size:15px;line-height:1.6}
+.consent-item{display:flex;gap:12px;align-items:flex-start;border:1px solid var(--line2);border-radius:14px;padding:13px 14px;background:rgba(2,13,27,.6);margin-bottom:10px}
+.consent-item .c-txt{flex:1;min-width:0}
+.consent-item .c-txt b{display:block;font-size:15.5px;color:#fff;line-height:1.4}
+.consent-item .c-txt span{display:block;font-size:13.5px;color:var(--mute);line-height:1.55;margin-top:3px}
+.consent-item .c-txt a{color:var(--aqua);text-decoration:underline;text-underline-offset:2px}
+.c-toggle{flex:0 0 auto;border:1px solid rgba(143,179,207,.4);background:rgba(2,13,27,.8);color:var(--mute);border-radius:99px;padding:8px 14px;font-size:13.5px;font-weight:700;cursor:pointer;min-width:86px;transition:background .25s,color .25s,border-color .25s}
+.c-toggle.on{background:linear-gradient(180deg,#f3d58f,#c99a4b);border-color:transparent;color:#1b1204}
+.consent-note{font-size:13.5px;color:var(--mute);line-height:1.6;margin:12px 0 0;text-align:center}
+.consent-acts{display:flex;flex-direction:column;gap:9px;margin-top:16px}
+.consent-acts .btn{width:100%;min-height:52px;font-size:16px}
+.consent-status{font-size:13.5px;line-height:1.55;border:1px solid rgba(240,168,80,.4);background:rgba(240,168,80,.1);color:#f5cf9a;border-radius:12px;padding:9px 12px;margin-top:10px}
+.consent-status:empty{display:none}
+@media(max-width:560px){.consent-panel{padding:20px 16px 16px}.consent-panel h2{font-size:26px}}
 .dots span{animation:b 1s infinite;display:inline-block}.dots span:nth-child(2){animation-delay:.15s}.dots span:nth-child(3){animation-delay:.3s}
 @keyframes b{50%{opacity:.2}}
 .mtools{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
@@ -351,6 +381,162 @@ nav.tabs button.on::after{content:"";position:absolute;left:50%;bottom:3px;width
 #followChips .chip{background:rgba(2,20,32,.62);border-color:rgba(169,233,255,.38);color:#eef9ff}
 #followChips .chip:hover{background:rgba(22,96,122,.88);border-color:var(--gold);color:#fff}
 @media(max-width:560px){#quick{padding:14px 12px 2px}.chat{padding:10px}#followChips{padding:12px}}
+/*SELECTION & FUNCTION ANIMATIONS — hiệu ứng lúc lựa chọn & dùng chức năng: chọn là nảy nhẹ + gợn sáng, chuyển tab/bước trượt mượt, kết quả hiện dần theo thứ tự*/
+@keyframes selPop{0%{transform:scale(.9)}55%{transform:scale(1.07)}100%{transform:scale(1)}}
+@keyframes swPop{0%{transform:scale(.82)}55%{transform:scale(1.22)}100%{transform:scale(1.1)}}
+@keyframes segPop{0%{transform:scale(.94)}100%{transform:scale(1)}}
+@keyframes tabPop{0%{transform:translateY(3px) scale(.96)}100%{transform:none}}
+@keyframes viewIn{from{opacity:0;transform:translateY(10px) scale(.998)}to{opacity:1;transform:none}}
+@keyframes riseIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+@keyframes sizePop{0%{opacity:0;transform:scale(.55) translateY(10px)}60%{opacity:1;transform:scale(1.06) translateY(-2px)}100%{opacity:1;transform:scale(1)}}
+@keyframes imgIn{from{opacity:0;transform:scale(1.06)}to{opacity:1;transform:scale(1)}}
+@keyframes dropPulse{0%,100%{box-shadow:0 0 0 0 rgba(232,196,121,.0),inset 0 0 0 0 rgba(232,196,121,.0)}50%{box-shadow:0 0 0 4px rgba(232,196,121,.14),inset 0 0 24px rgba(232,196,121,.08)}}
+@keyframes errIn{0%{opacity:0;transform:translateX(0)}25%{opacity:1;transform:translateX(-5px)}55%{transform:translateX(4px)}80%{transform:translateX(-2px)}100%{transform:none}}
+@keyframes msgU{from{opacity:0;transform:translateX(16px) translateY(6px)}to{opacity:1;transform:none}}
+@keyframes msgA{from{opacity:0;transform:translateX(-16px) translateY(6px)}to{opacity:1;transform:none}}
+@keyframes handleGlow{0%,100%{box-shadow:0 0 0 0 rgba(232,196,121,0)}50%{box-shadow:0 0 0 5px rgba(232,196,121,.22)}}
+@keyframes gateIn{from{opacity:0;transform:translateY(18px) scale(.965)}to{opacity:1;transform:none}}
+@keyframes tapPop{0%{transform:scale(.94)}55%{transform:scale(1.03)}100%{transform:scale(1)}}
+@keyframes rippleGo{from{transform:scale(0);opacity:.55}to{transform:scale(1);opacity:0}}
+.view.on{animation:viewIn .45s var(--ease)}
+.chip{position:relative;overflow:hidden}
+.chip.on{animation:selPop .38s var(--ease)}
+.swatch.on{animation:swPop .45s var(--ease)}
+.seg .ind{transition:transform .42s cubic-bezier(.34,1.35,.4,1),opacity .25s}
+.seg button.on{animation:segPop .3s var(--ease)}
+nav.tabs button{transition:background .3s,color .3s,transform .18s var(--ease)}
+nav.tabs button:active{transform:scale(.95)}
+nav.tabs button.on{animation:tabPop .35s var(--ease)}
+.steps button{transition:color .4s,transform .18s var(--ease)}
+.steps button:active{transform:scale(.97)}
+.steps button.cur{animation:tabPop .4s var(--ease)}
+.c-toggle.on{animation:selPop .38s var(--ease)}
+.c-toggle:active,.swatch:active{transform:scale(.93)}
+.drop.over{animation:dropPulse .95s ease-in-out infinite}
+.drop.has img{animation:imgIn .55s var(--ease)}
+.drop:active{transform:scale(.99)}
+.size-big,.comboitem .size-mid{animation:sizePop .65s var(--ease) both .08s}
+#result .tag{animation:riseIn .4s var(--ease) both}
+#result .pcard,#result .comboitem,#result .ocard,#result .verdict,.cstat{animation:riseIn .5s var(--ease) both}
+.rise-item{animation:riseIn .5s var(--ease) both}
+.msg.u{animation:msgU .38s var(--ease)}
+.msg.a{animation:msgA .38s var(--ease)}
+.err:not(:empty){animation:errIn .4s var(--ease)}
+.consent-gate:not([hidden]) .consent-panel{animation:gateIn .45s var(--ease)}
+.tryprog{animation:riseIn .4s var(--ease)}
+.cmp .cmp-handle::after{animation:handleGlow 1.6s ease-in-out 2}
+.trysteps-thumbs img{transition:transform .25s var(--ease),border-color .25s}
+.trysteps-thumbs img:hover{transform:translateY(-2px)}
+.trysteps-thumbs img.on{animation:selPop .35s var(--ease)}
+.tap-pop{animation:tapPop .32s var(--ease)!important}
+.fx-ripple{position:absolute;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.5) 0,rgba(255,255,255,.12) 55%,transparent 72%);transform:scale(0);animation:rippleGo .5s ease-out both;pointer-events:none;z-index:1}
+input[type=range]{transition:filter .2s}input[type=range]:active{filter:brightness(1.25)}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}.fx-ripple{display:none!important}}
+/*HOVER ZOOM — phóng to mỗi khi chỉ vào: di chuột tới đâu phần tử ở đó nở ra rõ rệt, dùng thuộc tính scale riêng nên không phá animation nảy/trượt lúc chọn và không làm lệch bố cục (transform gốc vẫn giữ nguyên)*/
+@media(hover:hover) and (pointer:fine) and (prefers-reduced-motion:no-preference){
+.btn,.chip,nav.tabs button,.steps button,.seg button,.c-toggle,.swatch,.drop,.item,.ocard,.pcard,.comboitem,.cstat,.trysteps-thumbs img,.sz .rm,.drop .x,.iacts .iact,.brandimg,.acc,.tryimg,.rthumb,.comboitem .cthumb{transition:scale .3s var(--ease),transform .3s var(--ease),box-shadow .3s,border-color .3s,background .3s,color .3s,filter .3s,opacity .3s}
+.btn:hover{scale:1.1}
+.chip:hover{scale:1.15}
+.chip.on:hover{scale:1.15}
+nav.tabs button:hover{scale:1.13}
+.steps button:hover{scale:1.09;transform-origin:left center}
+.seg button:hover{scale:1.13}
+.c-toggle:hover{scale:1.15}
+.swatch:hover{scale:1.32;transform:none}
+.drop:hover{scale:1.035}
+.drop.blocked:hover{scale:none}
+.item:hover{scale:1.055}
+.ocard:hover{scale:1.065}
+.pcard:hover,.comboitem:hover{scale:1.055}
+.cstat:hover{scale:1.1}
+.acc:hover{scale:1.018}
+.brandimg:hover{scale:1.15}
+.tryimg:hover{scale:1.045}
+.rthumb:hover,.comboitem .cthumb:hover{scale:1.13}
+.trysteps-thumbs img:hover{scale:1.2}
+.sz .rm:hover,.drop .x:hover{scale:1.32}
+.iacts .iact:hover{scale:1.17}
+.btn:hover,.chip:hover,nav.tabs button:hover,.c-toggle:hover,.iacts .iact:hover{position:relative;z-index:3}
+.ph{overflow:hidden}
+.ph img,.drop.has img{transition:scale .5s var(--ease),transform .5s var(--ease)}
+.ph:hover img{scale:1.15}
+.drop.has:hover img{scale:1.09}
+.ph.duo .half img{transition:scale .5s var(--ease)}
+.ph.duo .half:hover img{scale:1.17}
+.msg{transition:scale .28s var(--ease)}
+.msg:hover{scale:1.035;transform-origin:center}
+.msg.u:hover{transform-origin:right center}
+.msg.a:hover{transform-origin:left center}
+.tag{transition:scale .28s var(--ease)}
+.tag:hover{scale:1.17}
+.link:hover,.consent-link:hover{scale:1.11}
+.link,.consent-link{display:inline-block;transition:scale .28s var(--ease),color .25s}
+.logo:hover{scale:1.045}
+.logo{transition:scale .3s var(--ease);transform-origin:left center}
+.verdict{transition:scale .3s var(--ease)}
+.verdict:hover{scale:1.035}
+.styprofile{transition:scale .3s var(--ease)}
+.styprofile:hover{scale:1.022}
+input[type=range]:hover{filter:brightness(1.25)}
+}
+/*FIX 3 VIỆC — A) '+ Thêm size' hết mất chữ: bảng size cuộn ngang trong .sz-scroll riêng, nút đứng NGOÀI vùng cuộn nên không còn bị khung cuộn cắt mất một khúc; chữ không xuống dòng, dấu + dính liền bằng nbsp, nút có đệm và neo phóng to từ mép trái. B) Thanh kéo Trước/Sau: mọi lớp phủ trong .cmp không bắt sự kiện (pointer-events:none), chỉ khung .cmp nhận kéo — xem thêm JS renderTryResult. C) Animation riêng cho từng mục toàn web, nhẹ, tôn trọng giảm chuyển động*/
+/*A — Thêm size*/
+.sz{overflow:visible}
+.sz-scroll{overflow-x:auto;overscroll-behavior-x:contain;padding-bottom:4px}
+.addrow{display:inline-flex;align-items:center;white-space:nowrap;flex-shrink:0;max-width:none;margin:10px 4px 6px 2px;padding:11px 22px;transform-origin:left center}
+.sz tbody tr{animation:szRowIn .32s var(--ease) both}
+@keyframes szRowIn{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
+/*B — Thanh kéo mặc thử Trước/Sau*/
+.cmp{cursor:grab;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+.cmp.dragging{cursor:grabbing}
+.cmp .cmp-after,.cmp .cmp-before,.cmp .cmp-after img,.cmp .cmp-before img,.cmp .cmp-tag,.cmp .cmp-handle{pointer-events:none}
+.cmp .cmp-after img,.cmp .cmp-before img{-webkit-user-drag:none;user-select:none}
+.cmp .cmp-handle::after{width:42px;height:42px;padding:0;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;letter-spacing:0;box-shadow:0 4px 16px rgba(0,4,12,.5)}
+.cmp.dragging .cmp-handle::after{background:var(--gold);color:#1b1204;transform:translate(-50%,-50%) scale(1.14);animation:none}
+.cmp:not(.dragging) .cmp-before{transition:clip-path .12s var(--ease)}
+.cmp:not(.dragging) .cmp-handle{transition:left .12s var(--ease)}
+.cmp:focus-visible{outline:2px solid var(--gold);outline-offset:3px}
+.cmpwrap{animation:cmpIn .55s var(--ease) both}
+@keyframes cmpIn{from{opacity:0;transform:translateY(10px) scale(.98)}to{opacity:1;transform:none}}
+/*C — Animation theo từng mục*/
+header{animation:headIn .55s var(--ease) both}
+@keyframes headIn{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:none}}
+#s1.enter .stage{animation:stageIn .6s var(--ease) both}
+@keyframes stageIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+#s1.enter .fields>.col>*{animation:riseIn .55s var(--ease) both}
+#s1.enter .fields>.col>*:nth-child(2){animation-delay:.07s}
+#s1.enter .fields>.col>*:nth-child(3){animation-delay:.14s}
+#s1.enter .acc{animation:riseIn .55s .18s var(--ease) both}
+#s1.enter .actions{animation:riseIn .55s .24s var(--ease) both}
+label,.lab{transition:color .25s}
+div:focus-within>label,div:focus-within>.lab{color:var(--gold)}
+#s2.enter .s2grid>div:first-child{animation:riseIn .55s var(--ease) both}
+#s2.enter .col>div{animation:riseIn .5s var(--ease) both}
+#s2.enter .col>div:nth-child(2){animation-delay:.06s}
+#s2.enter .col>div:nth-child(3){animation-delay:.12s}
+#s2.enter .col>div:nth-child(4){animation-delay:.18s}
+#s2.enter .actions{animation:riseIn .5s .22s var(--ease) both}
+.drop:not(.has):not(.blocked):not(.over){animation:dropIdle 3.4s ease-in-out infinite}
+@keyframes dropIdle{0%,100%{box-shadow:inset 0 1px 0 rgba(255,255,255,.05),inset 0 -18px 30px rgba(0,4,12,.25),0 0 0 0 rgba(127,214,245,0)}50%{box-shadow:inset 0 1px 0 rgba(255,255,255,.05),inset 0 -18px 30px rgba(0,4,12,.25),0 0 0 5px rgba(127,214,245,.07)}}
+#s3.enter .res{animation:resIn .5s var(--ease) both}
+@keyframes resIn{from{opacity:0;transform:translateY(10px) scale(.995)}to{opacity:1;transform:none}}
+.tryprog{position:relative;overflow:hidden}
+.tryprog::before{content:"";position:absolute;left:0;right:0;top:0;height:3px;background:linear-gradient(90deg,transparent,rgba(232,196,121,.85),transparent);transform:translateX(-100%);animation:tryScan 1.5s ease-in-out infinite;pointer-events:none}
+@keyframes tryScan{to{transform:translateX(100%)}}
+.tstep{transition:color .3s}
+#stylist.on #quick .qgroup{animation:riseIn .45s var(--ease) both}
+#stylist.on #quick .qgroup:nth-child(2){animation-delay:.07s}
+#stylist.on #quick .qgroup:nth-child(3){animation-delay:.14s}
+#stylist.on .styprofile{animation:riseIn .45s var(--ease) both}
+#stylist.on .send{animation:riseIn .45s .1s var(--ease) both}
+#closet.on .closetbar{animation:riseIn .45s var(--ease) both}
+#closet.on .cstats .cstat{animation:riseIn .5s var(--ease) both}
+#closet.on .cstats .cstat:nth-child(2){animation-delay:.07s}
+#closet.on .cstats .cstat:nth-child(3){animation-delay:.14s}
+.consent-gate:not([hidden]) .consent-item{animation:riseIn .5s var(--ease) both}
+.consent-gate:not([hidden]) .consent-item:nth-of-type(2){animation-delay:.08s}
+.consent-gate:not([hidden]) .consent-acts{animation:riseIn .5s .16s var(--ease) both}
+@media(prefers-reduced-motion:reduce){.tryprog::before,.drop:not(.has):not(.blocked):not(.over),header,#s1.enter .stage,.cmpwrap{animation:none!important}}
 </style>
 </head>
 <body>
@@ -515,7 +701,31 @@ nav.tabs button.on::after{content:"";position:absolute;left:50%;bottom:3px;width
 </section>
 </main>
 </div>
-<footer>✦ Be yourself · FitMe AI</footer>
+<div class="consent-gate" id="consentGate" hidden role="dialog" aria-modal="true" aria-labelledby="consentTitle" aria-describedby="consentIntro">
+  <div class="consent-panel">
+    <h2 id="consentTitle">Chính sách &amp; quyền riêng tư</h2>
+    <p class="c-intro" id="consentIntro">Trước khi bắt đầu, bạn chọn một trong hai: đồng ý tất cả hoặc từ chối tất cả. Hộp này hiện lại mỗi lần bạn vào trang.</p>
+    <div class="consent-item">
+      <div class="c-txt"><b>1 · Gửi ảnh &amp; hồ sơ tới Google Gemini</b><span>Để chọn size, phối đồ và Stylist AI. Xem <a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer">Chính sách quyền riêng tư</a> và <a href="https://ai.google.dev/gemini-api/terms" target="_blank" rel="noopener noreferrer">Điều khoản Gemini API</a> của Google.</span></div>
+    </div>
+    <div class="consent-item">
+      <div class="c-txt"><b>2 · Gửi ảnh tới Hugging Face IDM-VTON</b><span>Để tạo ảnh mặc thử AI từ ảnh toàn thân và ảnh quần áo của bạn.</span></div>
+    </div>
+    <p class="consent-note">Từ chối tất cả: FitMe tắt AI chọn size, Stylist và mặc thử AI — bạn vẫn nhập số đo, xem mô hình 2D, đối chiếu bảng size và dùng tủ đồ bình thường. Hồ sơ, tủ đồ và lịch sử chat chỉ lưu trên trình duyệt này, không gửi đi đâu khác — xóa toàn bộ ở Bước 1.</p>
+    <div class="consent-acts">
+      <button type="button" class="btn" id="cAcceptAll">Đồng ý tất cả</button>
+      <button type="button" class="btn ghost" id="cRejectAll">Từ chối tất cả</button>
+    </div>
+  </div>
+</div>
+<footer>✦ Be yourself · FitMe AI
+<div class="gemini-policy" role="note" aria-label="Chính sách Gemini về gửi ảnh">
+<h2>Chính sách &amp; quyền riêng tư</h2>
+<p>Chỉ khi bạn đồng ý, ảnh toàn thân và ảnh quần áo mới được gửi tới Google Gemini (chọn size, phối đồ) và Hugging Face IDM-VTON (mặc thử AI). Xem <a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer">Chính sách quyền riêng tư</a> và <a href="https://ai.google.dev/gemini-api/terms" target="_blank" rel="noopener noreferrer">Điều khoản Gemini API</a> của Google.</p>
+</div>
+<button type="button" class="consent-link" id="consentReopen">Đổi lựa chọn quyền riêng tư</button>
+<div class="consent-status" id="consentStatus" role="note"></div>
+</footer>
 <script>
 const API_BASE = location.hostname.endsWith(".workers.dev") ? "" : "https://yellow-grass-933f.nguyenduyhung190108.workers.dev";
 const WORKER_URL = API_BASE + "/api/chat";
@@ -634,8 +844,8 @@ const th=bk?"":`<line x1="${f1(-W2*.72)}" y1="${f1(L*.2)}" x2="${f1(-W2*1.0)}" y
 const sep=fx.slice(0,3).map((x,i)=>{const mx=f1((x+fx[i+1])/2);return`<line x1="${mx}" y1="${f1(L*.55)}" x2="${mx}" y2="${f1(Math.min(+ft[i],+ft[i+1])+r*.3)}"/>`}).join("");
 const ex=bk
 ?fx.map((x,i)=>`<circle cx="${f1(x)}" cy="${f1(L*.47)}" r=".8" fill="${skinD}" fill-opacity=".35"/><ellipse cx="${f1(x)}" cy="${f1(+ft[i]+r*.1)}" rx="${f1(r*.55)}" ry="${f1(r*.8)}" fill="#fff" fill-opacity=".22"/><line x1="${f1(x*.45)}" y1="${f1(L*.06)}" x2="${f1(x)}" y2="${f1(L*.44)}" stroke="${skinD}" stroke-opacity=".22" stroke-width=".6"/>`).join("")
-:fx.map(x=>`<line x1="${f1(x-r*.5)}" y1="${f1(L*.66)}" x2="${f1(x+r*.5)}" y2="${f1(L*.66)}" stroke="${skinD}" stroke-opacity=".3" stroke-width=".6"/>`).join("");
-return`<g stroke-linecap="round" stroke-linejoin="round" fill="${skinD}" stroke="${skinD}" stroke-width="${f1(fw+1.2)}"><path d="${palm}" stroke-width="1.2"/>${fing}${th.replace("<line",`<line stroke-width="${f1(fw*1.1+1.2)}"`)}</g>`
+:fx.map((x,i)=>`<line x1="${f1(x-r*.5)}" y1="${f1(L*.66)}" x2="${f1(x+r*.5)}" y2="${f1(L*.66)}" stroke="${skinD}" stroke-opacity=".3" stroke-width=".6"/><ellipse cx="${f1(x)}" cy="${f1(+ft[i]+r*.05)}" rx="${f1(r*.5)}" ry="${f1(r*.75)}" fill="#fff" fill-opacity=".26"/>`).join("")+`<path d="M${f1(-W2*.6)} ${f1(L*.13)}Q${f1(-W2*.05)} ${f1(L*.29)} ${f1(W2*.45)} ${f1(L*.19)}M${f1(-W2*.48)} ${f1(L*.3)}Q0 ${f1(L*.4)} ${f1(W2*.3)} ${f1(L*.33)}" stroke="${skinD}" stroke-opacity=".3" stroke-width=".55" fill="none" stroke-linecap="round"/>`;
+return`<g stroke-linecap="round" stroke-linejoin="round" fill="${skinD}" stroke="${skinD}" stroke-width="${f1(fw+.55)}"><path d="${palm}" stroke-width=".7"/>${fing}${th.replace("<line",`<line stroke-width="${f1(fw*1.1+.55)}"`)}</g>`
 +`<g stroke-linecap="round" stroke-linejoin="round" fill="${skin}" stroke="${skin}" stroke-width="${f1(fw)}"><path d="${palm}" stroke-width="0"/>${fing}${th.replace("<line",`<line stroke-width="${f1(fw*1.1)}"`)}</g>`
 +`<g stroke="${skinD}" stroke-opacity=".5" stroke-width=".6" stroke-linecap="round">${sep}</g>`+ex;
 }
@@ -643,23 +853,23 @@ function manSVG(p,o){
 o=o||{};
 const G=geom(p),{y,s,bw,ww,hw,sw,nw,bF,wF,R0,body,arm,Ex,Ey,ew,Wx,Wy,hemX,hemY,hdeg,ang}=G,h=p.h,m=p.sx,Hp=p.Hp;
 const bk=!!o.back,e=EASE[o.ease==null?1:o.ease],sw2=f1(2*e),topT=o.top||"Thun",botT=o.bot||"Short",tc=o.topC||PAL[0],bc=o.botC||PAL[2],hc=o.hair||HAIRS[0][1];
-const skin=`rgb(${p.sk.map(Math.round)})`,skinD=`rgb(${p.sk.map(v=>Math.round(v*.76))})`,gold="#e8c479",lh=cl(1-m*2,0,1);
+const skin=`rgb(${p.sk.map(Math.round)})`,skinD=`rgb(${p.sk.map(v=>Math.round(v*.76))})`,skinL=`rgb(${p.sk.map(v=>Math.round(lerp(v,255,.3)))})`,gold="#e8c479",lh=cl(1-m*2,0,1);
 const rt=`translate(${CX} 0)`,mir=`translate(${CX} 0) scale(-1 1)`,sides=q=>`<g transform="${rt}">${q}</g><g transform="${mir}">${q}</g>`;
 const hT=b=>`${b} translate(${f1(Wx)} ${f1(Wy)}) rotate(${f1(ang)})`;
 const defs=[];let cid=0;
 const band=(y0,y1,q)=>{const id="k"+cid++;defs.push(`<clipPath id="${id}"><rect x="0" y="${f1(y0)}" width="300" height="${f1(Math.max(1,y1-y0))}"/></clipPath>`);return`<g clip-path="url(#${id})">${q}</g>`};
-const tU=c=>`<use href="#half" fill="${c}" stroke="${c}" stroke-width="${sw2}" stroke-linejoin="round"/>`;
-const skirt=c=>{const P=[[ww+e+1,y(.6)],[lerp(ww,hw,.55)+e+1,y(.56)],[hw+e,y(.528)],[hw+e+5,y(.45)],[hw+e+12,y(.36)]];return sides(`<path d="M0 ${f1(P[0][1])}L${f1(P[0][0])} ${f1(P[0][1])}${cr(P)}L0 ${f1(P[4][1])}Z" fill="${c}" stroke="${dk(c,.7)}" stroke-width=".8"/>`)};
+const tU=(c,sc)=>`<use href="#half" fill="${c}" stroke="${sc||c}" stroke-width="${sw2}" stroke-linejoin="round"/>`;
+const skirt=(c,gr)=>{const P=[[ww+e+1,y(.6)],[lerp(ww,hw,.55)+e+1,y(.56)],[hw+e,y(.528)],[hw+e+5,y(.45)],[hw+e+12,y(.36)]];return sides(`<path d="M0 ${f1(P[0][1])}L${f1(P[0][0])} ${f1(P[0][1])}${cr(P)}L0 ${f1(P[4][1])}Z" fill="${gr||c}" stroke="${dk(c,.7)}" stroke-width=".8"/>`)};
 const neckP=`M${f1(CX-nw*1.3)} ${f1(y(.862))}Q${CX} ${f1(y(.772))} ${f1(CX+nw*1.3)} ${f1(y(.862))}`;
-const shoe=g=>{const cx=CX+g*(.075*Hp*SC+1),cy=y(.013),rx=.052*Hp*SC,ry=2.9*s*SC;return`<g transform="rotate(${g*9} ${f1(cx)} ${f1(cy)})"><ellipse cx="${f1(cx)}" cy="${f1(cy)}" rx="${f1(rx)}" ry="${f1(ry)}" fill="#eef3f8" stroke="#9fb2c4" stroke-width=".8"/><ellipse cx="${f1(cx)}" cy="${f1(cy+ry*.55)}" rx="${f1(rx*.95)}" ry="${f1(ry*.35)}" fill="#c3d0dc"/>${bk?`<path d="M${f1(cx-rx*.45)} ${f1(cy+ry*.1)}Q${f1(cx)} ${f1(cy-ry*.95)} ${f1(cx+rx*.45)} ${f1(cy+ry*.1)}" stroke="#9fb2c4" stroke-width=".9" fill="none"/>`:`<path d="M${f1(cx-rx*.3)} ${f1(cy-ry*.5)}h${f1(rx*.6)}M${f1(cx-rx*.25)} ${f1(cy-ry*.1)}h${f1(rx*.5)}" stroke="#9fb2c4" stroke-width=".8" fill="none"/>`}</g>`};
+const shoe=g=>{const cx=CX+g*(.075*Hp*SC+1),cy=y(.013),rx=.052*Hp*SC,ry=2.9*s*SC;return`<g transform="rotate(${g*9} ${f1(cx)} ${f1(cy)})"><ellipse cx="${f1(cx)}" cy="${f1(cy)}" rx="${f1(rx)}" ry="${f1(ry)}" fill="url(#shg)" stroke="#9fb2c4" stroke-width=".8"/><ellipse cx="${f1(cx)}" cy="${f1(cy+ry*.55)}" rx="${f1(rx*.95)}" ry="${f1(ry*.35)}" fill="#c3d0dc"/>${bk?`<path d="M${f1(cx-rx*.45)} ${f1(cy+ry*.1)}Q${f1(cx)} ${f1(cy-ry*.95)} ${f1(cx+rx*.45)} ${f1(cy+ry*.1)}" stroke="#9fb2c4" stroke-width=".9" fill="none"/>`:`<path d="M${f1(cx-rx*.3)} ${f1(cy-ry*.5)}h${f1(rx*.6)}M${f1(cx-rx*.25)} ${f1(cy-ry*.1)}h${f1(rx*.5)}" stroke="#9fb2c4" stroke-width=".8" fill="none"/>`}</g>`};
 let g="";
-if(topT==="Đầm")g+=skirt(tc);
-else if(botT==="Váy")g+=skirt(bc);
-else{const end=botT==="Short"?.40:.06;g+=band(y(.59),y(end),sides(tU(bc)))+band(y(.59),y(.572),sides(tU(dk(bc,.7))))+band(y(end)-1.6,y(end),sides(tU(dk(bc,.7))));}
+if(topT==="Đầm")g+=skirt(tc,"url(#tg)");
+else if(botT==="Váy")g+=skirt(bc,"url(#bgd)");
+else{const end=botT==="Short"?.40:.06;g+=band(y(.59),y(end),sides(tU("url(#bgd)",bc)))+band(y(.59),y(.572),sides(tU(dk(bc,.7))))+band(y(end)-1.6,y(end),sides(tU(dk(bc,.7))));}
 const strap=q=>sides(`<path d="M${f1(nw*1.55)} ${f1(y(.858))}L${f1(bw*.66)} ${f1(y(.772))}" stroke="${q}" stroke-width="5" stroke-linecap="round" fill="none"/>`);
 const neck=bk?`<path d="M${f1(CX-nw*1.25)} ${f1(y(.86))}Q${CX} ${f1(y(.85))} ${f1(CX+nw*1.25)} ${f1(y(.86))}" stroke="${dk(tc,.7)}" stroke-width="1.6" fill="none"/>`:`<path d="${neckP}Z" fill="${skin}"/><path d="${neckP}" stroke="${dk(tc,.7)}" stroke-width="2" fill="none"/>`;
-if(topT==="Ba lỗ"||topT==="Đầm")g+=band(y(.775),y(topT==="Đầm"?.575:.555),sides(tU(tc)))+strap(tc);
-else g+=band(y(.857),y(.555),sides(tU(tc)))+band(y(.565),y(.555),sides(tU(dk(tc,.7))))+neck;
+if(topT==="Ba lỗ"||topT==="Đầm")g+=band(y(.775),y(topT==="Đầm"?.575:.555),sides(tU("url(#tg)",tc)))+strap(tc);
+else g+=band(y(.857),y(.555),sides(tU("url(#tg)",tc)))+band(y(.565),y(.555),sides(tU(dk(tc,.7))))+neck;
 const sd=dk(tc,.6),bd=dk(bc,.6),LH=Hp*SC,lx=v=>f1(v*LH);
 if(topT==="Thun"){
 if(bk)g+=`<path d="M${CX} ${f1(y(.852))}L${CX} ${f1(y(.572))}" stroke="${sd}" stroke-opacity=".4" stroke-width="1" fill="none"/><rect x="${CX-3.5}" y="${f1(y(.846))}" width="7" height="4.5" rx="1" fill="#fff" fill-opacity=".55"/>`+sides(`<path d="M${f1(bw*.22)} ${f1(y(.79))}Q${f1(bw*.65)} ${f1(y(.775))} ${f1(bw*.8)} ${f1(y(.735))}Q${f1(bw*.62)} ${f1(y(.695))} ${f1(bw*.25)} ${f1(y(.705))}" stroke="${sd}" stroke-opacity=".28" stroke-width="1.2" fill="none" stroke-linecap="round"/>`);
@@ -674,11 +884,16 @@ g+=bk
 ?sides(`<path d="M${lx(.037)} ${f1(y(.293))}Q${lx(.083)} ${f1(y(.279))} ${lx(.129)} ${f1(y(.293))}M${lx(.052)} ${f1(y(.272))}Q${lx(.083)} ${f1(y(.265))} ${lx(.114)} ${f1(y(.272))}" stroke="${skinD}" stroke-opacity=".45" stroke-width="1" fill="none" stroke-linecap="round"/><ellipse cx="${lx(.08)}" cy="${f1(y(.2))}" rx="${lx(.042)}" ry="${f1(h*SC*.04)}" fill="#fff" fill-opacity=".08"/><path d="M${lx(.078)} ${f1(y(.25))}L${lx(.076)} ${f1(y(.145))}M${lx(.058)} ${f1(y(.115))}L${lx(.061)} ${f1(y(.05))}M${lx(.082)} ${f1(y(.115))}L${lx(.079)} ${f1(y(.05))}" stroke="${skinD}" stroke-opacity=".3" stroke-width=".8" fill="none" stroke-linecap="round"/>`)
 :sides(`<ellipse cx="${lx(.083)}" cy="${f1(y(.287))}" rx="${lx(.032)}" ry="${f1(h*SC*.018)}" fill="#fff" fill-opacity=".07" stroke="${skinD}" stroke-opacity=".38" stroke-width=".8"/><path d="M${lx(.078)} ${f1(y(.262))}Q${lx(.072)} ${f1(y(.15))} ${lx(.068)} ${f1(y(.06))}" stroke="#fff" stroke-opacity=".12" stroke-width="2" fill="none" stroke-linecap="round"/><circle cx="${lx(.047)}" cy="${f1(y(.04))}" r="1.6" fill="${skinD}" fill-opacity=".25"/><circle cx="${lx(.094)}" cy="${f1(y(.034))}" r="1.6" fill="${skinD}" fill-opacity=".25"/>`);
 if(bk)g+=`<ellipse cx="${CX}" cy="${f1(y(.866))}" rx="2.4" ry="1.7" fill="${skinD}" fill-opacity=".3"/>`;
+/* Bóng khối giải phẫu: đổ bóng dưới hàm, sáng xương đòn, bóng dưới ngực trên vải, bóng hông và đầu gối — cho hình có chiều sâu như người thật */
+g+=bk
+?sides(`<path d="M${f1(nw*.4)} ${f1(y(.845))}Q${f1(nw*1.15)} ${f1(y(.83))} ${f1(sw*.42)} ${f1(y(.815))}" stroke="#000" stroke-opacity=".14" stroke-width="3.2" fill="none" stroke-linecap="round"/>`)
+:`<ellipse cx="${CX}" cy="${f1(y(.858))}" rx="${f1(nw*1.15)}" ry="${f1(h*SC*.012)}" fill="#000" opacity=".13"/>`
++sides(`<path d="M${f1(nw*.55)} ${f1(y(.838))}Q${f1(bw*.5)} ${f1(y(.826))} ${f1(bw*.86)} ${f1(y(.806))}" stroke="#fff" stroke-opacity=".16" stroke-width="1.1" fill="none" stroke-linecap="round"/><path d="M${f1(bw*.88)} ${f1(y(.775))}Q${f1(bw*1.03)} ${f1(y(.735))} ${f1(bw*.9)} ${f1(y(.698))}" stroke="#000" stroke-opacity="${(0.05+lh*.1).toFixed(2)}" stroke-width="2.6" fill="none" stroke-linecap="round"/><path d="M${f1(ww*.92)} ${f1(y(.6))}Q${f1(ww*1.0)} ${f1(y(.575))} ${f1(hw*.9)} ${f1(y(.545))}" stroke="#000" stroke-opacity=".1" stroke-width="2.4" fill="none" stroke-linecap="round"/><path d="M${lx(.062)} ${f1(y(.30))}Q${lx(.083)} ${f1(y(.283))} ${lx(.104)} ${f1(y(.30))}" stroke="#000" stroke-opacity=".12" stroke-width="1.6" fill="none" stroke-linecap="round"/>`);
 const armU=(c,x)=>`<use href="#arm" transform="${rt}" fill="${c}" ${x||""}/><use href="#arm" transform="${mir}" fill="${c}" ${x||""}/>`;
 g+=armU(skin,`stroke="${skinD}" stroke-opacity=".5" stroke-width=".7"`);
 const sx=`stroke="${tc}" stroke-width="${sw2}" stroke-linejoin="round"`;
-if(topT==="Thun")defs.push(`<clipPath id="sl">${[rt,mir].map(t=>`<rect transform="${t} rotate(${hdeg} ${f1(hemX)} ${f1(hemY)})" x="-20" y="${f1(y(.93))}" width="190" height="${f1(hemY-y(.93))}"/>`).join("")}</clipPath>`),g+=`<g clip-path="url(#sl)">${armU(tc,sx)}</g>`;
-else if(topT==="Dài tay")g+=armU(tc,sx);
+if(topT==="Thun")defs.push(`<clipPath id="sl">${[rt,mir].map(t=>`<rect transform="${t} rotate(${hdeg} ${f1(hemX)} ${f1(hemY)})" x="-20" y="${f1(y(.93))}" width="190" height="${f1(hemY-y(.93))}"/>`).join("")}</clipPath>`),g+=`<g clip-path="url(#sl)">${armU("url(#tg)",sx)}</g>`;
+else if(topT==="Dài tay")g+=armU("url(#tg)",sx);
 const elb=q=>[rt,mir].map(t=>`<g transform="${t} rotate(${hdeg} ${f1(Ex)} ${f1(Ey)})">${q}</g>`).join("");
 g+=bk
 ?elb(`<ellipse cx="${f1(Ex)}" cy="${f1(Ey+ew*.1)}" rx="${f1(ew*.5)}" ry="${f1(ew*.42)}" fill="${skinD}" fill-opacity=".14" stroke="${skinD}" stroke-opacity=".3" stroke-width=".7"/>`)
@@ -692,20 +907,43 @@ const strand=`<g fill="none" stroke="${dk(hc,.5)}" stroke-opacity=".55" stroke-w
 const longStrands=`<g fill="none" stroke="${dk(hc,.5)}" stroke-opacity=".5" stroke-width="1.3" stroke-linecap="round"><path d="M-30 60C-35 110 -34 160 -30 200"/><path d="M-12 100C-14 140 -14 170 -12 202"/><path d="M12 100C14 140 14 170 12 202"/><path d="M30 60C35 110 34 160 30 200"/></g>`;
 const head=bk
 ?`<g transform="${HG}"><g fill="${skin}" stroke="${skinD}" stroke-opacity=".5" stroke-width=".8">${ear}</g>${face.replace("<path",`<path fill="${skin}"`)}<path d="M-41 44C-46 0-22-10 0-10C24-10 46 0 41 44C45 72 32 100 0 103C-32 100-45 72-41 44Z" fill="url(#hg)"/><g opacity="${lh.toFixed(2)}">${long}${longStrands}</g>${strand}</g>`
-:`<g transform="${HG}"><ellipse cx="0" cy="104" rx="24" ry="7" fill="#000" opacity=".1"/><g fill="${skin}" stroke="${skinD}" stroke-opacity=".5" stroke-width=".8">${ear}</g>${face.replace("<path",`<path fill="${skin}"`)}${face.replace("<path",'<path fill="url(#sh)"')}
+:`<g transform="${HG}"><ellipse cx="0" cy="104" rx="24" ry="7" fill="#000" opacity=".1"/><g fill="${skin}" stroke="${skinD}" stroke-opacity=".5" stroke-width=".8">${ear}</g>${face.replace("<path",`<path fill="${skin}"`)}${face.replace("<path",'<path fill="url(#sh)"')}${face.replace("<path",'<path fill="url(#fcg)"')}
+<path d="M-38 47Q-35.5 52-38 57M38 47Q35.5 52 38 57" stroke="${skinD}" stroke-opacity=".55" stroke-width="1" fill="none" stroke-linecap="round"/>
+<ellipse cx="-14" cy="51" rx="4.4" ry="1.3" fill="#000" opacity=".05"/><ellipse cx="14" cy="51" rx="4.4" ry="1.3" fill="#000" opacity=".05"/>
 <path d="M-30 74Q0 104 30 74Q22 94 0 100Q-22 94-30 74Z" fill="#000" opacity=".07"/>
 <g fill="#d9667a" opacity="${(lh*.16).toFixed(2)}"><ellipse cx="-22" cy="64" rx="9" ry="5"/><ellipse cx="22" cy="64" rx="9" ry="5"/></g>
 <path d="M-25 38Q-14 31-5 36M25 38Q14 31 5 36" stroke="${hc}" stroke-width="${(2.2+m*1.2).toFixed(1)}" fill="none" stroke-linecap="round"/>
 <ellipse cx="-14" cy="46" rx="6.2" ry="3" fill="#f4f1ee"/><ellipse cx="14" cy="46" rx="6.2" ry="3" fill="#f4f1ee"/>
-<circle cx="-14" cy="46" r="2.6" fill="#3a2a22"/><circle cx="14" cy="46" r="2.6" fill="#3a2a22"/><circle cx="-14" cy="46" r="1.2" fill="#000"/><circle cx="14" cy="46" r="1.2" fill="#000"/><circle cx="-13" cy="45" r=".7" fill="#fff"/><circle cx="15" cy="45" r=".7" fill="#fff"/>
+<circle cx="-14" cy="46" r="2.6" fill="#3a2a22"/><circle cx="14" cy="46" r="2.6" fill="#3a2a22"/><circle cx="-14" cy="46" r="1.2" fill="#000"/><circle cx="14" cy="46" r="1.2" fill="#000"/><circle cx="-13" cy="45" r=".7" fill="#fff"/><circle cx="15" cy="45" r=".7" fill="#fff"/><circle cx="-15.4" cy="47.4" r=".45" fill="#fff" opacity=".85"/><circle cx="12.6" cy="47.4" r=".45" fill="#fff" opacity=".85"/>
 <path d="M-20.5 45Q-14 41-7.5 45M20.5 45Q14 41 7.5 45" stroke="#2a1b16" stroke-width="1.1" fill="none" stroke-linecap="round"/>
 <path d="M0 50Q-5 62-4 66Q0 68.5 4 66Q5 62 0 50" fill="none" stroke="#000" stroke-opacity=".2" stroke-width="1.4" stroke-linecap="round"/>
-<path d="M-10 78Q-4 74 0 76Q4 74 10 78Q0 80-10 78Z" fill="#b5544f"/><path d="M-9.5 78Q0 87 9.5 78Q0 80.5-9.5 78Z" fill="#c9706b"/>
+<path d="M-10 78Q-4 74 0 76Q4 74 10 78Q0 80-10 78Z" fill="#b5544f"/><path d="M-9.5 78Q0 87 9.5 78Q0 80.5-9.5 78Z" fill="#c9706b"/><path d="M-10 78.4Q0 80.6 10 78.4" stroke="#8a3a36" stroke-width=".9" fill="none" opacity=".55" stroke-linecap="round"/><ellipse cx="0" cy="82.6" rx="4.2" ry="1.5" fill="#fff" opacity=".18"/>
 <g fill="none" stroke-linecap="round"><path d="M-19.5 40.5Q-14 36.5-8 40M19.5 40.5Q14 36.5 8 40" stroke="${skinD}" stroke-opacity=".55" stroke-width=".8"/><path d="M-18 49.5Q-14 51.8-10 49.5M18 49.5Q14 51.8 10 49.5" stroke="${skinD}" stroke-opacity=".25" stroke-width=".7"/><path d="M-20.5 45l-1.8-1.2M20.5 45l1.8-1.2" stroke="#2a1b16" stroke-width="1.1"/><path d="M40.5 46Q44 52 40.5 58M-40.5 46Q-44 52-40.5 58" stroke="${skinD}" stroke-opacity=".5" stroke-width=".8"/><path d="M0 48Q-1 56 0 62" stroke="#fff" stroke-opacity=".12" stroke-width="2"/></g>
-<ellipse cx="-3.4" cy="66.3" rx="1.5" ry=".9" fill="#000" opacity=".25"/><ellipse cx="3.4" cy="66.3" rx="1.5" ry=".9" fill="#000" opacity=".25"/><ellipse cx="0" cy="92" rx="6" ry="3" fill="#fff" opacity=".06"/>
+<ellipse cx="-3.4" cy="66.3" rx="1.5" ry=".9" fill="#000" opacity=".25"/><ellipse cx="3.4" cy="66.3" rx="1.5" ry=".9" fill="#000" opacity=".25"/><path d="M-1.7 68.6L-1.3 72.2M1.7 68.6L1.3 72.2" stroke="${skinD}" stroke-opacity=".35" stroke-width=".6" stroke-linecap="round"/><path d="M-3.4 89.6Q0 90.8 3.4 89.6" stroke="#000" stroke-opacity=".13" stroke-width=".8" fill="none" stroke-linecap="round"/><ellipse cx="0" cy="92" rx="6" ry="3" fill="#fff" opacity=".06"/>
 <g opacity="${lh.toFixed(2)}" fill="url(#hg)"><path d="M-40 46C-46 4-22-8 2-8C26-8 46 6 40 46C38 30 30 18 14 14C2 22-22 26-40 46Z"/><path d="M-40 40C-45 70-44 96-38 112C-36 90-36 66-33 44Z"/><path d="M40 40C45 70 44 96 38 112C36 90 36 66 33 44Z"/></g>
-<g opacity="${(1-lh).toFixed(2)}" fill="url(#hg)"><path d="M-40 42C-45 2-22-9 0-9C24-9 45 2 40 42C38 26 28 17 12 14C-4 16-26 22-40 42Z"/></g></g>`;
+<g opacity="${(1-lh).toFixed(2)}" fill="url(#hg)"><path d="M-40 42C-45 2-22-9 0-9C24-9 45 2 40 42C38 26 28 17 12 14C-4 16-26 22-40 42Z"/></g>
+<g fill="none" stroke="${dk(hc,1.75)}" stroke-opacity=".45" stroke-width="1.1" stroke-linecap="round"><path d="M-27 4C-18-4-4-7 9-5" opacity="${lh.toFixed(2)}"/><path d="M-34 24C-31 11-21 2-8 0" opacity="${lh.toFixed(2)}"/><path d="M-24 2C-14-5 2-7 14-4" opacity="${(1-lh).toFixed(2)}"/></g>
+<g fill="none" stroke="${dk(hc,.45)}" stroke-opacity=".5" stroke-width="1" stroke-linecap="round" opacity="${(1-lh).toFixed(2)}"><path d="M-31 22C-22 7-8 1 8 3"/><path d="M-35 36C-30 17-16 6 2 4"/><path d="M24 8C31 14 36 24 37 34"/></g><ellipse cx="-10" cy="3" rx="16" ry="5.5" fill="#fff" opacity=".09" filter="url(#sf)"/></g>`;
 const hairBehind=bk?"":`<g transform="${HG}" opacity="${lh.toFixed(2)}">${long}</g>`;
+/* Ánh sáng hình trụ phủ toàn thân + bóng mềm giải phẫu (làm mờ) — lớp phủ cuối cho hình có khối như người thật */
+let light=`<g clip-path="url(#bclip)"><rect x="${f1(CX-sw-64)}" y="${f1(y(.905))}" width="${f1((sw+64)*2)}" height="${f1(FLOOR+6-y(.905))}" fill="url(#cyl)"/><rect x="${f1(CX-sw-64)}" y="${f1(y(.905))}" width="${f1((sw+64)*2)}" height="${f1(FLOOR+6-y(.905))}" fill="url(#vgl)"/>`;
+const LE=(cx,cy,rx,ry,col,op)=>`<ellipse cx="${f1(cx)}" cy="${f1(cy)}" rx="${f1(rx)}" ry="${f1(ry)}" fill="${col}" opacity="${op}" filter="url(#sf)"/>`;
+light+=LE(CX-(ww+3),y(wF),5.5,h*SC*.045,"#000",.2)+LE(CX+(ww+3),y(wF),5.5,h*SC*.045,"#000",.2);
+light+=LE(CX,y(.3),4.5,h*SC*.085,"#000",.15);
+light+=LE(CX-lx(.128),y(.22),4,h*SC*.15,"#000",.13)+LE(CX+lx(.128),y(.22),4,h*SC*.15,"#000",.13);
+light+=LE(CX-(sw-R0+3),y(.665),3.2,h*SC*.095,"#000",.05)+LE(CX+(sw-R0+3),y(.665),3.2,h*SC*.095,"#000",.05);
+light+=LE(CX-(Ex+Wx)/2,y(.6),2.4,h*SC*.075,"#fff",.07)+LE(CX+(Ex+Wx)/2,y(.6),2.4,h*SC*.075,"#fff",.07);
+if(botT==="Short"&&topT!=="Đầm")light+=`<rect x="${f1(CX-hw)}" y="${f1(y(.4))}" width="${f1(hw*2)}" height="${f1(h*SC*.022)}" fill="#000" opacity=".16" filter="url(#sf)"/>`;
+if(bk){light+=LE(CX-bw*.42,y(.79),bw*.34,h*SC*.02,"#000",.09)+LE(CX+bw*.42,y(.79),bw*.34,h*SC*.02,"#000",.09)+LE(CX-lx(.083),y(.315),lx(.04),h*SC*.03,"#000",.1)+LE(CX+lx(.083),y(.315),lx(.04),h*SC*.03,"#000",.1);}
+else{
+light+=LE(CX,y(.862),nw*1.02,h*SC*.008,"#000",.2);
+light+=LE(CX-bw*.45,y(bF-.038),bw*.46,h*SC*.013,"#000",(0.06+0.1*lh).toFixed(2))+LE(CX+bw*.45,y(bF-.038),bw*.46,h*SC*.013,"#000",(0.06+0.1*lh).toFixed(2));
+light+=LE(CX-bw*.38,y(.645),2,h*SC*.065,"#000",.1)+LE(CX+bw*.38,y(.645),2,h*SC*.065,"#000",.1)+LE(CX,y(.66),2.5,h*SC*.07,"#fff",.06);
+light+=LE(CX-lx(.083),y(.278),lx(.038),4.5,"#000",.12)+LE(CX+lx(.083),y(.278),lx(.038),4.5,"#000",.12);
+light+=LE(CX-sw*.8,y(.818),7.5,4,"#fff",.12)+LE(CX+sw*.8,y(.818),7.5,4,"#fff",.12);
+light+=LE(CX-lx(.062),y(.2),lx(.026),h*SC*.075,"#fff",.1)+LE(CX+lx(.062),y(.2),lx(.026),h*SC*.075,"#fff",.1);
+}
+light+="</g>";
 let ruler=`<line x1="16" x2="16" y1="${y(0)}" y2="${y(220/h)}" stroke="#8fb3cf" stroke-opacity=".5"/>`;
 for(let c=0;c<=220;c+=10){const yy=FLOOR-c*SC,big=c%50===0;ruler+=`<line x1="${big?9:12}" x2="16" y1="${yy}" y2="${yy}" stroke="#8fb3cf" stroke-opacity=".6" stroke-width="${big?1:.7}"/>`+(big&&c?`<text x="20" y="${yy+3}" font-size="7.5" fill="#8fb3cf" font-family="sans-serif">${c}</text>`:"")}
 const topY=y(1);ruler+=`<line x1="16" x2="${CX+34}" y1="${topY}" y2="${topY}" stroke="${gold}" stroke-opacity=".6" stroke-dasharray="3 3" stroke-width=".8"/><text x="44" y="${topY-4}" font-size="9" fill="${gold}" font-family="sans-serif">${Math.round(h)} cm</text>`;
@@ -714,13 +952,21 @@ const dims=o.dims===false?"":gl(bF,"Ngực",p.B,p.gB,bw+4)+gl(wF,"Eo",p.W,p.gW,w
 let ghost="";
 if(o.ghost){const GG=geom(o.ghost);defs.push(`<path id="gh" d="${GG.body}"/>`);ghost=`<g fill="none" stroke="#7fd6f5" stroke-width="1.3" stroke-dasharray="4 3" opacity=".9"><use href="#gh" transform="${rt}" clip-path="url(#hx)"/><use href="#gh" transform="${mir}" clip-path="url(#hx)"/></g><text x="16" y="${FLOOR+14}" font-size="8.5" fill="#7fd6f5" font-family="sans-serif">Nét đứt: lần lưu trước</text>`}
 return`<defs>
-<linearGradient id="sh" x1="0" x2="1"><stop offset="0" stop-color="#fff" stop-opacity=".2"/><stop offset=".42" stop-color="#fff" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".3"/></linearGradient>
-<linearGradient id="hg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${dk(hc,1.5)}"/><stop offset="1" stop-color="${dk(hc,.6)}"/></linearGradient>
+<linearGradient id="sh" x1="0" x2="1"><stop offset="0" stop-color="#fff" stop-opacity=".16"/><stop offset=".5" stop-color="#fff" stop-opacity="0"/><stop offset=".8" stop-color="#000" stop-opacity=".12"/><stop offset="1" stop-color="#000" stop-opacity=".32"/></linearGradient>
+<linearGradient id="tg" gradientUnits="userSpaceOnUse" x1="-72" y1="0" x2="72" y2="0"><stop offset="0" stop-color="${dk(tc,.5)}"/><stop offset=".3" stop-color="${dk(tc,1.12)}"/><stop offset=".5" stop-color="${dk(tc,1.32)}"/><stop offset=".7" stop-color="${dk(tc,1.02)}"/><stop offset="1" stop-color="${dk(tc,.45)}"/></linearGradient>
+<linearGradient id="bgd" gradientUnits="userSpaceOnUse" x1="-72" y1="0" x2="72" y2="0"><stop offset="0" stop-color="${dk(bc,.45)}"/><stop offset=".3" stop-color="${dk(bc,1.1)}"/><stop offset=".5" stop-color="${dk(bc,1.26)}"/><stop offset=".7" stop-color="${bc}"/><stop offset="1" stop-color="${dk(bc,.4)}"/></linearGradient>
+<radialGradient id="fcg" cx=".5" cy=".34" r=".75"><stop offset="0" stop-color="#fff" stop-opacity=".14"/><stop offset=".55" stop-color="#fff" stop-opacity=".05"/><stop offset="1" stop-color="#000" stop-opacity=".14"/></radialGradient>
+<linearGradient id="cyl" gradientUnits="userSpaceOnUse" x1="${f1(CX-sw-62)}" y1="0" x2="${f1(CX+sw+62)}" y2="0"><stop offset="0" stop-color="#000" stop-opacity=".06"/><stop offset=".2" stop-color="#000" stop-opacity=".02"/><stop offset=".4" stop-color="#fff" stop-opacity=".09"/><stop offset=".5" stop-color="#fff" stop-opacity=".14"/><stop offset=".6" stop-color="#fff" stop-opacity=".08"/><stop offset=".82" stop-color="#000" stop-opacity=".02"/><stop offset="1" stop-color="#000" stop-opacity=".07"/></linearGradient>
+<linearGradient id="vgl" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".06"/><stop offset=".45" stop-color="#fff" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".15"/></linearGradient>
+<filter id="sf" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="2.6"/></filter>
+<clipPath id="bclip"><use href="#half" transform="${rt}"/><use href="#half" transform="${mir}"/><use href="#arm" transform="${rt}"/><use href="#arm" transform="${mir}"/></clipPath>
+<linearGradient id="shg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffffff"/><stop offset="1" stop-color="#b9c9d8"/></linearGradient>
+<linearGradient id="hg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${dk(hc,1.6)}"/><stop offset=".55" stop-color="${hc}"/><stop offset="1" stop-color="${dk(hc,.55)}"/></linearGradient>
 <radialGradient id="fl" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#7fd6f5" stop-opacity=".4"/><stop offset="1" stop-color="#7fd6f5" stop-opacity="0"/></radialGradient>
 <clipPath id="hx"><rect x=".8" y="0" width="300" height="470"/></clipPath><path id="half" d="${body}"/><path id="arm" d="${arm}"/>${defs.join("")}</defs>
-<ellipse cx="${CX}" cy="${FLOOR+4}" rx="100" ry="11" fill="url(#fl)"/>${ruler}${hairBehind}
+<ellipse cx="${CX}" cy="${FLOOR+4}" rx="100" ry="11" fill="url(#fl)"/><ellipse cx="${CX}" cy="${FLOOR+6}" rx="84" ry="7.5" fill="#000" opacity=".32"/>${ruler}${hairBehind}
 <g fill="${skin}">${sides(`<use href="#half"/>`)}</g><g fill="none" stroke="${skinD}" stroke-opacity=".5" stroke-width=".7" stroke-linejoin="round">${sides(`<use href="#half" clip-path="url(#hx)"/>`)}</g>
-${shoe(1)}${shoe(-1)}${g}${sides(`<use href="#half" fill="url(#sh)"/>`)}${head}${ghost}${dims}`;
+${shoe(1)}${shoe(-1)}${g}${sides(`<use href="#half" fill="url(#sh)"/>`)}${light}${head}${ghost}${dims}`;
 }
 /*MAN-END*/
 const num=(v,a,b)=>{v=parseFloat(v);return v>=a&&v<=b?v:0};
@@ -829,7 +1075,7 @@ $("#go").click();
 let wipeArm = false;
 $("#wipe").onclick = () => {
 if (!wipeArm){ wipeArm = true; $("#wipe").textContent = "Bấm lại lần nữa để xóa toàn bộ dữ liệu"; setTimeout(()=>{ wipeArm = false; $("#wipe").textContent = "Xóa toàn bộ dữ liệu của tôi"; }, 4000); return; }
-["fm_profile","fm_closet","fm_chat","fm_hist","fm_man","fm_body"].forEach(k => store.del(k)); location.reload();
+["fm_profile","fm_closet","fm_chat","fm_hist","fm_man","fm_body","fm_consent"].forEach(k => store.del(k)); location.reload();
 };
 const readImg = (file, max = 1024) => new Promise((ok, no) => {
 if (!file || !file.type.startsWith("image/")) return no(new Error("Hãy chọn một file ảnh."));
@@ -843,7 +1089,44 @@ r.readAsDataURL(file);
 const mkThumb = c => { const sc = Math.min(1, 360 / Math.max(c.width, c.height)), t = document.createElement("canvas"); t.width = Math.round(c.width*sc); t.height = Math.round(c.height*sc); t.getContext("2d").drawImage(c, 0, 0, t.width, t.height); return t.toDataURL("image/jpeg", .7); };
 const UP = '<svg viewBox="0 0 24 24"><path d="M12 16V4M7 9l5-5 5 5M4 20h16"/></svg>';
 const EMPTY = { "#drop": UP + "Chạm để tải ảnh sản phẩm (món 1)", "#drop2": UP + "Thêm ảnh quần/váy nếu muốn mặc thử cả bộ", "#bdrop": UP + "Ảnh toàn thân<br><small style='opacity:.75'>Đứng thẳng, chính diện, thấy rõ toàn thân</small>" };
+/* Chặn mục Ảnh toàn thân ngay tại ô tải ảnh khi từ chối chính sách: cờ do applyConsent (cuối file) bật/tắt theo lựa chọn của phiên này */
+let bodyBlockOn = false;
+const bodyBlocked = () => bodyBlockOn;
+const LOCK = '<svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>';
+function syncBodyBlock(){
+const el = $("#bdrop"); if (!el) return;
+if (bodyBlocked()){
+body = null;
+el.classList.add("blocked"); el.classList.remove("has");
+el.innerHTML = LOCK + "Ảnh toàn thân đã tắt<br><small style='opacity:.8'>Bạn đã từ chối chính sách nên mục này bị chặn ngay tại đây — không tải ảnh toàn thân lên được. Bấm “Đổi lựa chọn quyền riêng tư” ở cuối trang để bật lại.</small>";
+el.setAttribute("aria-disabled", "true"); el.setAttribute("aria-label", "Tải ảnh toàn thân đã tắt do từ chối chính sách"); el.tabIndex = -1;
+return;
+}
+el.classList.remove("blocked"); el.removeAttribute("aria-disabled"); el.setAttribute("aria-label", "Tải ảnh toàn thân"); el.tabIndex = 0;
+setDrop("#bdrop", body ? body.toDataURL("image/jpeg", .82) : null);
+}
+/* Chặn tải ảnh sản phẩm (món 1 + món 2) ở Bước 2 ngay tại ô tải ảnh khi từ chối chính sách — cùng cơ chế với ô Ảnh toàn thân ở trên */
+let prodBlockOn = false;
+const prodBlocked = () => prodBlockOn;
+function syncProdBlock(){
+["#drop", "#drop2"].forEach(id => {
+const el = $(id); if (!el) return;
+if (prodBlocked()){
+if (id === "#drop"){ img = null; thumb = null; } else { img2 = null; thumb2 = null; }
+el.classList.add("blocked"); el.classList.remove("has");
+el.innerHTML = LOCK + "Tải ảnh sản phẩm đã tắt<br><small style='opacity:.8'>Bạn đã từ chối chính sách nên không tải ảnh sản phẩm lên được. Bấm “Đổi lựa chọn quyền riêng tư” ở cuối trang để bật lại.</small>";
+el.setAttribute("aria-disabled", "true"); el.setAttribute("aria-label", "Tải ảnh sản phẩm đã tắt do từ chối chính sách"); el.tabIndex = -1;
+return;
+}
+el.classList.remove("blocked"); el.removeAttribute("aria-disabled"); el.tabIndex = 0;
+el.setAttribute("aria-label", id === "#drop" ? "Tải ảnh món 1" : "Tải ảnh món 2");
+const cur = id === "#drop" ? img : img2;
+setDrop(id, cur ? "data:image/jpeg;base64," + cur : null);
+});
+}
 function setDrop(id, url, alt){
+if (id === "#bdrop" && bodyBlocked()){ syncBodyBlock(); return; }
+if ((id === "#drop" || id === "#drop2") && prodBlocked()){ syncProdBlock(); return; }
 const el = $(id); el.classList.toggle("has", !!url);
 el.innerHTML = url ? `<img src="${url}" alt="${alt}"><button type="button" class="x" aria-label="Xóa ảnh">×</button>` : EMPTY[id];
 const x = el.querySelector(".x"); if (x) x.onclick = e => { e.stopPropagation(); clearImg(id); };
@@ -855,14 +1138,17 @@ setDrop(id, null);
 Object.keys(EMPTY).forEach(id => setDrop(id, null));
 function wireDrop(id, input, handler){
 const el = $(id), fi = $(input);
-el.onclick = () => fi.click();
-el.onkeydown = e => { if (e.key === "Enter" || e.key === " "){ e.preventDefault(); fi.click(); } };
-fi.onchange = e => { const f = e.target.files[0]; e.target.value = ""; if (f) handler(f); };
-el.ondragover = e => { e.preventDefault(); el.classList.add("over"); };
+const blocked = () => (id === "#bdrop" && bodyBlocked()) || (id !== "#bdrop" && prodBlocked());
+const blockedMsg = () => { if (id === "#bdrop"){ $("#e1").textContent = "Ảnh toàn thân đang tắt vì bạn đã từ chối chính sách. Bấm “Đổi lựa chọn quyền riêng tư” ở cuối trang để bật lại."; } else { $("#e2").textContent = "Tải ảnh sản phẩm đang tắt vì bạn đã từ chối chính sách. Bấm “Đổi lựa chọn quyền riêng tư” ở cuối trang để bật lại."; } };
+el.onclick = () => { if (blocked()){ blockedMsg(); return; } fi.click(); };
+el.onkeydown = e => { if (e.key === "Enter" || e.key === " "){ e.preventDefault(); if (blocked()){ blockedMsg(); return; } fi.click(); } };
+fi.onchange = e => { const f = e.target.files[0]; e.target.value = ""; if (f && !blocked()) handler(f); };
+el.ondragover = e => { e.preventDefault(); if (!blocked()) el.classList.add("over"); };
 el.ondragleave = () => el.classList.remove("over");
-el.ondrop = e => { e.preventDefault(); el.classList.remove("over"); const f = e.dataTransfer.files[0]; if (f) handler(f); };
+el.ondrop = e => { e.preventDefault(); el.classList.remove("over"); if (blocked()){ blockedMsg(); return; } const f = e.dataTransfer.files[0]; if (f) handler(f); };
 }
 async function loadImg(file, n = 1){
+if (prodBlocked()){ $("#e2").textContent = "Tải ảnh sản phẩm đang tắt vì bạn đã từ chối chính sách. Bấm “Đổi lựa chọn quyền riêng tư” ở cuối trang để bật lại."; return; }
 try{
 const c = await readImg(file, 768), url = c.toDataURL("image/jpeg", .82), th = mkThumb(c);
 if (n === 2){ img2 = url.split(",")[1]; thumb2 = th; } else { img = url.split(",")[1]; thumb = th; }
@@ -870,6 +1156,7 @@ setDrop(n === 2 ? "#drop2" : "#drop", url, "Ảnh sản phẩm " + n); $("#e2").
 }catch(e){ $("#e2").textContent = e.message; }
 }
 async function loadBody(file){
+if (bodyBlocked()){ $("#e1").textContent = "Ảnh toàn thân đang tắt vì bạn đã từ chối chính sách. Bấm “Đổi lựa chọn quyền riêng tư” ở cuối trang để bật lại."; return; }
 try{ body = await readImg(file); const bu = body.toDataURL("image/jpeg", .82); setDrop("#bdrop", bu, "Ảnh của bạn"); try{ store.set("fm_body", bu); }catch(e){} view = "Ảnh của bạn"; viewSync(); $("#e1").textContent = ""; }
 catch(e){ $("#e1").textContent = e.message; }
 }
@@ -880,17 +1167,19 @@ wireDrop("#bdrop", "#bfile", loadBody);
    nhưng biến body bị reset nên giao diện trống và mặc thử AI báo thiếu ảnh toàn thân. */
 setTimeout(() => {
 const savedBody = store.get("fm_body", "");
-if (!savedBody || body) return;
+if (!savedBody || body || bodyBlocked()) return;
 const im = new Image();
 im.onload = () => { const sc = Math.min(1, 1024 / Math.max(im.width, im.height)), cv = document.createElement("canvas"); cv.width = Math.max(1, Math.round(im.width * sc)); cv.height = Math.max(1, Math.round(im.height * sc)); cv.getContext("2d").drawImage(im, 0, 0, cv.width, cv.height); body = cv; setDrop("#bdrop", savedBody, "Ảnh của bạn"); };
 im.src = savedBody;
 }, 0);
 document.addEventListener("paste", e => {
 if ($("#s2").hidden || !$("#tryon").classList.contains("on")) return;
+if (prodBlocked()) return;
 const f = [...(e.clipboardData?.files || [])].find(f => f.type.startsWith("image/")); if (f) loadImg(f, !img ? 1 : !img2 ? 2 : 1);
 });
 const _aiCache = new Map();
 async function callAI(system, messages, max = 1200, temperature){
+if (typeof CONSENT !== "undefined" && !CONSENT.gemini) throw new Error("Bạn chưa đồng ý gửi ảnh tới Gemini, nên FitMe chỉ ước tính size trên máy và không gửi ảnh đi.");
 const ck = system.length + "|" + JSON.stringify(messages).length + "|" + (messages[0] && messages[0].content && messages[0].content[0] && messages[0].content[0].source ? messages[0].content[0].source.data.length : "");
 let r;
 try { r = await fetch(WORKER_URL, { method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify({ system, messages, max_tokens: max, temperature }) }); }
@@ -990,6 +1279,7 @@ const r = normalize(JSON.parse(m[0])); r.ai = true;
 if (!r.pros.length || !r.cons.length){ const pc = localProsCons(r, bottom); if (!r.pros.length) r.pros = pc[0]; if (!r.cons.length) r.cons = pc[1]; }
 return sanitizeStyle(r, bottom);
 } catch (e) {
+if (typeof CONSENT !== "undefined" && !CONSENT.gemini) throw new Error("AI chọn size đang tắt vì bạn đã từ chối gửi dữ liệu tới Gemini.");
 const k = bottom ? P.hip : P.bust;
 const fb = { product: bottom ? "Món 2 của bạn" : "Sản phẩm của bạn", size: localSize(bottom), confidence: 45, fit: "vừa", ai: false,
 reasons: ["Ước tính offline từ chiều cao/cân nặng" + (k ? (bottom ? " và vòng mông" : " và vòng ngực") : "") + "."],
@@ -1134,7 +1424,7 @@ outfits: Array.isArray(o.outfits) ? o.outfits.slice(0, 2).map(x => ({ name: Stri
 c.outfits = c.outfits.filter(x => keepInFamily([x.items, x.name], fam).length === 2);
 if (!c.pros.length || !c.cons.length || !c.styling.length || c.outfits.length < 1) { const lc = localCombo(top, bot); if (!c.pros.length) c.pros = lc.pros; if (!c.cons.length) c.cons = lc.cons; if (!c.styling.length) c.styling = lc.styling; if (c.outfits.length < 1) c.outfits = lc.outfits; }
 return c;
-} catch (e) { return localCombo(top, bot); }
+} catch (e) { if (typeof CONSENT !== "undefined" && !CONSENT.gemini) throw new Error("AI chọn size đang tắt vì bạn đã từ chối gửi dữ liệu tới Gemini."); return localCombo(top, bot); }
 }
 function outfitGrid(outfits, title, sub){
 outfits = (outfits || []).slice(0, 2);
@@ -1147,7 +1437,7 @@ const cell = c => c[1] === "kg"
 ? `<td><div class="rg"><input inputmode="decimal" placeholder="Từ" aria-label="Cân nặng từ" data-k="Cân nặng" data-r="a"><span>–</span><input inputmode="decimal" placeholder="Đến" aria-label="Cân nặng đến" data-k="Cân nặng" data-r="b"></div></td>`
 : `<td><input aria-label="${c[0]}" data-k="${c[0]}"></td>`;
 const row = n => `<tr><td><input value="${n}" aria-label="Size" maxlength="6"></td>${cols.map(cell).join("")}<td class="dl"><button type="button" class="rm" aria-label="Xóa size" title="Xóa size">×</button></td></tr>`;
-el.innerHTML = `<table><thead><tr><th>Size</th>${cols.map(c => `<th>${c[0]} (${c[1]})</th>`).join("")}<th></th></tr></thead><tbody>${SIZES.map(row).join("")}</tbody></table><button type="button" class="chip addrow" style="margin-top:4px">+ Thêm size</button>`;
+el.innerHTML = `<div class="sz-scroll"><table><thead><tr><th>Size</th>${cols.map(c => `<th>${c[0]} (${c[1]})</th>`).join("")}<th></th></tr></thead><tbody>${SIZES.map(row).join("")}</tbody></table></div><button type="button" class="chip addrow" aria-label="Thêm size">+&nbsp;Thêm size</button>`;
 el.querySelector(".addrow").onclick = () => el.querySelector("tbody").insertAdjacentHTML("beforeend", row(""));
 el.onclick = e => { const b = e.target.closest(".rm"); if (b) b.closest("tr").remove(); };
 }
@@ -1209,9 +1499,33 @@ r.warnings = w.slice(0, 2);
 r.confidence = m.exact ? Math.max(r.confidence || 0, 85) : Math.min(r.confidence || 60, 65);
 return r;
 }
+/* Khi đã từ chối: kết quả CHỈ từ đối chiếu bảng size thuần trên máy — không AI, không gợi ý phối/ưu-khuyết sinh ra trên máy */
+function chartOnlyResult(m, bottom){
+const r = { product: bottom ? "Món 2 của bạn" : "Món 1 của bạn", size: "?", confidence: 0, fit: "vừa", ai: false, reasons: [], warnings: ["AI đang tắt nên chưa đối chiếu được — hãy điền bảng size của shop cho món này để đối chiếu trên máy."], styling: [], colors: [], alt_size: "", pros: [], cons: [], outfits: [], family: "" };
+if (!m) return r;
+r.size = m.size; r.alt_size = m.alt || ""; r.confidence = m.exact ? 85 : 65;
+r.reasons = [chartReason(m)];
+r.warnings = m.exact ? [] : ["Số đo của bạn chưa nằm trọn trong size nào của bảng, đây là size gần nhất."];
+return r;
+}
 $("#go").onclick = async () => {
 const text = chartText("#t1"), link = $("#link").value.trim(), text2 = chartText("#t2");
 if (!img && !text && !link) { $("#e2").textContent = "Thêm ít nhất một ảnh, bảng size hoặc link cho món 1."; return; }
+if (typeof CONSENT !== "undefined" && !CONSENT.gemini) {
+/* Đã từ chối tất cả: AI chọn size TẮT hẳn — không chạy phân tích và không trả kết quả offline thay thế.
+   Chỉ đối chiếu bảng size của shop ngay trên máy (không gửi dữ liệu đi đâu) như hộp chính sách đã ghi. */
+const cm1 = matchChart("#t1"), cm2 = matchChart("#t2"), has2 = !!(img2 || text2);
+if (!cm1 && !(has2 && cm2)) { $("#e2").textContent = "AI chọn size đang tắt vì bạn đã từ chối gửi dữ liệu tới Gemini. Bạn vẫn đối chiếu được bằng cách điền bảng size của shop ở trên — hoặc bấm “Đổi lựa chọn quyền riêng tư” ở cuối trang để bật lại AI."; return; }
+$("#e2").textContent = "";
+last = [chartOnlyResult(cm1, false)];
+if (has2) last.push(chartOnlyResult(cm2, true));
+if (last.length > 1) last.combo = { pros: [], cons: [], styling: [], outfits: [], family: "", ai: false };
+const cdate = new Date().toLocaleDateString("vi-VN");
+last.forEach((r, i) => { r.date = cdate; r.link = i ? "" : link; r.thumb = i ? thumb2 : thumb; });
+step(3); renderResult(); initFit(); $("#save").hidden = false;
+$("#e4").textContent = "Bạn đang xem kết quả đối chiếu bảng size trên máy (AI đang tắt).";
+return;
+}
 $("#e2").textContent = ""; $("#go").disabled = true; const goTxt = $("#go").textContent; $("#go").textContent = "Đang phân tích…"; step(3);
 $("#result").innerHTML = ""; $("#loading").hidden = false; $("#save").hidden = true; $("#fit").hidden = true; $("#e4").textContent = "";
 try {
@@ -1297,6 +1611,7 @@ const ok = !!(body && img);
 $("#fit").hidden = !ok;
 $("#maskBox").hidden = !(ok && img2); if (ok && img2) drawMask();
 $("#e4").textContent = ok ? "" : "Muốn xem bạn mặc món này: quay lại và thêm ảnh toàn thân của bạn (bước 1) cùng ảnh sản phẩm (bước 2).";
+if (typeof applyConsent === "function") applyConsent();
 }
 function maskPath(x, cx, y0, y1, hwTop, hwBot){
 x.beginPath();
@@ -1446,6 +1761,7 @@ throw e;
    Suốt lúc đó không hiện lỗi, không hiện thông báo gián đoạn — màn hình chỉ giữ
    1 trạng thái chờ duy nhất. Chỉ dừng khi người dùng tự bấm Hủy. */
 async function sendTryon(payload){
+if (typeof CONSENT !== "undefined" && !CONSENT.tryon) throw new Error("__noconsent");
 let attempt = 0;
 for (;;) {
 if (TRY.cancel) throw new Error("__cancel");
@@ -1476,7 +1792,7 @@ if (!st) { $("#aiOut").innerHTML = ""; return; }
 const src = TRY.mode === "enh" ? st.enh : st.orig;
 const secs = Math.round((Date.now() - TRY.t0) / 1000);
 $("#aiOut").innerHTML = `<div class="cmpwrap">
-<div class="cmp" id="cmpBox"><img src="${src}" alt="Ảnh mặc thử do AI tạo"><div class="cmp-before" id="cmpBefore"><img src="${TRY.personUrl}" alt="Ảnh gốc của bạn"></div><div class="cmp-handle" id="cmpHandle"></div><span class="cmp-tag l">TRƯỚC</span><span class="cmp-tag r">SAU</span></div>
+<div class="cmp" id="cmpBox" role="slider" tabindex="0" aria-label="So sánh ảnh trước và sau khi mặc thử — kéo trên ảnh hoặc dùng phím mũi tên trái phải" aria-valuemin="0" aria-valuemax="100" aria-valuenow="50"><div class="cmp-after"><img draggable="false" src="${src}" alt="Ảnh mặc thử do AI tạo"></div><div class="cmp-before" id="cmpBefore"><img draggable="false" src="${TRY.personUrl}" alt="Ảnh gốc của bạn"></div><div class="cmp-handle" id="cmpHandle"></div><span class="cmp-tag l">TRƯỚC</span><span class="cmp-tag r">SAU</span></div>
 <input type="range" class="cmpslider" id="cmpRange" min="0" max="100" value="50" aria-label="Kéo để so sánh ảnh trước và sau khi mặc thử">
 <div class="trybar">
 <button type="button" class="chip ${TRY.mode === "enh" ? "on" : ""}" id="modeEnh">Ảnh đã tinh chỉnh</button>
@@ -1487,15 +1803,24 @@ ${TRY.stages.length > 1 ? `<div class="trysteps-thumbs">${TRY.stages.map((s2, i)
 <p class="trymeta">${esc(st.label)} · ảnh trả về ${st.w}×${st.h}px${st.blankWarn ? " · <span style='color:var(--warn)'>ảnh có vẻ ít chi tiết bất thường — thử ảnh toàn thân rõ hơn nếu chưa ưng</span>" : ""} · tổng thời gian ${secs >= 60 ? Math.floor(secs / 60) + " phút " + (secs % 60) + " giây" : secs + " giây"}. Kéo thanh trượt để so sánh với ảnh gốc của bạn.${note ? " " + esc(note) : ""}</p>
 </div>`;
 const box = $("#cmpBox"), before = $("#cmpBefore"), handle = $("#cmpHandle"), range = $("#cmpRange");
-const setPct = p => { p = Math.max(0, Math.min(100, p)); before.style.clipPath = "inset(0 " + (100 - p) + "% 0 0)"; handle.style.left = p + "%"; if (range && +range.value !== Math.round(p)) range.value = Math.round(p); };
+let curPct = 50;
+const setPct = p => { p = Math.max(0, Math.min(100, +p || 0)); curPct = p; before.style.clipPath = "inset(0 " + (100 - p) + "% 0 0)"; handle.style.left = p + "%"; box.setAttribute("aria-valuenow", Math.round(p)); if (range && +range.value !== Math.round(p)) range.value = Math.round(p); };
 setPct(50);
 if (range) range.addEventListener("input", () => setPct(+range.value));
-let drag = false;
-const fromEvent = e => { const r = box.getBoundingClientRect(); setPct((e.clientX - r.left) / r.width * 100); };
-box.addEventListener("pointerdown", e => { drag = true; box.setPointerCapture(e.pointerId); fromEvent(e); });
-box.addEventListener("pointermove", e => { if (drag) fromEvent(e); });
-box.addEventListener("pointerup", () => drag = false);
-box.addEventListener("pointercancel", () => drag = false);
+/* Kéo trực tiếp trên ảnh Trước/Sau: mọi lớp phủ trong .cmp đã để pointer-events:none nên sự kiện luôn rơi vào khung .cmp.
+   Phải chặn kéo-thả ảnh gốc của trình duyệt (dragstart) và preventDefault ở pointerdown — trước đây ảnh bị trình duyệt
+   cướp thành thao tác kéo ảnh, pointercancel bắn ra ngay nên thanh chia không kéo được. Kéo bám đúng pointerId đã bắt đầu,
+   setPointerCapture bọc try/catch, nhả kéo dọn ở pointerup/pointercancel/lostpointercapture nên không kẹt, không nhảy về giữa. */
+let dragId = null;
+const fromEvent = e => { const r = box.getBoundingClientRect(); if (!r.width) return; setPct((e.clientX - r.left) / r.width * 100); };
+box.addEventListener("dragstart", e => e.preventDefault());
+box.addEventListener("pointerdown", e => { if (dragId !== null) return; if (e.pointerType === "mouse" && e.button !== 0) return; dragId = e.pointerId; box.classList.add("dragging"); try { box.setPointerCapture(e.pointerId); } catch (err) {} fromEvent(e); e.preventDefault(); });
+box.addEventListener("pointermove", e => { if (dragId === e.pointerId) fromEvent(e); });
+const endDrag = e => { if (dragId === null) return; if (e && e.pointerId !== undefined && e.pointerId !== dragId) return; dragId = null; box.classList.remove("dragging"); };
+box.addEventListener("pointerup", endDrag);
+box.addEventListener("pointercancel", endDrag);
+box.addEventListener("lostpointercapture", () => { dragId = null; box.classList.remove("dragging"); });
+box.addEventListener("keydown", e => { if (e.key === "ArrowLeft") { setPct(curPct - 4); e.preventDefault(); } else if (e.key === "ArrowRight") { setPct(curPct + 4); e.preventDefault(); } else if (e.key === "Home") { setPct(0); e.preventDefault(); } else if (e.key === "End") { setPct(100); e.preventDefault(); } });
 $("#modeEnh").onclick = () => { TRY.mode = "enh"; renderTryResult(note); };
 $("#modeOrig").onclick = () => { TRY.mode = "orig"; renderTryResult(note); };
 $("#aiOut").querySelectorAll(".trysteps-thumbs img").forEach(im => im.onclick = () => { TRY.view = +im.dataset.v; renderTryResult(note); });
@@ -1503,7 +1828,9 @@ $("#aiOut").querySelectorAll(".trysteps-thumbs img").forEach(im => im.onclick = 
 $("#aiBtn").onclick = async () => {
 const err = $("#e4"); err.textContent = "";
 if (!body || !img) { err.textContent = "Cần ảnh toàn thân và ảnh sản phẩm."; return; }
+if (!CONSENT.tryon) { err.textContent = "Mặc thử AI đang tắt vì bạn chưa đồng ý gửi ảnh tới Hugging Face. Bấm “Đổi lựa chọn quyền riêng tư” ở cuối trang để bật lại."; return; }
 const steps = img2 ? [{ g: img2, low: true, name: "quần/váy" }, { g: img, low: false, name: "áo" }] : [{ g: img, low: false, name: "món đồ" }], n = steps.length;
+if (!CONSENT.tryon){ err.textContent = "Mặc thử AI đang tắt vì bạn chưa đồng ý gửi ảnh tới Hugging Face. Bấm “Đổi lựa chọn quyền riêng tư” ở cuối trang để bật lại."; return; }
 if (!window.__tryonOk){ window.__tryonOk = true; $("#aiOut").innerHTML = '<p class="hint" style="text-align:center">Ảnh của bạn và ảnh sản phẩm sẽ được gửi tới Hugging Face (Space IDM-VTON) để tạo ảnh mặc thử' + (n > 1 ? ", lần lượt từng món" : "") + '. Bấm nút lần nữa để đồng ý và tiếp tục.</p>'; $("#aiBtn").textContent = "Đồng ý gửi ảnh & mặc thử AI"; return; }
 $("#aiBtn").disabled = true; $("#aiBtn").textContent = "Đang mặc thử…";
 TRY.cancel = false; TRY.stages = []; TRY.view = -1; TRY.mode = "enh";
@@ -1512,7 +1839,9 @@ showTryWaiting();
 let prep = null, preps = [];
 try {
 prep = preparePerson();
-TRY.personUrl = body.toDataURL("image/jpeg", .85);
+/* Ảnh TRƯỚC phải là ĐÚNG khung 768×1024 đã gửi cho AI (prep.url), không dùng ảnh gốc thô:
+   ảnh gốc khác tỉ lệ/vị trí người nên khi phủ lên ảnh SAU sẽ lệch mặt và lệch người ở đường cắt. */
+TRY.personUrl = prep.url;
 for (let i = 0; i < n; i++) {
 preps.push({ garment: await prepareGarment(steps[i].g), mask: steps[i].low ? lowerMaskPrep(prep) : undefined, low: steps[i].low, name: steps[i].name });
 if (TRY.cancel) throw new Error("__cancel");
@@ -1530,11 +1859,13 @@ stopTryTimer();
 renderTryResult();
 } catch (e) {
 stopTryTimer();
-if (e && e.message === "__cancel") { $("#aiOut").innerHTML = ""; err.textContent = "Đã hủy mặc thử. Bấm nút khi muốn thử lại."; }
+if (e && e.message === "__noconsent") { $("#aiOut").innerHTML = ""; err.textContent = "Mặc thử AI đang tắt vì bạn chưa đồng ý gửi ảnh tới Hugging Face. Bấm “Đổi lựa chọn quyền riêng tư” ở cuối trang để bật lại."; }
+else if (e && e.message === "__cancel") { $("#aiOut").innerHTML = ""; err.textContent = "Đã hủy mặc thử. Bấm nút khi muốn thử lại."; }
 else if (TRY.stages.length) { TRY.view = -1; renderTryResult(); err.textContent = "Đã dừng lại — ảnh đang hiển thị là kết quả đã ghép xong món trước đó. Bấm nút mặc thử để ghép tiếp khi sẵn sàng."; }
 else { $("#aiOut").innerHTML = ""; err.textContent = "Chưa đọc được ảnh để ghép. Kiểm tra lại ảnh toàn thân và ảnh sản phẩm rồi bấm thử lại."; }
 }
-$("#aiBtn").disabled = false; $("#aiBtn").textContent = "Mặc thử bằng AI (miễn phí)";
+if (typeof CONSENT !== "undefined" && CONSENT.saved && !CONSENT.tryon) { $("#aiBtn").disabled = true; $("#aiBtn").textContent = "Mặc thử AI đã tắt"; }
+else { $("#aiBtn").disabled = false; $("#aiBtn").textContent = "Mặc thử bằng AI (miễn phí)"; }
 };
 $("#again").onclick = () => { $("#aiOut").innerHTML = ""; $("#e2").textContent = ""; step(2); };
 /* Lưu tủ đồ kèm ẢNH GỐC + ảnh toàn thân + hồ sơ, để "Mặc thử lại" khôi phục được 100% (trước đây chỉ lưu thumb nên bấm Mặc thử lại là mất hết ảnh) */
@@ -1714,14 +2045,15 @@ const v = views[+b.dataset.del]; if (!v) return;
 if (b.dataset.arm) { const c2 = store.get("fm_closet", []); [...v.idxs].sort((a, b2) => b2 - a).forEach(ix => c2.splice(ix, 1)); store.set("fm_closet", c2); renderCloset(); }
 else { b.dataset.arm = "1"; b.textContent = "Chạm lần nữa để xóa"; b.classList.add("arm"); setTimeout(() => { if (b.isConnected) { delete b.dataset.arm; b.textContent = v.outfit ? "Xóa cả bộ" : "Xóa"; b.classList.remove("arm"); } }, 2600); }
 });
-box.querySelectorAll("[data-ask]").forEach(b => b.onclick = () => {
+box.querySelectorAll("[data-ask]").forEach(b => { if (typeof CONSENT !== "undefined" && CONSENT.saved && !CONSENT.gemini){ b.disabled = true; b.title = "Stylist AI đã tắt vì bạn đã từ chối gửi dữ liệu tới Gemini"; } b.onclick = () => {
+if (typeof CONSENT !== "undefined" && !CONSENT.gemini) { document.querySelector('[data-tab="stylist"]').click(); $("#e3").textContent = "Stylist AI đang tắt vì bạn chưa đồng ý gửi dữ liệu tới Gemini. Bấm “Đổi lựa chọn quyền riêng tư” ở cuối trang để bật lại."; return; }
 const v = views[+b.dataset.ask]; if (!v) return;
 document.querySelector('[data-tab="stylist"]').click();
 $("#q").value = v.outfit
 ? `Phối đồ với BỘ outfit này trong tủ của tôi: ${v.items.map(it => `"${it.product}" (size ${it.size}${it.fit ? ", form " + it.fit : ""})`).join(" mặc cùng ")}. Bộ này mặc được dịp nào, thêm giày và phụ kiện gì cho hoàn chỉnh?`
 : `Phối đồ với món này trong tủ của tôi: "${v.x.product}" (size ${v.x.size}${v.x.fit ? ", form " + v.x.fit : ""}). Món này mặc được những dịp nào, phối với gì đẹp nhất?`;
 sendQ();
-});
+} });
 box.querySelectorAll("[data-retry]").forEach(b => b.onclick = () => { const v = views[+b.dataset.retry]; if (v) retryCloset(v); });
 }
 $("#closetSearch").addEventListener("input", e => { closetQuery = e.target.value; renderCloset(); });
@@ -1758,7 +2090,7 @@ const hasA = history.some(m => m.role === "assistant");
 el.hidden = !hasA;
 if (!hasA) { el.innerHTML = ""; return; }
 el.innerHTML = `<span class="qglab">Hỏi tiếp về gợi ý trên</span><div class="chips">${FOLLOW.map(q => `<button class="chip" type="button">${esc(q)}</button>`).join("")}</div>`;
-el.querySelectorAll("button").forEach(b => b.onclick = () => { $("#q").value = b.textContent; sendQ(); });
+el.querySelectorAll("button").forEach(b => { b.onclick = () => { $("#q").value = b.textContent; sendQ(); }; if (typeof CONSENT !== "undefined" && CONSENT.saved && !CONSENT.gemini) b.disabled = true; });
 }
 function formatMsg(t){
 return esc(t).replace(/\*\*([^*]+)\*\*/g, "<b>$1</b>").split("\n").map(line => {
@@ -1792,6 +2124,8 @@ box.scrollTop = box.scrollHeight;
 renderFollow();
 }
 async function sendQ(){
+/* KIỂM TRA QUYỀN TRƯỚC TIÊN, trước mọi thao tác khác: chưa đồng ý Gemini (CONSENT.gemini = false, kể cả khi chưa chọn ở hộp chính sách) thì CHỈ hiện thông báo Stylist đã tắt rồi dừng hẳn — không đọc/ghi câu hỏi, không push vào lịch sử chat, không gọi callAI/Gemini, không dùng gợi ý Stylist dự phòng trên máy. Mọi đường vào (chip câu hỏi nhanh, chip hỏi tiếp, nút Gửi, phím Enter, nút "Hỏi Stylist" trong Tủ đồ) đều đi qua đúng điểm chặn này. */
+if (typeof CONSENT === "undefined" || !CONSENT.gemini) { $("#e3").textContent = "Stylist AI đang tắt vì bạn chưa đồng ý gửi dữ liệu tới Gemini. Bấm “Đổi lựa chọn quyền riêng tư” ở cuối trang để bật lại."; return; }
 if (busy) return;
 const q = $("#q").value.trim(); if (!q) return;
 if (!(+P.h && +P.w)) { $("#e3").textContent = "Hãy nhập chiều cao và cân nặng ở tab Thử đồ trước — Stylist cần hồ sơ của bạn để tư vấn."; document.querySelector('[data-tab="stylist"]').click(); renderStyProfile(); return; }
@@ -1802,12 +2136,74 @@ const hh = history.slice(-4); while (hh.length && hh[0].role !== "user") hh.shif
 const a = await callAI(SYS(), hh, 320, .6);
 if (!a.trim()) throw new Error("AI chưa trả lời, hãy thử lại.");
 history.push({role:"assistant", content:a});
-} catch (e) { history.push({role:"assistant", content: localStylistFallback(q)}); }
-busy = false; store.set("fm_chat", history.slice(-30)); drawChat(); $("#ask").disabled = false;
+} catch (e) { history.push({role:"assistant", content: (typeof CONSENT !== "undefined" && !CONSENT.gemini) ? "Stylist AI đang tắt vì bạn đã từ chối gửi dữ liệu tới Gemini. Bấm “Đổi lựa chọn quyền riêng tư” ở cuối trang để bật lại." : localStylistFallback(q)}); }
+busy = false; store.set("fm_chat", history.slice(-30)); drawChat(); $("#ask").disabled = (typeof CONSENT !== "undefined" && !CONSENT.gemini); if (typeof applyConsent === "function") applyConsent();
 }
 $("#ask").onclick = sendQ;
 $("#clr").onclick = () => { history = []; drawn = -1; store.set("fm_chat", []); drawChat(); };
 $("#q").onkeydown = e => { if (e.key === "Enter") sendQ(); };
+/* ---------- Đồng ý chính sách & quyền riêng tư: KHÔNG lưu lựa chọn — mỗi lần vào trang đều hiện lại hộp này,
+   người dùng chỉ chọn 1 trong 2: Đồng ý tất cả hoặc Từ chối tất cả (chỉ giữ trong phiên đang mở) ---------- */
+store.del("fm_consent"); /* xóa lựa chọn cũ từng lưu ở các bản trước, để không lần nào bị bỏ qua hộp này */
+let CONSENT = {gemini:false, tryon:false, saved:false};
+function openConsent(){
+$("#consentGate").hidden = false; document.body.classList.add("consent-lock");
+const f = $("#cAcceptAll"); if (f) f.focus();
+}
+function closeConsent(){ $("#consentGate").hidden = true; document.body.classList.remove("consent-lock"); }
+function applyConsent(){
+const off = [];
+if (!CONSENT.gemini) off.push("AI chọn size & Stylist (Gemini)");
+if (!CONSENT.tryon) off.push("Mặc thử AI (Hugging Face)");
+const st = $("#consentStatus");
+if (st) st.textContent = CONSENT.saved && off.length ? "Bạn đã từ chối tất cả — đang tắt: " + off.join(" · ") + ". Các phần khác vẫn dùng bình thường. Vào lại trang hoặc bấm “Đổi lựa chọn quyền riêng tư” để chọn lại." : "";
+const ai = $("#aiBtn");
+if (ai && CONSENT.saved){ ai.disabled = !CONSENT.tryon; if (!CONSENT.tryon) ai.textContent = "Mặc thử AI đã tắt"; else if (ai.textContent === "Mặc thử AI đã tắt") ai.textContent = "Mặc thử bằng AI (miễn phí)"; }
+if (CONSENT.saved) window.__tryonOk = !!CONSENT.tryon;
+const q = $("#q"), ask = $("#ask");
+if (q && ask && CONSENT.saved){
+const offG = !CONSENT.gemini;
+ask.disabled = offG;
+q.disabled = offG;
+q.placeholder = offG ? "Stylist AI đã tắt — đổi lựa chọn ở cuối trang để bật lại" : "Hỏi Stylist...";
+document.querySelectorAll("#quick button, #followChips button, #wardrobe [data-ask]").forEach(b => { b.disabled = offG; });
+}
+bodyBlockOn = !!(CONSENT.saved && !CONSENT.tryon);
+if (typeof syncBodyBlock === "function") syncBodyBlock();
+prodBlockOn = !!(CONSENT.saved && !CONSENT.gemini);
+if (typeof syncProdBlock === "function") syncProdBlock();
+}
+function saveConsent(all){
+CONSENT = {gemini:!!all, tryon:!!all, saved:true}; /* chỉ giữ trong bộ nhớ của phiên này, không ghi xuống trình duyệt */
+closeConsent(); applyConsent();
+}
+$("#cAcceptAll").onclick = () => saveConsent(true);
+$("#cRejectAll").onclick = () => saveConsent(false);
+$("#consentReopen").onclick = openConsent;
+applyConsent();
+openConsent(); /* luôn hiện khi vào trang, kể cả đã vào trước đó — lựa chọn tự reset sau mỗi lần vào web */
+/* Hiệu ứng lúc chạm/chọn & lúc kết quả hiện ra: nảy nhẹ trên mọi nút chọn, gợn sáng trên nút chính/chip, thẻ kết quả & tủ đồ hiện dần theo thứ tự. Chỉ thêm lớp hiệu ứng, không đổi logic. */
+(function(){
+if (REDUCE) return;
+const SEL = ".chip, nav.tabs button, .steps button, .seg button, .swatch, .btn, .c-toggle, .trysteps-thumbs img";
+document.addEventListener("pointerdown", e => { const t = e.target.closest(SEL); if (!t || t.disabled) return; t.classList.remove("tap-pop"); void t.offsetWidth; t.classList.add("tap-pop"); }, { passive: true });
+document.addEventListener("animationend", e => { if (e.target && e.target.classList) e.target.classList.remove("tap-pop"); });
+document.addEventListener("click", e => {
+const t = e.target.closest(".btn, .chip"); if (!t || t.disabled) return;
+const r = t.getBoundingClientRect(); if (!r.width) return;
+const s = document.createElement("span"); s.className = "fx-ripple";
+const d = Math.max(r.width, r.height) * 1.15;
+s.style.width = s.style.height = d + "px";
+s.style.left = ((e.clientX || r.left + r.width / 2) - r.left - d / 2) + "px";
+s.style.top = ((e.clientY || r.top + r.height / 2) - r.top - d / 2) + "px";
+t.appendChild(s); setTimeout(() => s.remove(), 540);
+});
+const stag = (root, sel) => { if (!root) return; root.querySelectorAll(sel).forEach((el, i) => { el.style.animationDelay = Math.min(i, 10) * 55 + "ms"; el.classList.add("rise-item"); }); };
+const mo = new MutationObserver(ms => { for (const m of ms) { if (m.target.id === "wardrobe") stag(m.target, ".item"); if (m.target.id === "result") stag(m.target, ".pcard, .comboitem, .ocard"); } });
+const wd = $("#wardrobe"), rs = $("#result");
+if (wd) mo.observe(wd, { childList: true });
+if (rs) mo.observe(rs, { childList: true, subtree: true });
+})();
 renderStyProfile();
 drawChat();
 updateMan();
