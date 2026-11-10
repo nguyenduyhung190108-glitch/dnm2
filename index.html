@@ -131,6 +131,13 @@ input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-
 @keyframes grow{from{transform:scaleX(0)}}
 .tag{display:inline-block;padding:5px 13px;border-radius:99px;font-size:14px;font-weight:600;line-height:1.4;background:rgba(127,214,245,.15);color:var(--aqua);margin:0 6px 6px 0}
 .tag.ok{background:rgba(95,224,181,.15);color:var(--ok)}.tag.warn{background:rgba(240,168,80,.17);color:var(--warn)}
+.tag .cdot{display:inline-block;width:11px;height:11px;border-radius:50%;margin-right:7px;vertical-align:-1px;border:1px solid rgba(255,255,255,.45)}
+.asksty{align-self:center;border:1px solid var(--line2);border-radius:16px;padding:12px 14px;background:rgba(2,13,27,.55);max-width:330px}
+.asksty.block{max-width:none;margin-top:14px}
+.asksty-t{display:flex;align-items:center;gap:8px;font-weight:700;font-size:14.5px;color:var(--gold);margin-bottom:9px}
+.asksty-t svg{width:17px;height:17px;fill:var(--gold);flex:0 0 auto}
+.asksty .chip{font-size:13.5px;padding:7px 12px}
+@media(max-width:560px){.asksty{max-width:none;width:100%}}
 ul.clean{padding-left:20px;margin:8px 0;font-size:16.5px;line-height:1.7}
 .empty{text-align:center;color:var(--mute);padding:40px 10px;font-size:16px;line-height:1.65}
 .compass{display:block;width:44px;height:44px;margin:0 auto 12px;fill:var(--gold);animation:spin 3s linear infinite;filter:drop-shadow(0 0 8px rgba(232,196,121,.6))}
@@ -185,6 +192,12 @@ input[type=range]{padding:0;height:22px;accent-color:var(--gold);background:none
 .msg{max-width:88%;padding:13px 17px;border-radius:16px;white-space:pre-wrap;font-size:16.5px;line-height:1.7;animation:in .35s var(--ease)}
 .msg.u{align-self:flex-end;background:linear-gradient(180deg,#f3d58f,#c99a4b);color:#1b1204;border-bottom-right-radius:4px}
 .msg.a{align-self:flex-start;background:rgba(2,13,27,.82);border:1px solid var(--line2);border-bottom-left-radius:4px}
+/*Ảnh món đồ đính kèm trong chat khi hỏi Stylist từ Tủ đồ hoặc từ hộp "Hỏi thêm Stylist AI" ở mục Kết quả: hiện ngay trên chữ trong bong bóng của người hỏi để nhìn là biết đang hỏi về món nào. Đây là nội dung để XEM (không bấm được) nên ghim cố định — không phóng to khi di chuột như nút/chip, đúng logic hover của trang*/
+.chat-imgs{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 9px}
+.chat-img{position:relative;width:118px;flex:0 0 auto;margin:0}
+.chat-img img{width:118px;aspect-ratio:3/4;object-fit:cover;border-radius:10px;display:block;border:1px solid rgba(27,18,4,.28);background:#fff}
+.chat-img em{position:absolute;top:6px;right:6px;font:700 15px/1 "Cormorant Garamond",serif;font-style:normal;background:rgba(8,25,44,.9);color:var(--gold);border-radius:7px;padding:3px 8px}
+.chat-img figcaption{font-size:12px;line-height:1.4;margin-top:4px;font-weight:600;color:inherit;opacity:.88}
 .send{display:flex;gap:10px;margin-top:12px}.send .btn{min-height:52px;padding:0 26px}
 .wardrobe{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px}
 .item{padding:12px;background:var(--panel);border:1px solid var(--line);border-radius:18px;animation:in .45s var(--ease) both}
@@ -216,6 +229,9 @@ body.consent-lock{overflow:hidden}
 .consent-note{font-size:13.5px;color:var(--mute);line-height:1.6;margin:12px 0 0;text-align:center}
 .consent-acts{display:flex;flex-direction:column;gap:9px;margin-top:16px}
 .consent-acts .btn{width:100%;min-height:52px;font-size:16px}
+/* Ghim cố định 2 nút trong hộp chính sách: nút rộng 100% nên hiệu ứng phóng to khi rê chuột (scale 1.1) và nảy tapPop khi chạm làm nó phình tràn ra ngoài khung hộp — ở đây tắt hết, nút giữ đúng kích thước đã xếp trong hộp ở mọi trạng thái */
+.consent-acts .btn:hover{transform:none;scale:none}
+.consent-acts .btn:active{transform:none;scale:none}
 .consent-status{font-size:13.5px;line-height:1.55;border:1px solid rgba(240,168,80,.4);background:rgba(240,168,80,.1);color:#f5cf9a;border-radius:12px;padding:9px 12px;margin-top:10px}
 .consent-status:empty{display:none}
 @media(max-width:560px){.consent-panel{padding:20px 16px 16px}.consent-panel h2{font-size:26px}}
@@ -418,6 +434,7 @@ nav.tabs button.on{animation:tabPop .35s var(--ease)}
 .size-big,.comboitem .size-mid{animation:sizePop .65s var(--ease) both .08s}
 #result .tag{animation:riseIn .4s var(--ease) both}
 #result .pcard,#result .comboitem,#result .ocard,#result .verdict,.cstat{animation:riseIn .5s var(--ease) both}
+#result .asksty{animation:riseIn .5s var(--ease) both .18s}
 .rise-item{animation:riseIn .5s var(--ease) both}
 .msg.u{animation:msgU .38s var(--ease)}
 .msg.a{animation:msgA .38s var(--ease)}
@@ -432,9 +449,9 @@ nav.tabs button.on{animation:tabPop .35s var(--ease)}
 .fx-ripple{position:absolute;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.5) 0,rgba(255,255,255,.12) 55%,transparent 72%);transform:scale(0);animation:rippleGo .5s ease-out both;pointer-events:none;z-index:1}
 input[type=range]{transition:filter .2s}input[type=range]:active{filter:brightness(1.25)}
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}.fx-ripple{display:none!important}}
-/*HOVER ZOOM — phóng to mỗi khi chỉ vào: di chuột tới đâu phần tử ở đó nở ra rõ rệt, dùng thuộc tính scale riêng nên không phá animation nảy/trượt lúc chọn và không làm lệch bố cục (transform gốc vẫn giữ nguyên)*/
+/*HOVER ZOOM CÓ LOGIC — chỉ phần tử NGƯỜI DÙNG BẤM/CHỌN ĐƯỢC mới nở ra khi chỉ vào: nút bấm, chip lựa chọn, tab, nút chuyển mục, vòng tông da, nút mở–đóng mục, nút xóa nhỏ, nút thao tác trên thẻ và ảnh thu nhỏ bấm để chọn/xem. Phần tử chỉ để ĐỌC/XEM thì GHIM CỐ ĐỊNH, không scale khi hover: bong bóng chat Stylist (.msg — chữ AI trả lời, di chuột vào để đọc chứ không phải để bấm), hộp kết luận (.verdict), dải hồ sơ Stylist (.styprofile), ô số liệu Tủ đồ (.cstat), khung mục thu–mở (.acc), logo và ô logo, nhãn hiển thị (.tag), link chữ nằm trong đoạn văn (.link/.consent-link — chỉ đổi màu), ảnh kết quả mặc thử (.tryimg) và các THẺ nội dung (.item/.ocard/.pcard/.comboitem — chỉ nhấc nhẹ + sáng viền như CSS gốc, không phình). Khung ảnh (.ph) giữ nguyên kích thước, chỉ ảnh bên trong phóng to trong khung đã cắt (overflow:hidden). Dùng thuộc tính scale riêng nên không phá animation nảy/trượt lúc chọn và không làm lệch bố cục*/
 @media(hover:hover) and (pointer:fine) and (prefers-reduced-motion:no-preference){
-.btn,.chip,nav.tabs button,.steps button,.seg button,.c-toggle,.swatch,.drop,.item,.ocard,.pcard,.comboitem,.cstat,.trysteps-thumbs img,.sz .rm,.drop .x,.iacts .iact,.brandimg,.acc,.tryimg,.rthumb,.comboitem .cthumb{transition:scale .3s var(--ease),transform .3s var(--ease),box-shadow .3s,border-color .3s,background .3s,color .3s,filter .3s,opacity .3s}
+.btn,.chip,nav.tabs button,.steps button,.seg button,.c-toggle,.swatch,.drop,.trysteps-thumbs img,.sz .rm,.drop .x,.iacts .iact,.rthumb,.comboitem .cthumb{transition:scale .3s var(--ease),transform .3s var(--ease),box-shadow .3s,border-color .3s,background .3s,color .3s,filter .3s,opacity .3s}
 .btn:hover{scale:1.1}
 .chip:hover{scale:1.15}
 .chip.on:hover{scale:1.15}
@@ -445,13 +462,6 @@ nav.tabs button:hover{scale:1.13}
 .swatch:hover{scale:1.32;transform:none}
 .drop:hover{scale:1.035}
 .drop.blocked:hover{scale:none}
-.item:hover{scale:1.055}
-.ocard:hover{scale:1.065}
-.pcard:hover,.comboitem:hover{scale:1.055}
-.cstat:hover{scale:1.1}
-.acc:hover{scale:1.018}
-.brandimg:hover{scale:1.15}
-.tryimg:hover{scale:1.045}
 .rthumb:hover,.comboitem .cthumb:hover{scale:1.13}
 .trysteps-thumbs img:hover{scale:1.2}
 .sz .rm:hover,.drop .x:hover{scale:1.32}
@@ -463,20 +473,9 @@ nav.tabs button:hover{scale:1.13}
 .drop.has:hover img{scale:1.09}
 .ph.duo .half img{transition:scale .5s var(--ease)}
 .ph.duo .half:hover img{scale:1.17}
-.msg{transition:scale .28s var(--ease)}
-.msg:hover{scale:1.035;transform-origin:center}
-.msg.u:hover{transform-origin:right center}
-.msg.a:hover{transform-origin:left center}
-.tag{transition:scale .28s var(--ease)}
-.tag:hover{scale:1.17}
-.link:hover,.consent-link:hover{scale:1.11}
-.link,.consent-link{display:inline-block;transition:scale .28s var(--ease),color .25s}
-.logo:hover{scale:1.045}
-.logo{transition:scale .3s var(--ease);transform-origin:left center}
-.verdict{transition:scale .3s var(--ease)}
-.verdict:hover{scale:1.035}
-.styprofile{transition:scale .3s var(--ease)}
-.styprofile:hover{scale:1.022}
+/*CỐ ĐỊNH KHI HOVER — nội dung chỉ để đọc/xem: không scale, không nhấc; link chữ chỉ đổi màu như CSS gốc*/
+.msg,.verdict,.styprofile,.cstat,.acc,.item,.ocard,.pcard,.comboitem,.tryimg,.tag,.logo,.brandimg,.asksty{scale:none}
+.link,.consent-link{transition:color .25s}
 input[type=range]:hover{filter:brightness(1.25)}
 }
 /*FIX 3 VIỆC — A) '+ Thêm size' hết mất chữ: bảng size cuộn ngang trong .sz-scroll riêng, nút đứng NGOÀI vùng cuộn nên không còn bị khung cuộn cắt mất một khúc; chữ không xuống dòng, dấu + dính liền bằng nbsp, nút có đệm và neo phóng to từ mép trái. B) Thanh kéo Trước/Sau: mọi lớp phủ trong .cmp không bắt sự kiện (pointer-events:none), chỉ khung .cmp nhận kéo — xem thêm JS renderTryResult. C) Animation riêng cho từng mục toàn web, nhẹ, tôn trọng giảm chuyển động*/
@@ -537,6 +536,10 @@ div:focus-within>label,div:focus-within>.lab{color:var(--gold)}
 .consent-gate:not([hidden]) .consent-item:nth-of-type(2){animation-delay:.08s}
 .consent-gate:not([hidden]) .consent-acts{animation:riseIn .5s .16s var(--ease) both}
 @media(prefers-reduced-motion:reduce){.tryprog::before,.drop:not(.has):not(.blocked):not(.over),header,#s1.enter .stage,.cmpwrap{animation:none!important}}
+/*FIX DẢI ĐEN CỦA MỤC 2D DÍNH SANG ẢNH CỦA BẠN — khung .stbody dùng chung cho mô hình 2D và ô tải ảnh toàn thân: nền tường–sàn studio, bóng sàn ::after (vệt đen ngang ở đáy khung) và vệt tối inset ở đáy là trang trí của riêng mô hình 2D, nhưng ::after vẽ ĐÈ lên trên ảnh toàn thân nên ảnh của bạn bị dính một dải đen ngang qua người. Khi khung ở chế độ ảnh (class .photo do viewSync bật, kèm dự phòng :has khi #bdrop đang hiện): tắt hẳn bóng sàn, bỏ vệt tối/vignette ở đáy và thay nền studio bằng nền phẳng sạch để ảnh hiển thị nguyên vẹn; mô hình 2D giữ nguyên sân khấu như cũ*/
+.stbody.photo,.stbody:has(>#bdrop:not(.off)){background:#0a2748;box-shadow:inset 0 0 0 1px rgba(255,255,255,.04)}
+.stbody.photo::after,.stbody:has(>#bdrop:not(.off))::after{display:none}
+.stbody.photo #bdrop.has,.stbody:has(>#bdrop:not(.off)) #bdrop.has{background:#eef3f7}
 </style>
 </head>
 <body>
@@ -634,7 +637,7 @@ div:focus-within>label,div:focus-within>.lab{color:var(--gold)}
   </div>
   <div id="s2" hidden>
     <h1 class="metal">Chọn món <em>muốn thử</em></h1>
-    <p class="sub">Tải ảnh sản phẩm trên Shopee, TikTok Shop hoặc Instagram (có thể dán Ctrl+V). Ảnh món đồ rõ, nền sạch cho ảnh mặc thử đẹp hơn.</p>
+    <p class="sub">Tải ảnh sản phẩm trên Shopee, TikTok Shop hoặc Instagram (có thể dán Ctrl+V).</p>
     <div class="s1grid s2grid">
       <div>
         <input id="file" type="file" accept="image/*" hidden>
@@ -644,11 +647,10 @@ div:focus-within>label,div:focus-within>.lab{color:var(--gold)}
       </div>
       <div>
         <div class="col">
-          <div><label for="link">Link sản phẩm (tùy chọn)</label><input id="link" type="url" placeholder="Dán link để ghi nhớ"><p class="hint">Các sàn chặn đọc link tự động, nên AI sẽ đọc từ ảnh của bạn.</p></div>
+          <div><label for="link">Link sản phẩm (tùy chọn)</label><input id="link" type="url" placeholder="Dán link để ghi nhớ"></div>
           <div><span class="lab">Bạn mặc bộ này đi đâu? <span style="font-weight:400;color:var(--mute)">(để gợi ý outfit đa dạng theo dịp)</span></span><div class="chips" id="occChips"></div></div>
           <div><span class="lab">Bảng size món 1 (nếu có)</span><div class="sz" id="t1"></div><p class="hint">Điền theo bảng của shop. Shop chỉ ghi cân nặng (kg) thì điền cột Cân nặng, cột hay size nào không có thì để trống.</p></div>
-          <div><span class="lab">Bảng size món 2: quần/váy (nếu có)</span><div class="sz" id="t2"></div></div>
-          <p class="hint">Món 1 là áo/đầm. Thêm món 2 (quần/váy) nếu muốn mặc thử cả bộ.</p>
+          <div><span class="lab">Bảng size món 2 (nếu có)</span><div class="sz" id="t2"></div></div>
         </div>
         <div class="actions" style="flex-direction:column;align-items:stretch;max-width:340px">
           <button class="btn" id="go">Thử đồ ngay</button>
@@ -1050,7 +1052,7 @@ const btns = [...el.querySelectorAll("button")], ind = el.querySelector(".ind");
 const sync = () => {
 const i = items.indexOf(view); btns.forEach((b, j) => { b.classList.toggle("on", j === i); b.setAttribute("aria-pressed", j === i); });
 ind.style.width = "calc((100% - 6px) / 2)"; ind.style.transform = `translateX(${i*100}%)`;
-$("#man").classList.toggle("off", i === 1); $("#bdrop").classList.toggle("off", i === 0); $("#stat").style.opacity = i === 0 ? 1 : .4;
+$("#man").classList.toggle("off", i === 1); $("#bdrop").classList.toggle("off", i === 0); $(".stbody").classList.toggle("photo", i === 1); $("#stat").style.opacity = i === 0 ? 1 : .4;
 };
 btns.forEach((b, i) => b.onclick = () => { view = items[i]; sync(); });
 sync(); return sync;
@@ -1088,7 +1090,7 @@ r.readAsDataURL(file);
 });
 const mkThumb = c => { const sc = Math.min(1, 360 / Math.max(c.width, c.height)), t = document.createElement("canvas"); t.width = Math.round(c.width*sc); t.height = Math.round(c.height*sc); t.getContext("2d").drawImage(c, 0, 0, t.width, t.height); return t.toDataURL("image/jpeg", .7); };
 const UP = '<svg viewBox="0 0 24 24"><path d="M12 16V4M7 9l5-5 5 5M4 20h16"/></svg>';
-const EMPTY = { "#drop": UP + "Chạm để tải ảnh sản phẩm (món 1)", "#drop2": UP + "Thêm ảnh quần/váy nếu muốn mặc thử cả bộ", "#bdrop": UP + "Ảnh toàn thân<br><small style='opacity:.75'>Đứng thẳng, chính diện, thấy rõ toàn thân</small>" };
+const EMPTY = { "#drop": UP + "Chạm để tải ảnh món 1 — áo, quần, váy hay đầm đều được", "#drop2": UP + "Thêm ảnh món 2 nếu muốn mặc thử cả bộ (AI tự nhận diện từng món)", "#bdrop": UP + "Ảnh toàn thân<br><small style='opacity:.75'>Đứng thẳng, chính diện, thấy rõ toàn thân</small>" };
 /* Chặn mục Ảnh toàn thân ngay tại ô tải ảnh khi từ chối chính sách: cờ do applyConsent (cuối file) bật/tắt theo lựa chọn của phiên này */
 let bodyBlockOn = false;
 const bodyBlocked = () => bodyBlockOn;
@@ -1212,6 +1214,20 @@ if (!c.length) return "";
 return c.slice(0, 6).map(x => `${x.product} (size ${x.size}${x.fit ? ", form " + x.fit : ""}${x.family ? ", họ " + x.family : ""})`).join("; ");
 }
 const SYS = () => "Bạn là FitMe AI, stylist và chuyên gia chọn size quần áo cho người Việt. Trả lời tiếng Việt, thẳng thắn, không bịa số liệu. TRẢ LỜI CỰC NGẮN, CHỈ 1 ĐỀ XUẤT DUY NHẤT (bắt buộc): mỗi câu trả lời tối đa khoảng 90 từ, CHỈ nêu ĐÚNG 1 phương án/bộ đồ tốt nhất — không liệt kê phương án 2, không thêm danh sách món gợi ý, không mở bài, không lặp lại hồ sơ người dùng, không chào hỏi hay chúc tụng ở cuối. Với câu hỏi phối đồ / chọn đồ / phom dáng, trả lời đúng 4 dòng theo thứ tự logic này, mỗi dòng bắt đầu đúng mẫu và chỉ chứa ĐÚNG 1 ý tối đa 18 từ: 'Ưu điểm:' (điểm mạnh nổi bật nhất của phương án duy nhất) → 'Khuyết điểm:' (điểm yếu đáng lo nhất) → 'Cách khắc phục:' (cách xử lý cụ thể cho đúng khuyết điểm đó) → 'Chốt:' (kết luận nên mặc gì, 1 câu). Với câu hỏi ngắn khác (màu sắc, chất liệu, bảo quản...), trả lời 1-2 câu ngắn, không ép theo 4 dòng. " + STYLE_RULES + " Hồ sơ người dùng: " + profileText() + (closetText() ? " Tủ đồ người dùng đang có (ƯU TIÊN phối từ chính các món này khi phù hợp và nói rõ món nào trong gợi ý là món trong tủ): " + closetText() + "." : " Tủ đồ người dùng đang trống: nếu người dùng hỏi phối từ tủ đồ, hãy nhắc họ thử đồ rồi nhấn Lưu vào tủ đồ trước.");
+/* ---- Nhận diện LOẠI MÓN (áo / quần-váy / đầm liền) ----
+   Trước đây loại món bị khóa cứng theo Ô tải: ô 1 luôn bị coi là áo/đầm, ô 2 luôn là quần/váy.
+   Hệ quả: người dùng chỉ thử riêng quần (up ảnh quần vào ô 1, hoặc chỉ điền ô 2) thì bị chặn ở nút Thử đồ,
+   hoặc chiếc quần bị phân tích + ghép mặc thử như một cái áo (không mặt nạ thân dưới) nên AI không nhận ra.
+   Nay loại món do AI nhận diện TỪ ẢNH và trả về ở trường cat; hàm dưới là dự phòng trên máy
+   (đoán theo tên món AI đã ghi) khi AI không trả cat — ô tải chỉ còn là gợi ý cuối cùng. */
+function detectCat(text, hintBottom){
+const t = String(text || "").toLowerCase();
+if (/váy liền|đầm|dress|jumpsuit|áo dài|váy dạ hội/.test(t)) return "dress";
+if (/quần|chân váy|váy|jeans|denim|short|jogger|cargo|legging|skirt|yếm/.test(t)) return "bottom";
+if (/áo|sơ mi|blazer|hoodie|jacket|khoác|thun|jersey|vest|cardigan|crop|tank|polo|len|nỉ/.test(t)) return "top";
+return hintBottom ? "bottom" : "top";
+}
+const CAT_LABEL = { top: "Áo · món trên", bottom: "Quần/váy · món dưới", dress: "Đầm liền" };
 function localSize(bottom){
 const h = +P.h, w = +P.w, b = bottom ? +P.hip : +P.bust, order = ["XS","S","M","L","XL","XXL"];
 let i = b ? (bottom ? (b<86?0:b<92?1:b<98?2:b<104?3:b<110?4:5) : (b<82?0:b<88?1:b<94?2:b<100?3:b<106?4:5)) : (w<45?0:w<55?1:w<65?2:w<75?3:w<85?4:5);
@@ -1226,6 +1242,7 @@ const f = String(o.fit || "vừa").toLowerCase(), ok = P.skin || P.under;
 return { product: String(o.product || "Sản phẩm của bạn"), size: String(o.size || "?").trim().toUpperCase(),
 confidence: Math.max(0, Math.min(100, parseInt(o.confidence) || 60)), fit: ["ôm","vừa","rộng","oversize"].find(x => f.includes(x)) || "vừa",
 reasons: arr(o.reasons).slice(0,2), alt_size: String(o.alt_size || "").trim().toUpperCase(), warnings: arr(o.warnings).slice(0,1), styling: arr(o.styling).slice(0,2), colors: ok ? arr(o.colors).slice(0,3) : [],
+cat: ["top","bottom","dress"].includes(String(o.cat || "").toLowerCase()) ? String(o.cat).toLowerCase() : "",
 family: String(o.family || ""), pros: arr(o.pros).slice(0,2), cons: arr(o.cons).slice(0,2),
 outfits: Array.isArray(o.outfits) ? o.outfits.slice(0,2).map(x => ({ name: String(x && x.name || "Bộ phối"), occasion: String(x && x.occasion || ""), items: String(x && x.items || ""), colors: arr(x && x.colors) })) : [] };
 }
@@ -1261,13 +1278,14 @@ if (fam === "sport"){
 if (r.outfits.length < 1) r.outfits = localOutfits(r, bottom);
 return r;
 }
-async function analyze(imgData, text, link, bottom, pre){
-const prompt = `Chọn size cho người dùng. Link: ${link||"không có"}. Bảng size shop: ${text||"không có (hãy dùng bảng size chung, nói rõ nếu ước tính)"}. Dịp mặc: ${OCC||"chưa chọn"}. Loại món: ${bottom?"quần/váy (món dưới)":"áo/đầm (món trên)"}.${pre ? ` Đã đối chiếu bảng size bằng phép tính chính xác: size ${pre}. Bắt buộc dùng đúng size này, không tự suy luận lại.` : ""}
-BƯỚC 1 — NHẬN DIỆN ĐÚNG MÓN: Nhìn kỹ ảnh và ghi vào product đúng loại thật + chi tiết nhận dạng (ví dụ "Áo jersey Brazil sân nhà vàng-xanh", "Áo sơ mi trắng công sở"), KHÔNG ghi chung chung "áo thun". Đồng thời xếp món vào đúng 1 họ ở trường family: sport (jersey/áo đấu/áo thể thao/áo tập), formal (sơ mi/blazer/quần tây/đầm công sở), casual (thun/jeans/denim/thường ngày), party (dạ hội/sequin), home (đồ ở nhà).
+async function analyze(imgData, text, link, hintBottom, pre){
+const prompt = `Chọn size cho người dùng. Link: ${link||"không có"}. Bảng size shop: ${text||"không có (hãy dùng bảng size chung, nói rõ nếu ước tính)"}. Dịp mặc: ${OCC||"chưa chọn"}. Ô tải ảnh số ${hintBottom?2:1} — đây CHỈ là vị trí ô người dùng bấm vào, TUYỆT ĐỐI KHÔNG suy ra loại món từ vị trí ô: người dùng có thể up ảnh quần vào ô 1 hoặc chỉ thử đúng một chiếc quần mà không có áo nào.${pre ? ` Đã đối chiếu bảng size bằng phép tính chính xác: size ${pre}. Bắt buộc dùng đúng size này, không tự suy luận lại.` : ""}
+BƯỚC 0 — TỰ NHẬN DIỆN LOẠI MÓN TỪ ẢNH (quan trọng nhất): Nhìn ảnh (và link/bảng size nếu có) để xác định món này THẬT SỰ là gì và ghi vào trường cat đúng 1 trong 3 giá trị: "bottom" nếu là quần dài, quần short, quần jeans, jogger, cargo, legging, chân váy, váy ngắn/midi (món mặc từ eo trở xuống); "dress" nếu là đầm liền, váy liền thân, jumpsuit, áo dài; "top" nếu là áo các loại cho thân trên. Một chiếc quần jeans tải lên BẤT KỲ ô nào vẫn luôn là "bottom" — không bao giờ ép thành áo. Sau đó chọn size theo đúng số đo quyết định của loại đó: bottom thì ưu tiên vòng eo + vòng mông và chiều dài ống; top thì ưu tiên vòng ngực + vai; dress thì ngực + eo.
+BƯỚC 1 — NHẬN DIỆN ĐÚNG MÓN: Nhìn kỹ ảnh và ghi vào product đúng loại thật + chi tiết nhận dạng (ví dụ "Áo jersey Brazil sân nhà vàng-xanh", "Quần jeans ống thẳng xanh nhạt"), KHÔNG ghi chung chung "áo thun". Đồng thời xếp món vào đúng 1 họ ở trường family: sport (jersey/áo đấu/áo thể thao/áo tập), formal (sơ mi/blazer/quần tây/đầm công sở), casual (thun/jeans/denim/thường ngày), party (dạ hội/sequin), home (đồ ở nhà).
 BƯỚC 2 — PHỐI THEO ĐÚNG HỌ (theo LUẬT PHỐI ở phần vai trò): styling và outfits CHỈ dùng món cùng họ/trung tính đi kèm được. Nếu là jersey/áo đấu (sport) thì chỉ quần short thể thao, jogger, cargo, jeans baggy + sneaker/giày chạy + mũ lưỡi trai/balo mini; CẤM quần tây, quần âu, giày Oxford/Derby/loafer, blazer, sơ mi, cà vạt. Nếu dịp đã chọn xung đột với họ món đồ, outfits vẫn giữ đúng họ và ghi rõ trong occasion dịp thật sự phù hợp.
 TRẢ LỜI NGẮN GỌN, GIỮ Ý CHÍNH (bắt buộc): reasons tối đa 2 ý, mỗi ý tối đa 18 từ, chỉ nêu số đo quyết định size. warnings tối đa 1 ý, tối đa 18 từ, chỉ cảnh báo quan trọng nhất. pros tối đa 2 ý, mỗi ý tối đa 20 từ: ưu điểm nổi bật nhất của món này trên phom dáng người dùng (tôn dáng, che được vùng nào). cons tối đa 2 ý, mỗi ý tối đa 22 từ: khuyết điểm/rủi ro đáng lo nhất kèm cách khắc phục ngay trong cùng câu. styling tối đa 2 ý ngắn. outfits tối đa 2 bộ, cùng đúng họ phong cách, theo các dịp phù hợp với họ đó, mỗi bộ ghi rõ các món phối cùng và 2-3 màu chủ đạo dạng mã hex. Không lặp lại cùng một ý ở nhiều trường.
 Chỉ trả về JSON hợp lệ, không markdown:
-{"product":"tên/loại món đồ thật","family":"sport|formal|casual|party|home","size":"size đề xuất","confidence":0-100,"fit":"ôm|vừa|rộng|oversize","reasons":["..."],"alt_size":"size dự phòng hoặc rỗng","warnings":["..."],"pros":["ưu điểm cụ thể"],"cons":["khuyết điểm + cách khắc phục"],"styling":["gợi ý phối đồ đúng họ"],"outfits":[{"name":"tên bộ","occasion":"dịp phù hợp","items":"các món phối cùng, đúng họ","colors":["#1c1c24","#e8c479"]}],"colors":["màu hợp, chỉ khi đã có tông da/undertone xác nhận, nếu không để mảng rỗng"]}`;
+{"product":"tên/loại món đồ thật","cat":"top|bottom|dress","family":"sport|formal|casual|party|home","size":"size đề xuất","confidence":0-100,"fit":"ôm|vừa|rộng|oversize","reasons":["..."],"alt_size":"size dự phòng hoặc rỗng","warnings":["..."],"pros":["ưu điểm cụ thể"],"cons":["khuyết điểm + cách khắc phục"],"styling":["gợi ý phối đồ đúng họ"],"outfits":[{"name":"tên bộ","occasion":"dịp phù hợp","items":"các món phối cùng, đúng họ","colors":["#1c1c24","#e8c479"]}],"colors":["màu hợp, chỉ khi đã có tông da/undertone xác nhận, nếu không để mảng rỗng"]}`;
 const content = [];
 if (imgData) content.push({type:"image", source:{type:"base64", media_type:"image/jpeg", data:imgData}});
 content.push({type:"text", text:prompt});
@@ -1276,16 +1294,19 @@ const out = await callAI(SYS(), [{role:"user", content}], 900, .2);
 const m = out.match(/\{[\s\S]*\}/);
 if (!m) throw new Error("AI trả về dữ liệu không đọc được.");
 const r = normalize(JSON.parse(m[0])); r.ai = true;
-if (!r.pros.length || !r.cons.length){ const pc = localProsCons(r, bottom); if (!r.pros.length) r.pros = pc[0]; if (!r.cons.length) r.cons = pc[1]; }
-return sanitizeStyle(r, bottom);
+if (!r.cat) r.cat = detectCat(r.product, hintBottom);
+const isBot = r.cat === "bottom";
+if (!r.pros.length || !r.cons.length){ const pc = localProsCons(r, isBot); if (!r.pros.length) r.pros = pc[0]; if (!r.cons.length) r.cons = pc[1]; }
+return sanitizeStyle(r, isBot);
 } catch (e) {
 if (typeof CONSENT !== "undefined" && !CONSENT.gemini) throw new Error("AI chọn size đang tắt vì bạn đã từ chối gửi dữ liệu tới Gemini.");
-const k = bottom ? P.hip : P.bust;
-const fb = { product: bottom ? "Món 2 của bạn" : "Sản phẩm của bạn", size: localSize(bottom), confidence: 45, fit: "vừa", ai: false,
-reasons: ["Ước tính offline từ chiều cao/cân nặng" + (k ? (bottom ? " và vòng mông" : " và vòng ngực") : "") + "."],
-warnings: [e.message, "Kết quả chỉ mang tính tham khảo, hãy đối chiếu bảng size của shop."], styling: [], colors: [], alt_size: "", pros: [], cons: [], outfits: [] };
-const pc = localProsCons(fb, bottom); fb.pros = pc[0]; fb.cons = pc[1];
-return sanitizeStyle(fb, bottom);
+/* Mất kết nối tới AI: không nhìn được ảnh nên chưa nhận diện được loại món — tạm theo gợi ý ô tải, kết quả ghi rõ Offline */
+const isBot = !!hintBottom, k = isBot ? P.hip : P.bust;
+const fb = { product: isBot ? "Món 2 của bạn" : "Sản phẩm của bạn", cat: isBot ? "bottom" : "top", size: localSize(isBot), confidence: 45, fit: "vừa", ai: false,
+reasons: ["Ước tính offline từ chiều cao/cân nặng" + (k ? (isBot ? " và vòng mông" : " và vòng ngực") : "") + "."],
+warnings: [e.message, "Kết quả chỉ mang tính tham khảo, hãy đối chiếu bảng size của shop."], styling: [], colors: [], alt_size: "", pros: [], cons: [], outfits: [], family: "" };
+const pc = localProsCons(fb, isBot); fb.pros = pc[0]; fb.cons = pc[1];
+return sanitizeStyle(fb, isBot);
 }
 }
 
@@ -1501,7 +1522,7 @@ return r;
 }
 /* Khi đã từ chối: kết quả CHỈ từ đối chiếu bảng size thuần trên máy — không AI, không gợi ý phối/ưu-khuyết sinh ra trên máy */
 function chartOnlyResult(m, bottom){
-const r = { product: bottom ? "Món 2 của bạn" : "Món 1 của bạn", size: "?", confidence: 0, fit: "vừa", ai: false, reasons: [], warnings: ["AI đang tắt nên chưa đối chiếu được — hãy điền bảng size của shop cho món này để đối chiếu trên máy."], styling: [], colors: [], alt_size: "", pros: [], cons: [], outfits: [], family: "" };
+const r = { product: bottom ? "Món 2 của bạn" : "Món 1 của bạn", cat: bottom ? "bottom" : "top", size: "?", confidence: 0, fit: "vừa", ai: false, reasons: [], warnings: ["AI đang tắt nên chưa đối chiếu được — hãy điền bảng size của shop cho món này để đối chiếu trên máy."], styling: [], colors: [], alt_size: "", pros: [], cons: [], outfits: [], family: "" };
 if (!m) return r;
 r.size = m.size; r.alt_size = m.alt || ""; r.confidence = m.exact ? 85 : 65;
 r.reasons = [chartReason(m)];
@@ -1510,18 +1531,25 @@ return r;
 }
 $("#go").onclick = async () => {
 const text = chartText("#t1"), link = $("#link").value.trim(), text2 = chartText("#t2");
-if (!img && !text && !link) { $("#e2").textContent = "Thêm ít nhất một ảnh, bảng size hoặc link cho món 1."; return; }
+/* Chỉ cần MỘT món bất kỳ là chạy được: thử riêng quần, riêng áo hay cả bộ.
+   Trước đây bắt buộc phải có món 1 nên chỉ điền/up món 2 (quần/váy) là bị chặn ngay tại đây. */
+const has1 = !!(img || text || link), has2 = !!(img2 || text2);
+if (!has1 && !has2) { $("#e2").textContent = "Thêm ít nhất một ảnh, bảng size hoặc link cho một món bất kỳ — chỉ thử quần, chỉ thử áo hay cả bộ đều được."; return; }
 if (typeof CONSENT !== "undefined" && !CONSENT.gemini) {
 /* Đã từ chối tất cả: AI chọn size TẮT hẳn — không chạy phân tích và không trả kết quả offline thay thế.
-   Chỉ đối chiếu bảng size của shop ngay trên máy (không gửi dữ liệu đi đâu) như hộp chính sách đã ghi. */
-const cm1 = matchChart("#t1"), cm2 = matchChart("#t2"), has2 = !!(img2 || text2);
-if (!cm1 && !(has2 && cm2)) { $("#e2").textContent = "AI chọn size đang tắt vì bạn đã từ chối gửi dữ liệu tới Gemini. Bạn vẫn đối chiếu được bằng cách điền bảng size của shop ở trên — hoặc bấm “Đổi lựa chọn quyền riêng tư” ở cuối trang để bật lại AI."; return; }
+   Chỉ đối chiếu bảng size của shop ngay trên máy (không gửi dữ liệu đi đâu) như hộp chính sách đã ghi.
+   Món nào có bảng size khớp thì ra kết quả món đó — chỉ điền bảng món 2 (quần/váy) cũng được. */
+const cm1 = matchChart("#t1"), cm2 = matchChart("#t2");
+const cents = [];
+if (has1) cents.push({ cm: cm1, hint: false, slot: 0 });
+if (has2) cents.push({ cm: cm2, hint: true, slot: 1 });
+const cuse = cents.filter(e => e.cm);
+if (!cuse.length) { $("#e2").textContent = "AI chọn size đang tắt vì bạn đã từ chối gửi dữ liệu tới Gemini. Bạn vẫn đối chiếu được bằng cách điền bảng size của shop ở trên — hoặc bấm “Đổi lựa chọn quyền riêng tư” ở cuối trang để bật lại AI."; return; }
 $("#e2").textContent = "";
-last = [chartOnlyResult(cm1, false)];
-if (has2) last.push(chartOnlyResult(cm2, true));
+last = cuse.map(e => { const r = chartOnlyResult(e.cm, e.hint); r.slot = e.slot; return r; });
 if (last.length > 1) last.combo = { pros: [], cons: [], styling: [], outfits: [], family: "", ai: false };
 const cdate = new Date().toLocaleDateString("vi-VN");
-last.forEach((r, i) => { r.date = cdate; r.link = i ? "" : link; r.thumb = i ? thumb2 : thumb; });
+last.forEach(r => { r.date = cdate; r.link = r.slot ? "" : link; r.thumb = r.slot ? thumb2 : thumb; });
 step(3); renderResult(); initFit(); $("#save").hidden = false;
 $("#e4").textContent = "Bạn đang xem kết quả đối chiếu bảng size trên máy (AI đang tắt).";
 return;
@@ -1530,12 +1558,22 @@ $("#e2").textContent = ""; $("#go").disabled = true; const goTxt = $("#go").text
 $("#result").innerHTML = ""; $("#loading").hidden = false; $("#save").hidden = true; $("#fit").hidden = true; $("#e4").textContent = "";
 try {
 const m1 = matchChart("#t1"), m2 = matchChart("#t2");
-const jobs = [analyze(img, text, link, false, m1 && m1.size).then(r => applyChart(r, m1))];
-if (img2 || text2) jobs.push(analyze(img2, text2, "", true, m2 && m2.size).then(r => applyChart(r, m2)));
+/* Mỗi món có mặt đều được phân tích độc lập; AI tự nhận diện loại món (trường cat) theo ảnh,
+   slot chỉ còn là gợi ý mờ và để truy vết ảnh gốc của đúng món đó (r.slot). */
+const slots = [];
+if (has1) slots.push({ data: img, text, link, hint: false, slot: 0, chart: m1 });
+if (has2) slots.push({ data: img2, text: text2, link: "", hint: true, slot: 1, chart: m2 });
+const jobs = slots.map(s => analyze(s.data, s.text, s.link, s.hint, s.chart && s.chart.size).then(r => { const rr = applyChart(r, s.chart); rr.slot = s.slot; return rr; }));
 last = await Promise.all(jobs);
 const date = new Date().toLocaleDateString("vi-VN");
-last.forEach((r, i) => { r.date = date; r.link = i ? "" : link; r.thumb = i ? thumb2 : thumb; });
-if (last.length > 1) last.combo = await comboAnalyze(last[0], last[1]);
+last.forEach(r => { r.date = date; r.link = r.slot ? "" : link; r.thumb = r.slot ? thumb2 : thumb; });
+if (last.length > 1) {
+/* Đánh giá cả bộ theo đúng vai đã nhận diện: món dưới (cat=bottom) làm MÓN DƯỚI dù nó nằm ở ô 1 hay ô 2 */
+const botR = last.find(r => r.cat === "bottom") || null;
+const topR = last.find(r => r !== botR) || last[0];
+const otherR = last.find(r => r !== topR) || topR;
+last.combo = await comboAnalyze(topR, otherR);
+}
 renderResult(); initFit(); $("#save").hidden = false;
 } catch (e) {
 last = null;
@@ -1549,16 +1587,27 @@ const list = a => a && a.length ? `<ul class="clean">${a.map(x => `<li>${esc(x)}
 function moreBlock(key, inner){
 return inner ? `<div class="morewrap"><button type="button" class="chip moretoggle" data-more="${key}" aria-expanded="false">Xem chi tiết</button><div class="morebody" id="more-${key}" hidden>${inner}</div></div>` : "";
 }
+const colorTag = c => { const hex = /^#(?:[0-9a-f]{3}|[0-9a-f]{6})$/i.test(String(c).trim()); return `<span class="tag">${hex ? `<i class="cdot" style="background:${esc(c)}"></i>` : ""}${esc(c)}</span>`; };
+/* HỎI THÊM STYLIST AI NGAY Ở KẾT QUẢ — hộp chip đặt cạnh chữ size lớn; bấm chip là chuyển sang tab Stylist và gửi luôn câu hỏi về đúng món/size đó KÈM ẢNH của đúng món đó (xem handler [data-askq] trong renderResult; đi qua sendQ nên vẫn bị chặn khi chưa đồng ý Gemini) */
+const ASKQ_LABELS = ["Phối với gì đẹp?","Chốt size nào?","Hợp dịp nào?"];
+const ASKQ = [
+r => `Phối "${r.product}" (size ${r.size}${r.fit ? ", form " + r.fit : ""}) với gì đẹp nhất?`,
+r => `"${r.product}" này tôi nên chốt size ${r.size}${r.alt_size ? " hay size dự phòng " + r.alt_size : ""}? Vì sao?`,
+r => `"${r.product}" (size ${r.size}) mặc được những dịp nào, cần tránh phối với gì?`
+];
+function askStyHTML(i, block){
+return `<div class="asksty${block ? " block" : ""}"><div class="asksty-t"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v11H9l-5 4Z"/></svg>Hỏi thêm Stylist AI về món này</div><div class="chips">${ASKQ_LABELS.map((lb, q) => `<button type="button" class="chip" data-askq="${i}:${q}">${lb}</button>`).join("")}</div></div>`;
+}
 function renderOne(r, i){
 const fitCls = r.fit === "vừa" ? "ok" : "warn";
 const reasons = (r.reasons || []).slice(0, 2), warns = (r.warnings || []).slice(0, 1), warnsMore = (r.warnings || []).slice(1);
 const pros = (r.pros || []).slice(0, 2), cons = (r.cons || []).slice(0, 2);
-const more = `${warnsMore.length ? `<label style="margin-top:14px">Lưu ý thêm</label>${list(warnsMore)}` : ""}${r.styling?.length ? `<label style="margin-top:14px">Gợi ý phối đồ</label>${list((r.styling || []).slice(0, 2))}` : ""}${outfitGrid(r.outfits, "Outfit cho bạn", "Tối đa 2 bộ, phối theo dịp")}${r.colors?.length ? `<label style="margin-top:14px">Màu hợp với bạn</label>${r.colors.slice(0, 3).map(c => `<span class="tag">${esc(c)}</span>`).join("")}` : ""}`;
+const more = `${warnsMore.length ? `<label style="margin-top:14px">Lưu ý thêm</label>${list(warnsMore)}` : ""}${r.styling?.length ? `<label style="margin-top:14px">Gợi ý phối đồ</label>${list((r.styling || []).slice(0, 2))}` : ""}${outfitGrid(r.outfits, "Outfit cho bạn", "Tối đa 2 bộ, phối theo dịp")}${r.colors?.length ? `<label style="margin-top:14px">Màu hợp với bạn</label>${r.colors.slice(0, 3).map(colorTag).join("")}` : ""}`;
 return `<div class="enter">
 ${r.thumb ? `<img class="rthumb" src="${r.thumb}" alt="Ảnh sản phẩm">` : ""}
 <p class="sub" style="margin:0">${last.length > 1 ? `<b>Món ${i+1}</b> · ` : ""}${esc(r.product)}</p>
 <div style="display:flex;align-items:flex-end;gap:16px;flex-wrap:wrap"><div class="size-big metal">${esc(r.size)}</div>
-<div><span class="tag ${fitCls}">Form ${esc(r.fit)}</span>${r.alt_size ? `<span class="tag">Dự phòng: ${esc(r.alt_size)}</span>` : ""}${r.ai ? "" : `<span class="tag warn">Offline</span>`}</div></div>
+<div><span class="tag ${fitCls}">Form ${esc(r.fit)}</span>${r.cat ? `<span class="tag">${r.ai ? "AI nhận diện: " : "Loại món: "}${esc(CAT_LABEL[r.cat] || "")}</span>` : ""}${r.alt_size ? `<span class="tag">Dự phòng: ${esc(r.alt_size)}</span>` : ""}${r.ai ? "" : `<span class="tag warn">Offline</span>`}</div>${askStyHTML(i)}</div>
 <div class="meter" role="img" aria-label="Độ tin cậy ${+r.confidence||0}%"><div style="width:${+r.confidence||0}%"></div></div>
 <div class="hint">Độ tin cậy ${+r.confidence||0}%</div>
 <label style="margin-top:14px">Vì sao chọn size này</label>${list(reasons)}
@@ -1567,25 +1616,29 @@ ${(pros.length || cons.length) ? `<label style="margin-top:16px">Ưu &amp; khuy�
 ${moreBlock("one" + i, more)}</div>`;
 }
 function renderCombo(){
-const top = last[0], bot = last[1], combo = last.combo || localCombo(top, bot);
+/* Vai trên/dưới lấy theo loại món AI đã nhận diện (cat), KHÔNG theo vị trí ô: quần up vào ô 1 vẫn là món dưới */
+const top = last.find(r => r.cat !== "bottom") || last[0];
+const bot = last.find(r => r !== top) || last[1];
+const combo = last.combo || localCombo(top, bot);
 const conf = Math.round(((+top.confidence || 0) + (+bot.confidence || 0)) / 2);
-const itemBlock = (r, tag) => `<div class="comboitem">
+const itemBlock = (r, tag, idx) => `<div class="comboitem">
 ${r.thumb ? `<img class="cthumb" src="${r.thumb}" alt="Ảnh ${esc(tag)}">` : ""}
 <p class="sub" style="margin:0"><b>${esc(tag)}</b> · ${esc(r.product)}</p>
 <div style="display:flex;align-items:flex-end;gap:12px;flex-wrap:wrap;margin-top:2px"><div class="size-mid metal">${esc(r.size)}</div>
 <div><span class="tag ${r.fit === "vừa" ? "ok" : "warn"}">Form ${esc(r.fit)}</span>${r.alt_size ? `<span class="tag">Dự phòng: ${esc(r.alt_size)}</span>` : ""}${r.ai ? "" : `<span class="tag warn">Offline</span>`}</div></div>
 <div class="meter" role="img" aria-label="Độ tin cậy ${+r.confidence || 0}%"><div style="width:${+r.confidence || 0}%"></div></div>
 <div class="hint">Độ tin cậy ${+r.confidence || 0}%</div>
+${askStyHTML(idx, true)}
 <label style="margin-top:12px">Vì sao chọn size này</label>${list((r.reasons || []).slice(0, 2))}
 ${r.warnings && r.warnings.length ? `<label style="margin-top:12px">Lưu ý</label>${list(r.warnings.slice(0, 1))}` : ""}</div>`;
 const colorsAll = dedupe([...(top.colors || []), ...(bot.colors || [])]).slice(0, 3);
 const cpros = (combo.pros || []).slice(0, 2), ccons = (combo.cons || []).slice(0, 2), csty = (combo.styling || []).slice(0, 2);
-const cmore = `${csty.length > 1 ? `<label style="margin-top:14px">Phối hoàn thiện thêm</label>${list(csty.slice(1))}` : ""}${outfitGrid(combo.outfits, "Biến tấu từ chính bộ này", "Giữ nguyên áo + quần, chỉ đổi giày và phụ kiện theo dịp")}${colorsAll.length ? `<label style="margin-top:14px">Màu hợp với bạn</label>${colorsAll.map(c => `<span class="tag">${esc(c)}</span>`).join("")}` : ""}`;
+const cmore = `${csty.length > 1 ? `<label style="margin-top:14px">Phối hoàn thiện thêm</label>${list(csty.slice(1))}` : ""}${outfitGrid(combo.outfits, "Biến tấu từ chính bộ này", "Giữ nguyên áo + quần, chỉ đổi giày và phụ kiện theo dịp")}${colorsAll.length ? `<label style="margin-top:14px">Màu hợp với bạn</label>${colorsAll.map(colorTag).join("")}` : ""}`;
 return `<div class="enter">
 <div class="sechead" style="margin-top:0"><h3>Bộ outfit hoàn chỉnh của bạn</h3><span>Hai món được đánh giá như một bộ mặc cùng nhau</span></div>
 <p class="sub" style="margin:0 0 2px">${esc(top.product)} <b style="color:var(--gold)">+</b> ${esc(bot.product)}</p>
 <div class="hint">Độ tin cậy chung của cả bộ: <b style="color:var(--gold)">${conf}%</b> — size từng món vẫn được đối chiếu riêng theo bảng size của shop ở hai ô dưới.</div>
-<div class="comboitems">${itemBlock(top, "Món 1 · Áo/đầm")}${itemBlock(bot, "Món 2 · Quần/váy")}</div>
+<div class="comboitems">${itemBlock(top, CAT_LABEL[top.cat] || "Món trên", last.indexOf(top))}${itemBlock(bot, CAT_LABEL[bot.cat] || "Món dưới", last.indexOf(bot))}</div>
 ${csty.length ? `<div class="verdict"><b>Chốt cả bộ:</b> ${esc(csty[0])}</div>` : ""}
 ${cpros.length || ccons.length ? `<label style="margin-top:18px">Ưu &amp; khuyết điểm khi mặc CẢ BỘ cùng nhau</label><div class="pcgrid">${cpros.length ? `<div class="pcard pro"><h4>✓ Ưu điểm của cả bộ</h4><ul>${cpros.map(x => `<li>${esc(x)}</li>`).join("")}</ul></div>` : ""}${ccons.length ? `<div class="pcard con"><h4>! Khuyết điểm của cả bộ cần lưu ý</h4><ul>${ccons.map(x => `<li>${esc(x)}</li>`).join("")}</ul></div>` : ""}</div>` : ""}
 ${moreBlock("combo", cmore)}</div>`;
@@ -1593,6 +1646,17 @@ ${moreBlock("combo", cmore)}</div>`;
 function renderResult(){
 $("#result").innerHTML = last.length > 1 ? renderCombo() : last.map(renderOne).join('<hr style="border:0;border-top:1px solid var(--line);margin:22px 0;clear:both">');
 $("#result").querySelectorAll("[data-more]").forEach(b => b.onclick = () => { const el = document.getElementById("more-" + b.dataset.more); if (!el) return; const show = el.hidden; el.hidden = !show; b.textContent = show ? "Thu gọn" : "Xem chi tiết"; b.setAttribute("aria-expanded", String(show)); });
+$("#result").querySelectorAll("[data-askq]").forEach(b => { if (typeof CONSENT !== "undefined" && CONSENT.saved && !CONSENT.gemini){ b.disabled = true; b.title = "Stylist AI đã tắt vì bạn đã từ chối gửi dữ liệu tới Gemini"; } b.onclick = () => {
+if (typeof CONSENT !== "undefined" && !CONSENT.gemini) { document.querySelector('[data-tab="stylist"]').click(); $("#e3").textContent = "Stylist AI đang tắt vì bạn chưa đồng ý gửi dữ liệu tới Gemini. Bấm “Đổi lựa chọn quyền riêng tư” ở cuối trang để bật lại."; return; }
+const p = b.dataset.askq.split(":").map(Number), r = last[p[0]]; if (!r) return;
+document.querySelector('[data-tab="stylist"]').click();
+$("#q").value = ASKQ[p[1]](r);
+/* Kèm ẢNH của đúng món đang hỏi vào chatbox Stylist, cùng cơ chế với nút "Hỏi Stylist" từ Tủ đồ: ảnh thu nhỏ (r.thumb) hiện trong bong bóng chat và lưu cùng lịch sử, ảnh gốc gửi kèm cho AI xem trong lượt hỏi này — ưu tiên r.full (kết quả khôi phục từ Tủ đồ qua "Mặc thử lại"), không có thì lấy ảnh gốc đang giữ ở Bước 2 theo đúng vị trí món (món 1 = img, món 2 = img2). Kết quả nào không có ảnh (chỉ điền bảng size/link, không tải ảnh sản phẩm) thì không có gì để kèm: vẫn hỏi bằng chữ như trước, không bịa ảnh thay thế */
+const fullSrc = dataOf(r.full || fullOf((r.slot === 1 || (r.slot !== 0 && p[0])) ? img2 : img) || r.thumb || "");
+const dispSrc = dataOf(r.thumb || fullSrc || "");
+const attach = dispSrc ? { imgs: [dispSrc], fulls: [fullSrc || dispSrc], labels: [String(r.product || "Món đồ ở mục Kết quả")], sizes: [String(r.size || "")] } : undefined;
+sendQ(attach);
+} });
 }
 /* ---------- Mặc thử AI (Hugging Face IDM-VTON): chuẩn bị ảnh thông minh → gửi có thử lại → hậu xử lý & so sánh ---------- */
 const TRY_W = 768, TRY_H = 1024;
@@ -1605,12 +1669,34 @@ const d = x.getImageData(0, 0, w, h).data; let sum = 0, sum2 = 0, n = 0;
 for (let i = 0; i < d.length; i += 4 * (step || 24)) { const lum = .2126 * d[i] + .7152 * d[i+1] + .0722 * d[i+2]; sum += lum; sum2 += lum * lum; n++; }
 const mean = sum / Math.max(1, n); return { mean, sd: Math.sqrt(Math.max(0, sum2 / Math.max(1, n) - mean * mean)) };
 }
+/* Kế hoạch ghép mặc thử theo LOẠI MÓN ĐÃ NHẬN DIỆN (r.cat của từng kết quả), không theo ô tải:
+   - món dưới (quần/váy) ghép TRƯỚC kèm mặt nạ thân dưới — dù ảnh quần nằm ở ô 1 hay ô 2, và dù không có áo nào;
+   - món trên / đầm liền ghép sau, không mặt nạ.
+   Trước đây low bị khóa theo ô (ô 2 = quần, ô 1 = áo) nên quần up vào ô 1 bị ghép như áo và IDM-VTON không nhận ra.
+   Kết quả nào không truy được loại (bản ghi cũ) thì đoán lại từ tên món, ô tải là gợi ý cuối. */
+function garmentPlan(){
+const plan = [], used = { 0: false, 1: false };
+if (Array.isArray(last)) last.forEach((r, i) => {
+const slot = (r.slot === 0 || r.slot === 1) ? r.slot : Math.min(i, 1);
+const g = slot ? img2 : img;
+if (!g) return;
+used[slot] = true;
+const cat = r.cat || detectCat(r.product, slot === 1);
+plan.push({ g, cat, slot, name: cat === "bottom" ? "quần/váy" : cat === "dress" ? "đầm" : "áo" });
+});
+if (img && !used[0]) plan.push({ g: img, cat: "top", slot: 0, name: "áo" });
+if (img2 && !used[1]) plan.push({ g: img2, cat: "bottom", slot: 1, name: "quần/váy" });
+plan.sort((a, b) => (a.cat === "bottom" ? 0 : 1) - (b.cat === "bottom" ? 0 : 1));
+return plan;
+}
 function initFit(){
 $("#aiOut").innerHTML = ""; TRY.stages = []; TRY.view = -1;
-const ok = !!(body && img);
+const plan = garmentPlan();
+const hasBottom = plan.some(p => p.cat === "bottom");
+const ok = !!(body && plan.length);
 $("#fit").hidden = !ok;
-$("#maskBox").hidden = !(ok && img2); if (ok && img2) drawMask();
-$("#e4").textContent = ok ? "" : "Muốn xem bạn mặc món này: quay lại và thêm ảnh toàn thân của bạn (bước 1) cùng ảnh sản phẩm (bước 2).";
+$("#maskBox").hidden = !(ok && hasBottom); if (ok && hasBottom) drawMask();
+$("#e4").textContent = ok ? "" : (body ? "Muốn mặc thử: quay lại bước 2 và thêm ảnh sản phẩm — chỉ thử riêng quần, riêng áo hay cả bộ đều được." : "Muốn xem bạn mặc món này: quay lại và thêm ảnh toàn thân của bạn (bước 1) cùng ảnh sản phẩm (bước 2) — chỉ thử quần cũng được, không cần thêm áo.");
 if (typeof applyConsent === "function") applyConsent();
 }
 function maskPath(x, cx, y0, y1, hwTop, hwBot){
@@ -1799,7 +1885,7 @@ $("#aiOut").innerHTML = `<div class="cmpwrap">
 <button type="button" class="chip ${TRY.mode === "orig" ? "on" : ""}" id="modeOrig">Ảnh gốc từ AI</button>
 <a class="btn ghost" href="${src}" download="fitme-mac-thu.png" style="min-height:44px;padding:0 22px;font-size:15px">Tải ảnh về</a>
 </div>
-${TRY.stages.length > 1 ? `<div class="trysteps-thumbs">${TRY.stages.map((s2, i) => `<figure><img src="${s2.enh}" data-v="${i}" class="${i === idx ? "on" : ""}" alt="Kết quả sau món ${i+1}"><figcaption>${i === 0 ? "Sau quần/váy" : "Cả bộ hoàn chỉnh"}</figcaption></figure>`).join("")}</div>` : ""}
+${TRY.stages.length > 1 ? `<div class="trysteps-thumbs">${TRY.stages.map((s2, i) => `<figure><img src="${s2.enh}" data-v="${i}" class="${i === idx ? "on" : ""}" alt="Kết quả sau món ${i+1}"><figcaption>${TRY.stages.length > 1 ? (i === 0 ? "Sau món dưới" : "Cả bộ hoàn chỉnh") : "Kết quả"}</figcaption></figure>`).join("")}</div>` : ""}
 <p class="trymeta">${esc(st.label)} · ảnh trả về ${st.w}×${st.h}px${st.blankWarn ? " · <span style='color:var(--warn)'>ảnh có vẻ ít chi tiết bất thường — thử ảnh toàn thân rõ hơn nếu chưa ưng</span>" : ""} · tổng thời gian ${secs >= 60 ? Math.floor(secs / 60) + " phút " + (secs % 60) + " giây" : secs + " giây"}. Kéo thanh trượt để so sánh với ảnh gốc của bạn.${note ? " " + esc(note) : ""}</p>
 </div>`;
 const box = $("#cmpBox"), before = $("#cmpBefore"), handle = $("#cmpHandle"), range = $("#cmpRange");
@@ -1827,9 +1913,12 @@ $("#aiOut").querySelectorAll(".trysteps-thumbs img").forEach(im => im.onclick = 
 }
 $("#aiBtn").onclick = async () => {
 const err = $("#e4"); err.textContent = "";
-if (!body || !img) { err.textContent = "Cần ảnh toàn thân và ảnh sản phẩm."; return; }
+/* Ghép theo kế hoạch đã nhận diện loại món: chỉ có quần (ô 1 hoặc ô 2) vẫn ghép được với mặt nạ thân dưới,
+   không còn bắt buộc phải có ảnh áo ở ô 1 như trước. */
+const plan = garmentPlan();
+if (!body || !plan.length) { err.textContent = "Cần ảnh toàn thân và ít nhất một ảnh sản phẩm — chỉ quần, chỉ áo hay cả bộ đều được."; return; }
 if (!CONSENT.tryon) { err.textContent = "Mặc thử AI đang tắt vì bạn chưa đồng ý gửi ảnh tới Hugging Face. Bấm “Đổi lựa chọn quyền riêng tư” ở cuối trang để bật lại."; return; }
-const steps = img2 ? [{ g: img2, low: true, name: "quần/váy" }, { g: img, low: false, name: "áo" }] : [{ g: img, low: false, name: "món đồ" }], n = steps.length;
+const steps = plan.map(p => ({ g: p.g, low: p.cat === "bottom", name: p.name })), n = steps.length;
 if (!CONSENT.tryon){ err.textContent = "Mặc thử AI đang tắt vì bạn chưa đồng ý gửi ảnh tới Hugging Face. Bấm “Đổi lựa chọn quyền riêng tư” ở cuối trang để bật lại."; return; }
 if (!window.__tryonOk){ window.__tryonOk = true; $("#aiOut").innerHTML = '<p class="hint" style="text-align:center">Ảnh của bạn và ảnh sản phẩm sẽ được gửi tới Hugging Face (Space IDM-VTON) để tạo ảnh mặc thử' + (n > 1 ? ", lần lượt từng món" : "") + '. Bấm nút lần nữa để đồng ý và tiếp tục.</p>'; $("#aiBtn").textContent = "Đồng ý gửi ảnh & mặc thử AI"; return; }
 $("#aiBtn").disabled = true; $("#aiBtn").textContent = "Đang mặc thử…";
@@ -1889,12 +1978,12 @@ if (last.length > 1) {
 const combo = last.combo || {};
 const pairName = last.map(x => x.product).join(" + ");
 c.unshift({ outfit: true, product: pairName, pair: pairName, date: last[0].date, link: last[0].link || "", bodyImg, profile: profSnap,
-items: last.map((r, i) => ({ product: r.product, size: r.size, fit: r.fit, confidence: r.confidence, thumb: r.thumb || "", full: fullOf(i ? img2 : img), family: r.family, alt_size: r.alt_size || "", pros: (r.pros || []).slice(0, 1), cons: (r.cons || []).slice(0, 1), reasons: (r.reasons || []).slice(0, 1) })),
+items: last.map((r, i) => ({ product: r.product, size: r.size, fit: r.fit, confidence: r.confidence, thumb: r.thumb || "", full: fullOf((r.slot === 1 || (r.slot !== 0 && i)) ? img2 : img), cat: r.cat || "", family: r.family, alt_size: r.alt_size || "", pros: (r.pros || []).slice(0, 1), cons: (r.cons || []).slice(0, 1), reasons: (r.reasons || []).slice(0, 1) })),
 size: last.map(x => x.size).join(" / "), fit: last[0].fit, confidence: Math.round(last.reduce((s, r) => s + (+r.confidence || 0), 0) / last.length),
 pros: (combo.pros || []).slice(0, 2), cons: (combo.cons || []).slice(0, 2), family: combo.family || last[0].family || "" });
 } else {
 /* Món đơn: lưu kèm ảnh gốc (full), ảnh toàn thân và hồ sơ tại thời điểm lưu */
-c.unshift(Object.assign({}, last[0], { full: fullOf(img), bodyImg, profile: profSnap }));
+c.unshift(Object.assign({}, last[0], { full: fullOf(last[0].slot === 1 ? img2 : img), bodyImg, profile: profSnap }));
 }
 saveCloset(c);
 $("#save").textContent = "Đã lưu"; setTimeout(() => $("#save").textContent = "Lưu vào tủ đồ", 1500);
@@ -1999,7 +2088,7 @@ const bdata = dataOf(v.bodyImg || (v.x && v.x.bodyImg) || store.get("fm_body", "
 if (bdata) {
 try { body = await canvasFromData(bdata); setDrop("#bdrop", bdata, "Ảnh của bạn"); view = "Ảnh của bạn"; viewSync(); } catch (e) {}
 } else if (body) { try { setDrop("#bdrop", body.toDataURL("image/jpeg", .85), "Ảnh của bạn"); } catch (e) {} }
-last = its.filter(Boolean).map(it => ({ product: it.product, size: it.size, fit: it.fit || "vừa", confidence: it.confidence || 0, thumb: it.thumb || "", full: it.full || "", reasons: it.reasons || [], warnings: [], pros: it.pros || [], cons: it.cons || [], styling: [], outfits: [], colors: [], alt_size: it.alt_size || "", family: it.family || "", ai: true, date: v.date || (v.x && v.x.date) || "", link: $("#link").value }));
+last = its.filter(Boolean).map((it, idx) => ({ product: it.product, size: it.size, fit: it.fit || "vừa", confidence: it.confidence || 0, thumb: it.thumb || "", full: it.full || "", reasons: it.reasons || [], warnings: [], pros: it.pros || [], cons: it.cons || [], styling: [], outfits: [], colors: [], alt_size: it.alt_size || "", family: it.family || "", cat: it.cat || detectCat(it.product, idx === 1), slot: Math.min(idx, 1), ai: true, date: v.date || (v.x && v.x.date) || "", link: $("#link").value }));
 if (v.outfit && last.length > 1) last.combo = { pros: v.pros || [], cons: v.cons || [], styling: [], outfits: [], family: v.family || "" };
 document.querySelector('[data-tab="tryon"]').click();
 step(2);
@@ -2052,7 +2141,11 @@ document.querySelector('[data-tab="stylist"]').click();
 $("#q").value = v.outfit
 ? `Phối đồ với BỘ outfit này trong tủ của tôi: ${v.items.map(it => `"${it.product}" (size ${it.size}${it.fit ? ", form " + it.fit : ""})`).join(" mặc cùng ")}. Bộ này mặc được dịp nào, thêm giày và phụ kiện gì cho hoàn chỉnh?`
 : `Phối đồ với món này trong tủ của tôi: "${v.x.product}" (size ${v.x.size}${v.x.fit ? ", form " + v.x.fit : ""}). Món này mặc được những dịp nào, phối với gì đẹp nhất?`;
-sendQ();
+/* Kèm ẢNH của đúng món/bộ này vào chatbox Stylist để dễ hình dung: ảnh thu nhỏ hiện trong bong bóng chat, ảnh gốc gửi kèm cho AI xem. Món nào trong tủ không có ảnh (đồ lưu từ bản cũ) thì bỏ qua món đó, vẫn hỏi bằng chữ như trước — không bịa ảnh thay thế */
+const srcItems = v.outfit ? (v.items || []) : [v.x];
+const attach = { imgs: [], fulls: [], labels: [], sizes: [] };
+srcItems.forEach(it => { if (!it) return; const disp = dataOf(it.thumb || it.full || ""); if (!disp) return; attach.imgs.push(disp); attach.fulls.push(dataOf(it.full || it.thumb || "")); attach.labels.push(String(it.product || "Món đồ trong tủ")); attach.sizes.push(String(it.size || "")); });
+sendQ(attach.imgs.length ? attach : undefined);
 } });
 box.querySelectorAll("[data-retry]").forEach(b => b.onclick = () => { const v = views[+b.dataset.retry]; if (v) retryCloset(v); });
 }
@@ -2117,27 +2210,44 @@ const box = $("#chat");
 if (!history.length && !busy){ box.innerHTML = `<div class="empty">Chọn câu hỏi nhanh ở trên hoặc tự hỏi bên dưới — Stylist chỉ gợi ý 1 phương án tốt nhất, trả lời ngắn theo 4 bước: Ưu điểm · Khuyết điểm · Cách khắc phục · Chốt.</div>`; drawn = 0; renderFollow(); return; }
 if (drawn < 1 || drawn > history.length) { box.innerHTML = ""; drawn = 0; }
 box.querySelectorAll(".typing").forEach(e => e.remove());
-history.slice(drawn).forEach(m => { const d = document.createElement("div"); d.className = "msg " + (m.role === "user" ? "u" : "a"); if (m.role === "assistant") d.innerHTML = formatMsg(m.content); else d.textContent = m.content; box.appendChild(d); });
+history.slice(drawn).forEach(m => { const d = document.createElement("div"); d.className = "msg " + (m.role === "user" ? "u" : "a"); if (m.role === "assistant") d.innerHTML = formatMsg(m.content); else {
+const imgs = (Array.isArray(m.imgs) ? m.imgs : []).filter(s => typeof s === "string" && s.startsWith("data:image/")).slice(0, 2);
+if (imgs.length) { const wrap = document.createElement("div"); wrap.className = "chat-imgs"; imgs.forEach((s, ix) => { const f = document.createElement("figure"); f.className = "chat-img"; const im = document.createElement("img"); im.src = s; im.alt = (m.labels && m.labels[ix]) || "Ảnh món đồ đang hỏi Stylist"; im.onerror = () => f.remove(); f.appendChild(im); const sz = m.sizes && m.sizes[ix]; if (sz) { const em = document.createElement("em"); em.textContent = sz; f.appendChild(em); } const lb = m.labels && m.labels[ix]; if (lb) { const fc = document.createElement("figcaption"); fc.textContent = lb; f.appendChild(fc); } wrap.appendChild(f); }); d.appendChild(wrap); }
+d.appendChild(document.createTextNode(m.content));
+} box.appendChild(d); });
 drawn = history.length;
 if (busy) box.insertAdjacentHTML("beforeend", '<div class="msg a typing dots"><span>.</span><span>.</span><span>.</span></div>');
 box.scrollTop = box.scrollHeight;
 renderFollow();
 }
-async function sendQ(){
+async function sendQ(attach){
 /* KIỂM TRA QUYỀN TRƯỚC TIÊN, trước mọi thao tác khác: chưa đồng ý Gemini (CONSENT.gemini = false, kể cả khi chưa chọn ở hộp chính sách) thì CHỈ hiện thông báo Stylist đã tắt rồi dừng hẳn — không đọc/ghi câu hỏi, không push vào lịch sử chat, không gọi callAI/Gemini, không dùng gợi ý Stylist dự phòng trên máy. Mọi đường vào (chip câu hỏi nhanh, chip hỏi tiếp, nút Gửi, phím Enter, nút "Hỏi Stylist" trong Tủ đồ) đều đi qua đúng điểm chặn này. */
 if (typeof CONSENT === "undefined" || !CONSENT.gemini) { $("#e3").textContent = "Stylist AI đang tắt vì bạn chưa đồng ý gửi dữ liệu tới Gemini. Bấm “Đổi lựa chọn quyền riêng tư” ở cuối trang để bật lại."; return; }
 if (busy) return;
 const q = $("#q").value.trim(); if (!q) return;
 if (!(+P.h && +P.w)) { $("#e3").textContent = "Hãy nhập chiều cao và cân nặng ở tab Thử đồ trước — Stylist cần hồ sơ của bạn để tư vấn."; document.querySelector('[data-tab="stylist"]').click(); renderStyProfile(); return; }
 $("#e3").textContent = ""; $("#q").value = "";
-history.push({role:"user", content:q}); busy = true; drawChat(); $("#ask").disabled = true;
+/* Ảnh đính kèm (khi bấm "Hỏi Stylist" từ Tủ đồ hoặc chip "Hỏi thêm Stylist AI" ở mục Kết quả): imgs = ảnh thu nhỏ để HIỆN trong bong bóng chat và lưu cùng lịch sử; fulls = ảnh gốc để GỬI cho AI xem trong đúng lượt hỏi này, không lưu vào lịch sử cho nhẹ bộ nhớ */
+const at = attach && Array.isArray(attach.imgs) && attach.imgs.length ? { imgs: attach.imgs.filter(s => typeof s === "string" && s.startsWith("data:image/")).slice(0, 2), fulls: (attach.fulls || []).slice(0, 2), labels: (attach.labels || []).slice(0, 2), sizes: (attach.sizes || []).slice(0, 2) } : null;
+history.push(at && at.imgs.length ? { role: "user", content: q, imgs: at.imgs, fulls: at.fulls, labels: at.labels, sizes: at.sizes } : { role: "user", content: q });
+busy = true; drawChat(); $("#ask").disabled = true;
 try {
-const hh = history.slice(-4); while (hh.length && hh[0].role !== "user") hh.shift();
+const hhRaw = history.slice(-4); while (hhRaw.length && hhRaw[0].role !== "user") hhRaw.shift();
+/* Tin nhắn nào có ảnh đính kèm thì chuyển thành nội dung đa phương tiện đúng định dạng callAI đang dùng ở bước phân tích size: ảnh (ưu tiên ảnh gốc, thiếu thì dùng ảnh thu nhỏ đã lưu) đi trước, chữ đi sau — để Stylist AI nhìn thấy đúng món đồ trong ảnh, không chỉ đọc tên món */
+const hh = hhRaw.map(m => {
+const srcs = m.role === "user" ? ((m.fulls && m.fulls.length) ? m.fulls : (m.imgs || [])) : [];
+if (!srcs.length || typeof m.content !== "string") return m;
+const content = [];
+srcs.slice(0, 2).forEach(s => { if (typeof s !== "string") return; const b64 = stripData(s); if (!b64) return; const mt = (s.match(/^data:(image\/[a-z0-9.+-]+)[;,]/i) || [])[1] || "image/jpeg"; content.push({ type: "image", source: { type: "base64", media_type: mt, data: b64 } }); });
+if (!content.length) return m;
+content.push({ type: "text", text: m.content });
+return { role: "user", content };
+});
 const a = await callAI(SYS(), hh, 320, .6);
 if (!a.trim()) throw new Error("AI chưa trả lời, hãy thử lại.");
 history.push({role:"assistant", content:a});
 } catch (e) { history.push({role:"assistant", content: (typeof CONSENT !== "undefined" && !CONSENT.gemini) ? "Stylist AI đang tắt vì bạn đã từ chối gửi dữ liệu tới Gemini. Bấm “Đổi lựa chọn quyền riêng tư” ở cuối trang để bật lại." : localStylistFallback(q)}); }
-busy = false; store.set("fm_chat", history.slice(-30)); drawChat(); $("#ask").disabled = (typeof CONSENT !== "undefined" && !CONSENT.gemini); if (typeof applyConsent === "function") applyConsent();
+busy = false; store.set("fm_chat", history.slice(-30).map(m => { if (!m.fulls) return m; const r = { role: m.role, content: m.content }; if (m.imgs) r.imgs = m.imgs; if (m.labels) r.labels = m.labels; if (m.sizes) r.sizes = m.sizes; return r; })); drawChat(); $("#ask").disabled = (typeof CONSENT !== "undefined" && !CONSENT.gemini); if (typeof applyConsent === "function") applyConsent();
 }
 $("#ask").onclick = sendQ;
 $("#clr").onclick = () => { history = []; drawn = -1; store.set("fm_chat", []); drawChat(); };
@@ -2166,7 +2276,7 @@ const offG = !CONSENT.gemini;
 ask.disabled = offG;
 q.disabled = offG;
 q.placeholder = offG ? "Stylist AI đã tắt — đổi lựa chọn ở cuối trang để bật lại" : "Hỏi Stylist...";
-document.querySelectorAll("#quick button, #followChips button, #wardrobe [data-ask]").forEach(b => { b.disabled = offG; });
+document.querySelectorAll("#quick button, #followChips button, #wardrobe [data-ask], #result [data-askq]").forEach(b => { b.disabled = offG; });
 }
 bodyBlockOn = !!(CONSENT.saved && !CONSENT.tryon);
 if (typeof syncBodyBlock === "function") syncBodyBlock();
@@ -2186,7 +2296,7 @@ openConsent(); /* luôn hiện khi vào trang, kể cả đã vào trước đó
 (function(){
 if (REDUCE) return;
 const SEL = ".chip, nav.tabs button, .steps button, .seg button, .swatch, .btn, .c-toggle, .trysteps-thumbs img";
-document.addEventListener("pointerdown", e => { const t = e.target.closest(SEL); if (!t || t.disabled) return; t.classList.remove("tap-pop"); void t.offsetWidth; t.classList.add("tap-pop"); }, { passive: true });
+document.addEventListener("pointerdown", e => { const t = e.target.closest(SEL); if (!t || t.disabled) return; if (t.closest(".consent-gate")) return; /* nút trong hộp chính sách ghim cố định, không nảy khi chạm */ t.classList.remove("tap-pop"); void t.offsetWidth; t.classList.add("tap-pop"); }, { passive: true });
 document.addEventListener("animationend", e => { if (e.target && e.target.classList) e.target.classList.remove("tap-pop"); });
 document.addEventListener("click", e => {
 const t = e.target.closest(".btn, .chip"); if (!t || t.disabled) return;
